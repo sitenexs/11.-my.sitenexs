@@ -1,0 +1,3654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Absensi Karyawan</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-bg: #eff6ff;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --purple: #7c3aed;
+      --purple-bg: #f3e8ff;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --clay-shadow: 0 4px 14px rgba(15, 23, 42, 0.045), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+      font-size: 13px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* ================= ANIMATIONS ================= */
+    @keyframes tabFadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes calSlideNext {
+      from {
+        opacity: 0;
+        transform: translateX(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes calSlidePrev {
+      from {
+        opacity: 0;
+        transform: translateX(-14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes modalPop {
+      from {
+        opacity: 0;
+        transform: scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes itemEnter {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cal-anim-next {
+      animation: calSlideNext 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .cal-anim-prev {
+      animation: calSlidePrev 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ================= LOGIN SCREEN ================= */
+    .login-screen {
+      width: 100%;
+      min-height: 100vh;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      animation: tabFadeSlide 0.3s ease;
+    }
+
+    .login-brand {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .login-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+    }
+
+    .login-brand h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    /* ================= MAIN APP ================= */
+    .main-app {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 68px;
+    }
+
+    /* Compact Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .topbar-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .user-id {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-logout {
+      flex-shrink: 0;
+      border: 1px solid #fecaca;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+
+    .btn-logout:active {
+      transform: scale(0.94);
+      opacity: 0.85;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .tab-view {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Compact Hero Clock Card */
+    .clock-box {
+      background: linear-gradient(145deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 13px 12px 11px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .clock-date {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 5px;
+    }
+
+    .clock-time {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .schedule-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .schedule-pill {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9px;
+      padding: 6px;
+      min-width: 0;
+    }
+
+    .schedule-pill span {
+      display: block;
+      font-size: 10px;
+      opacity: 0.85;
+    }
+
+    .schedule-pill strong {
+      display: block;
+      font-size: 12px;
+      margin-top: 1px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Compact Clay Card */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: var(--clay-shadow);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Status Grid */
+    .today-status {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .status-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .status-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .status-val {
+      font-size: 15px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .status-box.in-box .status-val { color: var(--success); }
+    .status-box.out-box .status-val { color: var(--danger); }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-grid > * {
+      min-width: 0;
+    }
+
+    /* ================= COMPACT ATTENDANCE CHART ================= */
+    .chart-layout {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .donut-wrap {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+    }
+
+    .donut-svg {
+      width: 78px;
+      height: 78px;
+      transform: rotate(-90deg);
+    }
+
+    .donut-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .donut-progress {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 213.6;
+      stroke-dashoffset: 213.6;
+      transition: stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .donut-pct {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .donut-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .chart-metrics {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      gap: 6px;
+    }
+
+    .metric-name {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .metric-val {
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .bar-hadir { background: var(--success); }
+    .bar-catatan { background: var(--primary); }
+
+    .chart-alert {
+      margin-top: 9px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .chart-alert.warn {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .chart-alert.ok {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    /* ================= CLEAN NOTE INPUT & DOC PHOTO ================= */
+    .note-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      overflow: hidden;
+      transition: border-color 0.15s, background-color 0.15s;
+      margin-bottom: 8px;
+    }
+
+    .note-box:focus-within {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .note-textarea {
+      width: 100%;
+      min-height: 68px;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      line-height: 1.4;
+      display: block;
+    }
+
+    .note-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 4px 10px;
+      border-top: 1px solid var(--border);
+      background: rgba(241, 245, 249, 0.5);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .doc-photo-box {
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      padding: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .doc-photo-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .doc-photo-actions > * {
+      min-width: 0;
+    }
+
+    .doc-photo-trigger {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--primary);
+      padding: 8px 6px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: transform 0.12s, background-color 0.15s;
+    }
+
+    .doc-photo-trigger svg {
+      flex-shrink: 0;
+    }
+
+    .doc-photo-trigger.file-trigger {
+      color: var(--text-secondary);
+    }
+
+    .doc-photo-trigger:active {
+      transform: scale(0.97);
+      background: var(--primary-bg);
+    }
+
+    .pending-thumbs-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .pending-thumb-item {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      animation: itemEnter 0.2s ease;
+    }
+
+    .pending-thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+
+    .pending-thumb-del {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 17px;
+      height: 17px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(15, 23, 42, 0.78);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .saved-note-preview {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+    }
+
+    .saved-note-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .saved-note-body {
+      font-size: 12.5px;
+      color: var(--text);
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.45;
+    }
+
+    .photo-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .photo-thumb-btn {
+      position: relative;
+      display: block;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.12s;
+    }
+
+    .photo-thumb-btn:active {
+      transform: scale(0.94);
+    }
+
+    .photo-thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ================= CUSTOM INPUTS & PILLS ================= */
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .form-input {
+      width: 100%;
+      max-width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface-soft);
+      outline: none;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .picker-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .custom-picker-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      min-height: 36px;
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .custom-picker-box:focus-within {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .custom-picker-box svg {
+      width: 15px;
+      height: 15px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .custom-picker-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-picker-text.placeholder {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .native-overlay-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cat-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 9px;
+    }
+
+    .cat-pill-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 7px 6px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .cat-pill-btn:active {
+      transform: scale(0.96);
+    }
+
+    .cat-pill-btn.active[data-cat="Target"] {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .cat-pill-btn.active[data-cat="Jadwal"] {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .cat-pill-btn.active[data-cat="Penting"] {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    /* Compact Buttons */
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      text-align: center;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-masuk {
+      background: var(--success);
+      color: #ffffff;
+    }
+
+    .btn-keluar {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-sub {
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    .btn-outline-sm {
+      flex-shrink: 0;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, background-color 0.15s;
+    }
+
+    .btn-outline-sm:active {
+      transform: scale(0.96);
+      background: var(--border);
+    }
+
+    /* ================= TARGET & PENGINGAT JADWAL ================= */
+    .reminder-banner {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1px solid #fde68a;
+      border-radius: 11px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+
+    .reminder-banner:active {
+      transform: scale(0.98);
+    }
+
+    .reminder-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .reminder-bell {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #f59e0b;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .reminder-banner-text {
+      min-width: 0;
+    }
+
+    .reminder-banner-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #92400e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reminder-banner-sub {
+      font-size: 10.5px;
+      color: #b45309;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reminder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .reminder-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 9px 10px;
+      transition: opacity 0.2s, background-color 0.2s;
+      animation: itemEnter 0.22s ease;
+    }
+
+    .reminder-item.done {
+      opacity: 0.62;
+      background: #f8fafc;
+    }
+
+    .reminder-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .reminder-item.done .reminder-check {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .reminder-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .reminder-head {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+
+    .cat-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    .cat-tag.Target { background: var(--primary-bg); color: var(--primary); }
+    .cat-tag.Jadwal { background: var(--purple-bg); color: var(--purple); }
+    .cat-tag.Penting { background: var(--warning-bg); color: var(--warning); }
+
+    .reminder-when {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reminder-when.overdue {
+      color: var(--danger);
+    }
+
+    .reminder-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      word-wrap: break-word;
+    }
+
+    .reminder-item.done .reminder-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .reminder-note {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      white-space: pre-line;
+      word-wrap: break-word;
+    }
+
+    .reminder-del-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 3px;
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .reminder-del-btn:active {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    /* ================= CLEAN CALENDAR ================= */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .cal-month-label {
+      font-size: 13.5px;
+      font-weight: 800;
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cal-nav-btn {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s, background-color 0.15s;
+    }
+
+    .cal-nav-btn:active {
+      transform: scale(0.92);
+      background: var(--border);
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+      width: 100%;
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      padding-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .cal-dow.sun {
+      color: var(--danger);
+    }
+
+    .cal-cell {
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      min-width: 0;
+      transition: transform 0.12s, border-color 0.15s, background-color 0.15s, color 0.15s;
+    }
+
+    .cal-cell:active:not(.empty) {
+      transform: scale(0.93);
+    }
+
+    .cal-cell.empty {
+      border: none;
+      background: transparent;
+      cursor: default;
+    }
+
+    .cal-cell.has-record {
+      background: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .cal-cell.sunday {
+      background: #fff8f8;
+    }
+
+    .cal-cell.holiday {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .cal-cell.today {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .cal-cell.selected {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .cal-num {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .cal-cell.sunday .cal-num,
+    .cal-cell.holiday .cal-num {
+      color: var(--danger);
+    }
+
+    .cal-cell.today .cal-num {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .cal-cell.selected .cal-num {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    /* Holiday Info Box inside Calendar Card */
+    .cal-holidays-box {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cal-holiday-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 4px 7px;
+      border-radius: 7px;
+      background: #fef2f2;
+      cursor: pointer;
+    }
+
+    .cal-holiday-date {
+      font-weight: 800;
+      color: var(--danger);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-holiday-name {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= CLEAN FILTER & HISTORY CARDS ================= */
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      align-items: stretch;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-item {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      animation: itemEnter 0.22s ease;
+    }
+
+    .history-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .history-date-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .history-date {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .history-badges {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      border: none;
+      cursor: pointer;
+    }
+
+    .time-chip.in {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .time-chip.out {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .time-chip.empty {
+      background: var(--bg);
+      color: var(--muted);
+      cursor: default;
+    }
+
+    .chip-cam {
+      font-size: 9.5px;
+      opacity: 0.9;
+      text-decoration: underline;
+    }
+
+    .history-note-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 9px;
+    }
+
+    .history-note-text {
+      font-size: 12px;
+      color: var(--text);
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.45;
+    }
+
+    .history-note-box .photo-thumbs {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-ok { background: var(--success-bg); color: var(--success); }
+    .badge-warn { background: var(--warning-bg); color: var(--warning); }
+
+    .empty-state {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 18px 8px;
+      background: var(--surface-soft);
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+    }
+
+    /* Compact Bottom Navigation (3 Tabs) */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 5px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+      z-index: 60;
+    }
+
+    .nav-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 5px 4px;
+      border-radius: 9px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s, transform 0.12s;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 3px;
+      right: 26%;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--warning);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ================= CAMERA MODAL ================= */
+    .camera-modal {
+      position: fixed;
+      inset: 0;
+      background: #0f172a;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      max-width: 440px;
+      margin: 0 auto;
+      animation: tabFadeSlide 0.2s ease;
+    }
+
+    .cam-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 11px 14px;
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .cam-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .cam-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cam-stage {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .cam-video, .cam-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cam-controls {
+      padding: 12px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cam-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .cam-btn-secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+    }
+
+    /* ================= PHOTO GALLERY LIGHTBOX MODAL ================= */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.96);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      max-width: 440px;
+      margin: 0 auto;
+      color: #ffffff;
+      animation: tabFadeSlide 0.2s ease;
+    }
+
+    .lb-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lb-info {
+      min-width: 0;
+    }
+
+    .lb-title {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lb-counter {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .lb-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .lb-main-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: modalPop 0.2s ease;
+    }
+
+    .lb-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .lb-nav-btn.prev { left: 10px; }
+    .lb-nav-btn.next { right: 10px; }
+
+    .lb-thumbs-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+    }
+
+    .lb-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      opacity: 0.55;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      background: transparent;
+      transition: opacity 0.15s, border-color 0.15s;
+    }
+
+    .lb-thumb.active {
+      border-color: #3b82f6;
+      opacity: 1;
+    }
+
+    .lb-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ================= CUSTOM CONFIRM DIALOG ================= */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-card {
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+      text-align: center;
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .confirm-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .confirm-msg {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ================= MODERN TOP TOAST NOTIFICATION ================= */
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 14px;
+      transform: translateX(-50%) translateY(-24px);
+      width: calc(100% - 24px);
+      max-width: 416px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 999;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.25);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #38bdf8;
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-dot { background: #4ade80; }
+    .toast.warn .toast-dot { background: #fbbf24; }
+    .toast.error .toast-dot { background: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- HALAMAN LOGIN -->
+    <div id="loginScreen" class="login-screen hidden">
+      <div class="login-brand">
+        <div class="login-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <h1>Absensi Karyawan</h1>
+      </div>
+
+      <section class="card" id="loginCard">
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label" for="loginId">ID Karyawan</label>
+            <input type="text" id="loginId" class="form-input" placeholder="EMP001" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" class="form-input" placeholder="Username terdaftar" autocomplete="off" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="loginBtn">Masuk</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- HALAMAN UTAMA ABSENSI -->
+    <div id="mainApp" class="main-app hidden">
+      <!-- Sticky Topbar -->
+      <header class="topbar">
+        <div class="topbar-user">
+          <div class="avatar" id="userAvatar">K</div>
+          <div class="topbar-info">
+            <div class="user-name" id="displayUserName">-</div>
+            <div class="user-id" id="displayUserId">-</div>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" id="logoutBtn">Keluar</button>
+      </header>
+
+      <main class="content-area">
+        <!-- TAB 1: PRESENSI & CATATAN -->
+        <div id="viewPresensi" class="tab-view">
+          <!-- Banner Pengingat Aktif -->
+          <div id="activeReminderBanner" class="reminder-banner hidden">
+            <div class="reminder-banner-left">
+              <div class="reminder-bell">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
+              <div class="reminder-banner-text">
+                <div class="reminder-banner-title" id="bannerRemTitle">-</div>
+                <div class="reminder-banner-sub" id="bannerRemSub">-</div>
+              </div>
+            </div>
+            <span class="badge badge-warn" id="bannerRemCount">0</span>
+          </div>
+
+          <!-- Live Clock & Schedule -->
+          <section class="clock-box">
+            <div class="clock-date" id="clockDate">-</div>
+            <div class="clock-time" id="clockTime">00:00:00</div>
+            <div class="schedule-pills">
+              <div class="schedule-pill">
+                <span>Masuk</span>
+                <strong id="schedMasuk">07:00 - 09:00</strong>
+              </div>
+              <div class="schedule-pill">
+                <span>Keluar</span>
+                <strong id="schedKeluar">16:00 - 18:00</strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- Attendance Card -->
+          <section class="card">
+            <div class="today-status">
+              <div class="status-box in-box">
+                <div class="status-label">Masuk</div>
+                <div class="status-val" id="todayIn">--:--</div>
+              </div>
+              <div class="status-box out-box">
+                <div class="status-label">Keluar</div>
+                <div class="status-val" id="todayOut">--:--</div>
+              </div>
+            </div>
+
+            <div class="action-grid">
+              <button type="button" class="btn btn-masuk" id="btnCheckIn" disabled>
+                <span>Absen Masuk</span>
+                <span class="btn-sub" id="subCheckIn">Memuat...</span>
+              </button>
+              <button type="button" class="btn btn-keluar" id="btnCheckOut" disabled>
+                <span>Absen Keluar</span>
+                <span class="btn-sub" id="subCheckOut">Memuat...</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Grafik Persentase Hadir & Aktif -->
+          <section class="card">
+            <div class="card-title">
+              <span>Performa</span>
+              <span class="badge badge-ok" id="chartDaysLabel">0 Hari</span>
+            </div>
+
+            <div class="chart-layout">
+              <div class="donut-wrap">
+                <svg class="donut-svg" viewBox="0 0 78 78">
+                  <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
+                  <circle class="donut-progress" id="activeRing" cx="39" cy="39" r="34"></circle>
+                </svg>
+                <div class="donut-center">
+                  <span class="donut-pct" id="activePctText">0%</span>
+                  <span class="donut-sub">Aktif</span>
+                </div>
+              </div>
+
+              <div class="chart-metrics">
+                <div class="metric-row">
+                  <div class="metric-head">
+                    <span class="metric-name">Kehadiran</span>
+                    <span class="metric-val" id="hadirPctText">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill bar-hadir" id="hadirBar"></div>
+                  </div>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-head">
+                    <span class="metric-name">Catatan Kerja</span>
+                    <span class="metric-val" id="notePctText">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill bar-catatan" id="noteBar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-alert warn hidden" id="chartAlert"></div>
+          </section>
+
+          <!-- Daily Work Note Card -->
+          <section class="card">
+            <div class="card-title">
+              <span>Catatan (<span id="noteDateLabel">-</span>)</span>
+              <span class="badge badge-ok hidden" id="noteSavedBadge">Tersimpan</span>
+            </div>
+
+            <div class="note-box">
+              <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
+              <div class="note-footer">
+                <span id="noteCharCount">0 karakter</span>
+              </div>
+            </div>
+
+            <!-- Foto Dokumentasi -->
+            <div class="doc-photo-box">
+              <div id="pendingThumbsRow" class="pending-thumbs-row hidden"></div>
+              <div class="doc-photo-actions">
+                <button type="button" class="doc-photo-trigger" id="openDocCamBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <span>Kamera</span>
+                </button>
+                <button type="button" class="doc-photo-trigger file-trigger" id="openDocFileBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span>Galeri</span>
+                </button>
+              </div>
+              <input type="file" id="docFileInput" accept="image/*" multiple class="hidden">
+            </div>
+
+            <button type="button" class="btn btn-primary" id="saveNoteBtn">Simpan Catatan</button>
+
+            <div id="savedNotePreview" class="saved-note-preview hidden">
+              <div class="saved-note-head">
+                <span>Tersimpan</span>
+                <span id="noteTimestamp">-</span>
+              </div>
+              <div class="saved-note-body" id="savedNoteBody"></div>
+              <div class="photo-thumbs" id="savedNoteThumbs"></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- TAB 2: TARGET & PENGINGAT JADWAL -->
+        <div id="viewTarget" class="tab-view hidden">
+          <section class="card">
+            <div class="card-title">
+              <span>Tambah Pengingat &amp; Target</span>
+            </div>
+
+            <form id="reminderForm">
+              <div class="cat-pills" id="remCatPills">
+                <button type="button" class="cat-pill-btn active" data-cat="Target">Target</button>
+                <button type="button" class="cat-pill-btn" data-cat="Jadwal">Jadwal</button>
+                <button type="button" class="cat-pill-btn" data-cat="Penting">Penting</button>
+              </div>
+
+              <div class="form-group">
+                <input type="text" id="remTitleInput" class="form-input" placeholder="Judul target atau jadwal..." required>
+              </div>
+
+              <div class="picker-row">
+                <label class="custom-picker-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span class="custom-picker-text" id="remDateDisplay">Hari ini</span>
+                  <input type="date" id="remDateInput" class="native-overlay-input" required>
+                </label>
+
+                <label class="custom-picker-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <span class="custom-picker-text placeholder" id="remTimeDisplay">Jam (opsional)</span>
+                  <input type="time" id="remTimeInput" class="native-overlay-input">
+                </label>
+              </div>
+
+              <div class="note-box">
+                <textarea id="remNoteInput" class="note-textarea" style="min-height: 54px;" placeholder="Catatan detail target, angka pencapaian, atau keterangan..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="saveRemBtn">Simpan Pengingat</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <div class="card-title">
+              <span>Daftar Target &amp; Jadwal</span>
+              <span class="badge badge-warn" id="remPendingCount">0 Aktif</span>
+            </div>
+            <div id="reminderListContainer">
+              <div class="empty-state">Belum ada target atau pengingat.</div>
+            </div>
+          </section>
+        </div>
+
+        <!-- TAB 3: KALENDER & RIWAYAT KERJA -->
+        <div id="viewKalender" class="tab-view hidden">
+          <!-- Bagian Kalender -->
+          <section class="card">
+            <div class="cal-header">
+              <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Bulan sebelumnya">&lsaquo;</button>
+              <div class="cal-month-label" id="calMonthLabel">-</div>
+              <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Bulan berikutnya">&rsaquo;</button>
+            </div>
+            <div class="cal-grid" id="calendarGrid"></div>
+            <div class="cal-holidays-box hidden" id="calHolidaysBox"></div>
+          </section>
+
+          <!-- Bagian Riwayat Kerja -->
+          <section class="card" id="riwayatSectionCard">
+            <div class="card-title">
+              <span>Riwayat Kerja</span>
+              <span class="badge badge-ok" id="historyCountLabel">0 Data</span>
+            </div>
+            <div class="filter-row">
+              <label class="custom-picker-box" style="flex:1; min-width:0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span class="custom-picker-text placeholder" id="filterDateDisplay">Semua tanggal</span>
+                <input type="date" id="filterHistoryDate" class="native-overlay-input" aria-label="Filter tanggal">
+              </label>
+              <button type="button" class="btn-outline-sm" id="resetFilterDateBtn">Semua</button>
+            </div>
+            <div id="historyList">
+              <div class="empty-state">Memuat...</div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Bottom Navigation (3 Tab Rapi) -->
+      <nav class="bottom-nav">
+        <button type="button" class="nav-btn active" data-target="viewPresensi">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Presensi</span>
+        </button>
+        <button type="button" class="nav-btn" data-target="viewTarget">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span>Target</span>
+          <span class="nav-badge hidden" id="navTargetBadge">0</span>
+        </button>
+        <button type="button" class="nav-btn" data-target="viewKalender">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Kalender</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- CAMERA MODAL -->
+  <div id="cameraModal" class="camera-modal hidden">
+    <div class="cam-topbar">
+      <div class="cam-title" id="camModalTitle">Ambil Foto</div>
+      <button type="button" class="cam-close-btn" id="camCloseBtn">Tutup</button>
+    </div>
+    <div class="cam-stage">
+      <video id="camVideo" class="cam-video" autoplay playsinline muted></video>
+      <img id="camPreview" class="cam-preview hidden" alt="Hasil foto">
+      <canvas id="camCanvas" class="hidden"></canvas>
+    </div>
+    <div class="cam-controls">
+      <div id="camLiveControls" class="cam-btn-row">
+        <button type="button" class="btn cam-btn-secondary" id="camSwitchBtn">Ganti Kamera</button>
+        <button type="button" class="btn btn-primary" id="camCaptureBtn">Jepret</button>
+      </div>
+      <div id="camPreviewControls" class="cam-btn-row hidden">
+        <button type="button" class="btn cam-btn-secondary" id="camRetakeBtn">Ulangi</button>
+        <button type="button" class="btn btn-masuk" id="camConfirmBtn">Gunakan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTO GALLERY LIGHTBOX MODAL (Pratinjau Semua Foto) -->
+  <div id="lightboxModal" class="lightbox-modal hidden">
+    <div class="lb-topbar">
+      <div class="lb-info">
+        <div class="lb-title" id="lbTitle">Galeri Foto</div>
+        <div class="lb-counter" id="lbCounter">1 / 1</div>
+      </div>
+      <button type="button" class="cam-close-btn" id="lbCloseBtn">Tutup</button>
+    </div>
+    <div class="lb-stage" id="lbStage">
+      <button type="button" class="lb-nav-btn prev" id="lbPrevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+      <img id="lbMainImg" class="lb-main-img" alt="Pratinjau Foto">
+      <button type="button" class="lb-nav-btn next" id="lbNextBtn" aria-label="Berikutnya">&rsaquo;</button>
+    </div>
+    <div class="lb-thumbs-bar" id="lbThumbsBar"></div>
+  </div>
+
+  <!-- CUSTOM CONFIRM DIALOG -->
+  <div id="confirmOverlay" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title" id="confirmTitle">Konfirmasi</div>
+      <div class="confirm-msg" id="confirmMsg">-</div>
+      <div class="confirm-actions">
+        <button type="button" class="btn-outline-sm" id="confirmCancelBtn">Batal</button>
+        <button type="button" class="btn btn-keluar" style="padding:8px;" id="confirmOkBtn">Ya, Lanjut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODERN TOP TOAST -->
+  <div class="toast" id="toast">
+    <span class="toast-dot"></span>
+    <span id="toastText"></span>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      collection,
+      query,
+      where,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // ================= FIREBASE CONFIG =================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
+      authDomain: "sitenexs-62919.firebaseapp.com",
+      projectId: "sitenexs-62919",
+      storageBucket: "sitenexs-62919.firebasestorage.app",
+      messagingSenderId: "1060348110644",
+      appId: "1:1060348110644:web:e45af14d5f26a9cf8e6761",
+      measurementId: "G-C7YL0Q7YRQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const db = getFirestore(app);
+
+    // ================= SUPABASE CONFIG =================
+    const SUPABASE_URL = "https://xqcbyamxiekdxytntlno.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_XKHXYrEw2EDdfYH17Uyx6w_k_BtGLQa";
+    const SUPABASE_BUCKET = "absensi-foto";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let jadwal = {
+      masukMulai: "07:00",
+      masukSelesai: "09:00",
+      keluarMulai: "16:00",
+      keluarSelesai: "18:00"
+    };
+
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    let currentUser = null;
+    let myRecords = [];
+    let myReminders = [];
+    let unsubscribeRecords = null;
+    let unsubscribeReminders = null;
+    let unsubscribeUserWatch = null;
+    let toastTimer = null;
+    let notifiedReminderIds = new Set();
+
+    const initNow = new Date();
+    let calYear = initNow.getFullYear();
+    let calMonth = initNow.getMonth();
+
+    let cameraStream = null;
+    let currentFacingMode = "user";
+    let cameraPurpose = null;
+    let tempCapturedBlob = null;
+    let tempCapturedDataUrl = null;
+    let pendingDocPhotos = [];
+
+    // Lightbox state
+    let lightboxPhotos = [];
+    let lightboxIndex = 0;
+
+    // Selected reminder category
+    let selectedRemCategory = "Target";
+
+    const camModal = document.getElementById("cameraModal");
+    const camVideo = document.getElementById("camVideo");
+    const camPreview = document.getElementById("camPreview");
+    const camCanvas = document.getElementById("camCanvas");
+    const camLiveControls = document.getElementById("camLiveControls");
+    const camPreviewControls = document.getElementById("camPreviewControls");
+    const camConfirmBtn = document.getElementById("camConfirmBtn");
+    const docFileInput = document.getElementById("docFileInput");
+    const filterDateInput = document.getElementById("filterHistoryDate");
+    const filterDateDisplay = document.getElementById("filterDateDisplay");
+
+    // ================= HARI PENTING INDONESIA =================
+    const FIXED_HOLIDAYS = {
+      "01-01": { name: "Tahun Baru Masehi", isHoliday: true },
+      "02-14": { name: "Hari Kasih Sayang", isHoliday: false },
+      "03-08": { name: "Hari Perempuan Internasional", isHoliday: false },
+      "04-21": { name: "Hari Kartini", isHoliday: false },
+      "05-01": { name: "Hari Buruh Internasional", isHoliday: true },
+      "05-02": { name: "Hari Pendidikan Nasional", isHoliday: false },
+      "05-20": { name: "Hari Kebangkitan Nasional", isHoliday: false },
+      "06-01": { name: "Hari Lahir Pancasila", isHoliday: true },
+      "08-17": { name: "Hari Kemerdekaan RI", isHoliday: true },
+      "10-01": { name: "Hari Kesaktian Pancasila", isHoliday: false },
+      "10-02": { name: "Hari Batik Nasional", isHoliday: false },
+      "10-28": { name: "Hari Sumpah Pemuda", isHoliday: false },
+      "11-10": { name: "Hari Pahlawan", isHoliday: false },
+      "11-25": { name: "Hari Guru Nasional", isHoliday: false },
+      "12-22": { name: "Hari Ibu", isHoliday: false },
+      "12-25": { name: "Hari Raya Natal", isHoliday: true },
+      "12-26": { name: "Cuti Bersama Natal", isHoliday: true }
+    };
+
+    const SPECIFIC_HOLIDAYS = {
+      // 2025
+      "2025-01-27": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2025-01-29": { name: "Tahun Baru Imlek 2576", isHoliday: true },
+      "2025-03-29": { name: "Hari Suci Nyepi 1947", isHoliday: true },
+      "2025-03-31": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
+      "2025-04-01": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
+      "2025-04-18": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2025-05-12": { name: "Hari Raya Waisak 2569 BE", isHoliday: true },
+      "2025-05-29": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2025-06-06": { name: "Hari Raya Idul Adha 1446 H", isHoliday: true },
+      "2025-06-27": { name: "Tahun Baru Islam 1447 H", isHoliday: true },
+      "2025-09-05": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
+      // 2026
+      "2026-01-16": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2026-02-17": { name: "Tahun Baru Imlek 2577", isHoliday: true },
+      "2026-03-19": { name: "Hari Suci Nyepi 1948", isHoliday: true },
+      "2026-03-20": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
+      "2026-03-21": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
+      "2026-04-03": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2026-05-14": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2026-05-27": { name: "Hari Raya Idul Adha 1447 H", isHoliday: true },
+      "2026-05-31": { name: "Hari Raya Waisak 2570 BE", isHoliday: true },
+      "2026-06-16": { name: "Tahun Baru Islam 1448 H", isHoliday: true },
+      "2026-08-25": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
+      // 2027
+      "2027-01-05": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2027-02-06": { name: "Tahun Baru Imlek 2578", isHoliday: true },
+      "2027-03-08": { name: "Hari Suci Nyepi 1949", isHoliday: true },
+      "2027-03-09": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
+      "2027-03-10": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
+      "2027-03-26": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2027-05-06": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2027-05-16": { name: "Hari Raya Idul Adha 1448 H", isHoliday: true },
+      "2027-05-20": { name: "Hari Raya Waisak 2571 BE", isHoliday: true },
+      "2027-06-06": { name: "Tahun Baru Islam 1449 H", isHoliday: true },
+      "2027-08-14": { name: "Maulid Nabi Muhammad SAW", isHoliday: true }
+    };
+
+    function getImportantDayInfo(dateKey) {
+      if (SPECIFIC_HOLIDAYS[dateKey]) return SPECIFIC_HOLIDAYS[dateKey];
+      const mmdd = dateKey.slice(5);
+      if (FIXED_HOLIDAYS[mmdd]) return FIXED_HOLIDAYS[mmdd];
+      return null;
+    }
+
+    // ================= MODERN TOAST & CONFIRM =================
+    function showToast(msg, type = "info") {
+      const el = document.getElementById("toast");
+      const textEl = document.getElementById("toastText");
+      el.className = `toast ${type}`;
+      textEl.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+    }
+
+    function showCustomConfirm(title, message, okLabel = "Ya, Lanjut") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("confirmOverlay");
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmMsg").textContent = message;
+        const okBtn = document.getElementById("confirmOkBtn");
+        const cancelBtn = document.getElementById("confirmCancelBtn");
+        okBtn.textContent = okLabel;
+        overlay.classList.remove("hidden");
+
+        const cleanup = (res) => {
+          overlay.classList.add("hidden");
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(res);
+        };
+
+        okBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+      });
+    }
+
+    // ================= NAVIGATION =================
+    function switchTab(targetId) {
+      document.querySelectorAll(".tab-view").forEach(v => v.classList.add("hidden"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      const targetView = document.getElementById(targetId);
+      const targetBtn = document.querySelector(`.nav-btn[data-target="${targetId}"]`);
+      if (targetView) targetView.classList.remove("hidden");
+      if (targetBtn) targetBtn.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.target));
+    });
+
+    document.getElementById("activeReminderBanner").addEventListener("click", () => {
+      switchTab("viewTarget");
+    });
+
+    const noteInputEl = document.getElementById("dailyNoteInput");
+    const noteCharEl = document.getElementById("noteCharCount");
+    noteInputEl.addEventListener("input", () => {
+      noteCharEl.textContent = `${noteInputEl.value.length} karakter`;
+    });
+
+    // ================= DATE & TIME HELPERS =================
+    function getTodayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function getNowTimeStr() {
+      const now = new Date();
+      return now.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).replace(/\./g, ":");
+    }
+
+    function toMinutes(hhmm) {
+      const [h, m] = hhmm.split(":").map(Number);
+      return h * 60 + m;
+    }
+
+    function isWithinTimeRange(startStr, endStr) {
+      const now = new Date();
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+      const startMins = toMinutes(startStr);
+      const endMins = toMinutes(endStr);
+      if (startMins <= endMins) {
+        return currentMins >= startMins && currentMins <= endMins;
+      }
+      return currentMins >= startMins || currentMins <= endMins;
+    }
+
+    function formatShortDateKey(dateKey) {
+      if (!dateKey) return "-";
+      const [y, m, d] = dateKey.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function formatShortDateIndo(dateObj) {
+      return dateObj.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short"
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function cleanNoteLines(rawNote) {
+      return String(rawNote || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join("\n");
+    }
+
+    function getTodayRecord() {
+      const todayKey = getTodayKey();
+      return myRecords.find(r => r.date === todayKey) || null;
+    }
+
+    function renderSchedulePills() {
+      document.getElementById("schedMasuk").textContent = `${jadwal.masukMulai} - ${jadwal.masukSelesai}`;
+      document.getElementById("schedKeluar").textContent = `${jadwal.keluarMulai} - ${jadwal.keluarSelesai}`;
+    }
+
+    function updateFilterDateDisplay() {
+      if (filterDateInput.value) {
+        filterDateDisplay.textContent = formatShortDateKey(filterDateInput.value);
+        filterDateDisplay.classList.remove("placeholder");
+      } else {
+        filterDateDisplay.textContent = "Semua tanggal";
+        filterDateDisplay.classList.add("placeholder");
+      }
+    }
+
+    // ================= LIGHTBOX GALLERY (PRATINJAU SEMUA FOTO) =================
+    function openPhotoGallery(photosList, startIndex = 0, title = "Galeri Foto") {
+      if (!Array.isArray(photosList) || photosList.length === 0) return;
+      lightboxPhotos = photosList;
+      lightboxIndex = Math.max(0, Math.min(startIndex, photosList.length - 1));
+      document.getElementById("lbTitle").textContent = title;
+      renderLightboxSlide();
+      document.getElementById("lightboxModal").classList.remove("hidden");
+    }
+
+    function renderLightboxSlide() {
+      const total = lightboxPhotos.length;
+      const item = lightboxPhotos[lightboxIndex];
+      const mainImg = document.getElementById("lbMainImg");
+      mainImg.style.animation = "none";
+      void mainImg.offsetWidth;
+      mainImg.style.animation = "";
+      mainImg.src = item.url;
+      document.getElementById("lbCounter").textContent = `${lightboxIndex + 1} / ${total} • ${item.label || "Foto"}`;
+
+      document.getElementById("lbPrevBtn").classList.toggle("hidden", total <= 1);
+      document.getElementById("lbNextBtn").classList.toggle("hidden", total <= 1);
+
+      const thumbsBar = document.getElementById("lbThumbsBar");
+      thumbsBar.innerHTML = lightboxPhotos.map((p, idx) => `
+        <button type="button" class="lb-thumb ${idx === lightboxIndex ? "active" : ""}" data-lb-idx="${idx}">
+          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label || "Foto")}">
+        </button>
+      `).join("");
+
+      thumbsBar.querySelectorAll("[data-lb-idx]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          lightboxIndex = Number(btn.dataset.lbIdx);
+          renderLightboxSlide();
+        });
+      });
+    }
+
+    document.getElementById("lbCloseBtn").addEventListener("click", () => {
+      document.getElementById("lightboxModal").classList.add("hidden");
+      lightboxPhotos = [];
+    });
+
+    document.getElementById("lbPrevBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
+
+    document.getElementById("lbNextBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
+
+    let touchStartX = 0;
+    const lbStage = document.getElementById("lbStage");
+    lbStage.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    lbStage.addEventListener("touchend", (e) => {
+      const diff = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(diff) > 40 && lightboxPhotos.length > 1) {
+        if (diff < 0) {
+          lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+        } else {
+          lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+        }
+        renderLightboxSlide();
+      }
+    }, { passive: true });
+
+    function collectRecordPhotos(rec) {
+      const list = [];
+      if (rec.checkInPhoto) {
+        list.push({ url: rec.checkInPhoto, label: `Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"})` });
+      }
+      if (rec.checkOutPhoto) {
+        list.push({ url: rec.checkOutPhoto, label: `Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"})` });
+      }
+      const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
+      notePhotos.forEach((u, i) => {
+        list.push({ url: u, label: `Dokumentasi #${i + 1}` });
+      });
+      return list;
+    }
+
+    // ================= SUPABASE UPLOAD =================
+    async function uploadPhotoToSupabase(blob, folder, prefix) {
+      const todayKey = getTodayKey();
+      const randomSuffix = Math.random().toString(36).slice(2, 6);
+      const filePath = `${folder}/${todayKey}/${currentUser.id}_${prefix}_${Date.now()}_${randomSuffix}.jpg`;
+
+      const { error } = await supabase.storage
+        .from(SUPABASE_BUCKET)
+        .upload(filePath, blob, {
+          contentType: "image/jpeg",
+          upsert: false
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { data } = supabase.storage
+        .from(SUPABASE_BUCKET)
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    }
+
+    // ================= CAMERA ENGINE =================
+    function stopCameraStream() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      camVideo.srcObject = null;
+    }
+
+    async function startCameraStream() {
+      stopCameraStream();
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: currentFacingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+        camVideo.srcObject = cameraStream;
+      } catch (err) {
+        console.error(err);
+        showToast("Izin kamera ditolak atau tidak tersedia.", "error");
+        closeCameraModal();
+      }
+    }
+
+    async function openCameraModal(purpose, title, defaultFacing) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast("Browser tidak mendukung kamera.", "error");
+        return;
+      }
+
+      cameraPurpose = purpose;
+      currentFacingMode = defaultFacing;
+      tempCapturedBlob = null;
+      tempCapturedDataUrl = null;
+
+      document.getElementById("camModalTitle").textContent = title;
+      camVideo.classList.remove("hidden");
+      camPreview.classList.add("hidden");
+      camLiveControls.classList.remove("hidden");
+      camPreviewControls.classList.add("hidden");
+      camConfirmBtn.disabled = false;
+      camConfirmBtn.textContent = (purpose === "note") ? "Gunakan" : "Konfirmasi";
+
+      camModal.classList.remove("hidden");
+      await startCameraStream();
+    }
+
+    function closeCameraModal() {
+      stopCameraStream();
+      camModal.classList.add("hidden");
+      cameraPurpose = null;
+      tempCapturedBlob = null;
+      tempCapturedDataUrl = null;
+    }
+
+    document.getElementById("camCloseBtn").addEventListener("click", closeCameraModal);
+
+    document.getElementById("camSwitchBtn").addEventListener("click", async () => {
+      currentFacingMode = (currentFacingMode === "user") ? "environment" : "user";
+      await startCameraStream();
+    });
+
+    document.getElementById("camCaptureBtn").addEventListener("click", () => {
+      if (!camVideo.videoWidth) {
+        showToast("Kamera sedang memuat...", "warn");
+        return;
+      }
+
+      const maxWidth = 900;
+      const scale = Math.min(1, maxWidth / camVideo.videoWidth);
+      camCanvas.width = Math.round(camVideo.videoWidth * scale);
+      camCanvas.height = Math.round(camVideo.videoHeight * scale);
+
+      const ctx = camCanvas.getContext("2d");
+      ctx.drawImage(camVideo, 0, 0, camCanvas.width, camCanvas.height);
+
+      tempCapturedDataUrl = camCanvas.toDataURL("image/jpeg", 0.8);
+      camCanvas.toBlob((blob) => {
+        tempCapturedBlob = blob;
+        camPreview.src = tempCapturedDataUrl;
+        camVideo.classList.add("hidden");
+        camPreview.classList.remove("hidden");
+        camLiveControls.classList.add("hidden");
+        camPreviewControls.classList.remove("hidden");
+        stopCameraStream();
+      }, "image/jpeg", 0.8);
+    });
+
+    document.getElementById("camRetakeBtn").addEventListener("click", async () => {
+      tempCapturedBlob = null;
+      tempCapturedDataUrl = null;
+      camPreview.classList.add("hidden");
+      camVideo.classList.remove("hidden");
+      camPreviewControls.classList.add("hidden");
+      camLiveControls.classList.remove("hidden");
+      await startCameraStream();
+    });
+
+    function renderPendingDocThumbs() {
+      const row = document.getElementById("pendingThumbsRow");
+      if (pendingDocPhotos.length === 0) {
+        row.classList.add("hidden");
+        row.innerHTML = "";
+        return;
+      }
+
+      row.classList.remove("hidden");
+      row.innerHTML = pendingDocPhotos.map((item, idx) => `
+        <div class="pending-thumb-item">
+          <img src="${item.dataUrl}" alt="Foto ${idx + 1}" data-pending-view="${idx}">
+          <button type="button" class="pending-thumb-del" data-pending-del="${idx}" aria-label="Hapus">&times;</button>
+        </div>
+      `).join("");
+
+      row.querySelectorAll("[data-pending-view]").forEach(img => {
+        img.addEventListener("click", () => {
+          const idx = Number(img.dataset.pendingView);
+          const list = pendingDocPhotos.map((p, i) => ({ url: p.dataUrl, label: `Lampiran #${i + 1}` }));
+          openPhotoGallery(list, idx, "Pratinjau Lampiran");
+        });
+      });
+
+      row.querySelectorAll("[data-pending-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.pendingDel);
+          pendingDocPhotos.splice(idx, 1);
+          renderPendingDocThumbs();
+        });
+      });
+    }
+
+    camConfirmBtn.addEventListener("click", async () => {
+      if (!tempCapturedBlob) return;
+
+      if (cameraPurpose === "note") {
+        pendingDocPhotos.push({
+          blob: tempCapturedBlob,
+          dataUrl: tempCapturedDataUrl
+        });
+        renderPendingDocThumbs();
+        closeCameraModal();
+        showToast(`${pendingDocPhotos.length} foto siap disimpan`, "success");
+        return;
+      }
+
+      camConfirmBtn.disabled = true;
+      camConfirmBtn.textContent = "Mengunggah...";
+
+      try {
+        const isMasuk = (cameraPurpose === "checkin");
+        const photoUrl = await uploadPhotoToSupabase(
+          tempCapturedBlob,
+          "absen",
+          isMasuk ? "masuk" : "keluar"
+        );
+
+        const todayKey = getTodayKey();
+        const docId = `${todayKey}_${currentUser.id}`;
+        const timeNow = getNowTimeStr();
+
+        const payload = {
+          date: todayKey,
+          empId: currentUser.id,
+          username: currentUser.username,
+          updatedAt: new Date().toISOString()
+        };
+
+        if (isMasuk) {
+          payload.checkIn = timeNow;
+          payload.checkInPhoto = photoUrl;
+        } else {
+          payload.checkOut = timeNow;
+          payload.checkOutPhoto = photoUrl;
+        }
+
+        await setDoc(doc(db, "absen_riwayat", docId), payload, { merge: true });
+        closeCameraModal();
+        showToast(isMasuk
+          ? `Masuk tercatat (${timeNow})`
+          : `Keluar tercatat (${timeNow})`,
+          "success"
+        );
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal unggah foto.", "error");
+        camConfirmBtn.disabled = false;
+        camConfirmBtn.textContent = "Konfirmasi";
+      }
+    });
+
+    // ================= AUTH & SYNC =================
+    function forceLogout(reasonMsg, type = "info") {
+      if (unsubscribeRecords) {
+        unsubscribeRecords();
+        unsubscribeRecords = null;
+      }
+      if (unsubscribeReminders) {
+        unsubscribeReminders();
+        unsubscribeReminders = null;
+      }
+      if (unsubscribeUserWatch) {
+        unsubscribeUserWatch();
+        unsubscribeUserWatch = null;
+      }
+      closeCameraModal();
+      currentUser = null;
+      myRecords = [];
+      myReminders = [];
+      pendingDocPhotos = [];
+      docFileInput.value = "";
+      localStorage.removeItem(SESSION_KEY);
+      document.getElementById("loginForm").reset();
+      noteInputEl.value = "";
+      noteCharEl.textContent = "0 karakter";
+      renderPendingDocThumbs();
+      filterDateInput.value = "";
+      updateFilterDateDisplay();
+      switchTab("viewPresensi");
+      document.getElementById("mainApp").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+      if (reasonMsg) showToast(reasonMsg, type);
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+      const ok = await showCustomConfirm(
+        "Keluar Akun",
+        `Keluar dari sesi ${currentUser.username} (${currentUser.id})?`,
+        "Keluar"
+      );
+      if (!ok) return;
+      forceLogout("Berhasil keluar.", "success");
+    });
+
+    function watchCurrentUserStatus(empId) {
+      if (unsubscribeUserWatch) unsubscribeUserWatch();
+      const userRef = doc(db, "absen_karyawan", empId);
+      unsubscribeUserWatch = onSnapshot(userRef, (snap) => {
+        if (!snap.exists()) {
+          forceLogout("Akun dihapus oleh Admin.", "error");
+          return;
+        }
+        const latestData = snap.data();
+        if (currentUser && latestData.username !== currentUser.username) {
+          currentUser = latestData;
+          localStorage.setItem(SESSION_KEY, JSON.stringify(latestData));
+          document.getElementById("displayUserName").textContent = latestData.username;
+          document.getElementById("userAvatar").textContent = (latestData.username || "K").charAt(0);
+        }
+      }, (err) => {
+        console.error(err);
+      });
+    }
+
+    // ================= PENGINGAT JADWAL & TARGET =================
+    const remDateInput = document.getElementById("remDateInput");
+    const remDateDisplay = document.getElementById("remDateDisplay");
+    const remTimeInput = document.getElementById("remTimeInput");
+    const remTimeDisplay = document.getElementById("remTimeDisplay");
+
+    function initReminderPickers() {
+      const todayKey = getTodayKey();
+      remDateInput.value = todayKey;
+      remDateDisplay.textContent = formatShortDateKey(todayKey);
+      remTimeInput.value = "";
+      remTimeDisplay.textContent = "Jam (opsional)";
+      remTimeDisplay.classList.add("placeholder");
+    }
+
+    remDateInput.addEventListener("change", () => {
+      remDateDisplay.textContent = remDateInput.value ? formatShortDateKey(remDateInput.value) : "Pilih tanggal";
+    });
+
+    remTimeInput.addEventListener("change", () => {
+      if (remTimeInput.value) {
+        remTimeDisplay.textContent = remTimeInput.value;
+        remTimeDisplay.classList.remove("placeholder");
+      } else {
+        remTimeDisplay.textContent = "Jam (opsional)";
+        remTimeDisplay.classList.add("placeholder");
+      }
+    });
+
+    document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedRemCategory = btn.dataset.cat;
+      });
+    });
+
+    function startListeningReminders(empId) {
+      if (unsubscribeReminders) unsubscribeReminders();
+      const q = query(collection(db, "absen_pengingat"), where("empId", "==", empId));
+      unsubscribeReminders = onSnapshot(q, (snapshot) => {
+        myReminders = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderRemindersUI();
+      }, (err) => {
+        console.error(err);
+      });
+    }
+
+    function checkDueReminders() {
+      if (!currentUser || myReminders.length === 0) return;
+      const todayKey = getTodayKey();
+      const now = new Date();
+      const nowHHMM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+      myReminders.forEach(rem => {
+        if (rem.completed || notifiedReminderIds.has(rem.docId)) return;
+        if (rem.date === todayKey && rem.time && rem.time === nowHHMM) {
+          notifiedReminderIds.add(rem.docId);
+          showToast(`Pengingat: ${rem.title} (${rem.time})`, "warn");
+        }
+      });
+    }
+
+    function renderRemindersUI() {
+      const container = document.getElementById("reminderListContainer");
+      const pendingBadge = document.getElementById("remPendingCount");
+      const navBadge = document.getElementById("navTargetBadge");
+      const banner = document.getElementById("activeReminderBanner");
+
+      const sorted = [...myReminders].sort((a, b) => {
+        if (Boolean(a.completed) !== Boolean(b.completed)) {
+          return a.completed ? 1 : -1;
+        }
+        const keyA = `${a.date || "9999-99-99"} ${a.time || "23:59"}`;
+        const keyB = `${b.date || "9999-99-99"} ${b.time || "23:59"}`;
+        return keyA.localeCompare(keyB);
+      });
+
+      const activeList = sorted.filter(r => !r.completed);
+      pendingBadge.textContent = `${activeList.length} Aktif`;
+
+      if (activeList.length > 0) {
+        navBadge.textContent = activeList.length;
+        navBadge.classList.remove("hidden");
+        banner.classList.remove("hidden");
+
+        const nextRem = activeList[0];
+        document.getElementById("bannerRemTitle").textContent = `${nextRem.category || "Target"}: ${nextRem.title}`;
+        document.getElementById("bannerRemSub").textContent = `${formatShortDateKey(nextRem.date)}${nextRem.time ? ` • ${nextRem.time}` : ""}`;
+        document.getElementById("bannerRemCount").textContent = `${activeList.length} Aktif`;
+      } else {
+        navBadge.classList.add("hidden");
+        banner.classList.add("hidden");
+      }
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat jadwal.</div>`;
+        return;
+      }
+
+      const todayKey = getTodayKey();
+      container.innerHTML = `<div class="reminder-list">${sorted.map(rem => {
+        const isOverdue = !rem.completed && rem.date && rem.date < todayKey;
+        const whenLabel = `${formatShortDateKey(rem.date)}${rem.time ? ` • ${rem.time}` : ""}`;
+        const cat = rem.category || "Target";
+
+        return `
+          <div class="reminder-item ${rem.completed ? "done" : ""}">
+            <button type="button" class="reminder-check" data-toggle-rem="${escapeHtml(rem.docId)}" aria-label="Tandai selesai">
+              ${rem.completed ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ""}
+            </button>
+            <div class="reminder-body">
+              <div class="reminder-head">
+                <span class="cat-tag ${escapeHtml(cat)}">${escapeHtml(cat)}</span>
+                <span class="reminder-when ${isOverdue ? "overdue" : ""}">${whenLabel}</span>
+              </div>
+              <div class="reminder-title">${escapeHtml(rem.title)}</div>
+              ${rem.note ? `<div class="reminder-note">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
+            </div>
+            <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+        `;
+      }).join("")}</div>`;
+
+      container.querySelectorAll("[data-toggle-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.toggleRem;
+          const target = myReminders.find(r => r.docId === id);
+          if (!target) return;
+          try {
+            await updateDoc(doc(db, "absen_pengingat", id), {
+              completed: !target.completed,
+              updatedAt: new Date().toISOString()
+            });
+            showToast(!target.completed ? "Target ditandai selesai" : "Status dikembalikan", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal memperbarui status.", "error");
+          }
+        });
+      });
+
+      container.querySelectorAll("[data-del-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.delRem;
+          const ok = await showCustomConfirm("Hapus Pengingat", "Hapus target atau jadwal ini?", "Hapus");
+          if (!ok) return;
+          try {
+            await deleteDoc(doc(db, "absen_pengingat", id));
+            showToast("Pengingat dihapus.", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus pengingat.", "error");
+          }
+        });
+      });
+    }
+
+    document.getElementById("reminderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const title = document.getElementById("remTitleInput").value.trim();
+      const date = remDateInput.value;
+      const time = remTimeInput.value;
+      const note = document.getElementById("remNoteInput").value.trim();
+      const saveBtn = document.getElementById("saveRemBtn");
+
+      if (!title || !date) {
+        showToast("Isi judul dan tanggal.", "warn");
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Menyimpan...";
+
+      try {
+        const docId = `${currentUser.id}_${Date.now()}`;
+        await setDoc(doc(db, "absen_pengingat", docId), {
+          empId: currentUser.id,
+          username: currentUser.username,
+          category: selectedRemCategory,
+          title,
+          date,
+          time: time || "",
+          note,
+          completed: false,
+          createdAt: new Date().toISOString()
+        });
+
+        document.getElementById("remTitleInput").value = "";
+        document.getElementById("remNoteInput").value = "";
+        initReminderPickers();
+        showToast("Pengingat & target disimpan.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan pengingat.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Pengingat";
+      }
+    });
+
+    // ================= ATTENDANCE CHART =================
+    function renderAttendanceChart() {
+      const totalDays = myRecords.length;
+      const daysLabel = document.getElementById("chartDaysLabel");
+      const activeRing = document.getElementById("activeRing");
+      const activePctText = document.getElementById("activePctText");
+      const hadirPctText = document.getElementById("hadirPctText");
+      const hadirBar = document.getElementById("hadirBar");
+      const notePctText = document.getElementById("notePctText");
+      const noteBar = document.getElementById("noteBar");
+      const chartAlert = document.getElementById("chartAlert");
+
+      daysLabel.textContent = `${totalDays} Hari`;
+      const circumference = 2 * Math.PI * 34;
+
+      if (totalDays === 0) {
+        activePctText.textContent = "0%";
+        hadirPctText.textContent = "0%";
+        notePctText.textContent = "0%";
+        hadirBar.style.width = "0%";
+        noteBar.style.width = "0%";
+        activeRing.style.strokeDashoffset = circumference;
+        activeRing.style.stroke = "var(--primary)";
+        chartAlert.classList.add("hidden");
+        return;
+      }
+
+      let totalHadirScore = 0;
+      let totalNoteCount = 0;
+      let totalActiveScore = 0;
+      let daysWithoutNote = 0;
+
+      myRecords.forEach(rec => {
+        const hasIn = Boolean(rec.checkIn);
+        const hasOut = Boolean(rec.checkOut);
+        const hasNote = Boolean(rec.note && rec.note.trim().length > 0);
+
+        const dayHadir = (hasIn ? 50 : 0) + (hasOut ? 50 : 0);
+        totalHadirScore += dayHadir;
+
+        if (hasNote) {
+          totalNoteCount += 1;
+        } else {
+          daysWithoutNote += 1;
+        }
+
+        const dayActive = (hasIn ? 35 : 0) + (hasOut ? 35 : 0) + (hasNote ? 30 : 0);
+        totalActiveScore += dayActive;
+      });
+
+      const hadirPct = Math.round(totalHadirScore / totalDays);
+      const notePct = Math.round((totalNoteCount / totalDays) * 100);
+      const activePct = Math.round(totalActiveScore / totalDays);
+
+      activePctText.textContent = `${activePct}%`;
+      hadirPctText.textContent = `${hadirPct}%`;
+      notePctText.textContent = `${notePct}%`;
+
+      hadirBar.style.width = `${hadirPct}%`;
+      noteBar.style.width = `${notePct}%`;
+
+      const offset = circumference - (activePct / 100) * circumference;
+      activeRing.style.strokeDashoffset = offset;
+
+      if (activePct >= 80) {
+        activeRing.style.stroke = "var(--success)";
+      } else if (activePct >= 50) {
+        activeRing.style.stroke = "var(--warning)";
+      } else {
+        activeRing.style.stroke = "var(--danger)";
+      }
+
+      chartAlert.classList.remove("hidden", "warn", "ok");
+      if (daysWithoutNote > 0) {
+        chartAlert.classList.add("warn");
+        chartAlert.textContent = `${daysWithoutNote} hari tanpa catatan kerja.`;
+      } else {
+        chartAlert.classList.add("ok");
+        chartAlert.textContent = "Catatan kerja lengkap.";
+      }
+    }
+
+    function updateClockAndButtons() {
+      const now = new Date();
+      const fullDateStr = now.toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+
+      document.getElementById("clockDate").textContent = fullDateStr;
+      document.getElementById("clockTime").textContent = getNowTimeStr();
+      document.getElementById("noteDateLabel").textContent = formatShortDateIndo(now);
+
+      if (!currentUser) return;
+
+      checkDueReminders();
+
+      const todayRec = getTodayRecord();
+      const inBtn = document.getElementById("btnCheckIn");
+      const outBtn = document.getElementById("btnCheckOut");
+      const subIn = document.getElementById("subCheckIn");
+      const subOut = document.getElementById("subCheckOut");
+
+      const inWindow = isWithinTimeRange(jadwal.masukMulai, jadwal.masukSelesai);
+      const outWindow = isWithinTimeRange(jadwal.keluarMulai, jadwal.keluarSelesai);
+
+      if (todayRec && todayRec.checkIn) {
+        inBtn.disabled = true;
+        subIn.textContent = "Selesai";
+      } else if (!inWindow) {
+        inBtn.disabled = true;
+        subIn.textContent = `${jadwal.masukMulai}-${jadwal.masukSelesai}`;
+      } else {
+        inBtn.disabled = false;
+        subIn.textContent = "Foto kamera";
+      }
+
+      if (todayRec && todayRec.checkOut) {
+        outBtn.disabled = true;
+        subOut.textContent = "Selesai";
+      } else if (!todayRec || !todayRec.checkIn) {
+        outBtn.disabled = true;
+        subOut.textContent = "Masuk dulu";
+      } else if (!outWindow) {
+        outBtn.disabled = true;
+        subOut.textContent = `${jadwal.keluarMulai}-${jadwal.keluarSelesai}`;
+      } else {
+        outBtn.disabled = false;
+        subOut.textContent = "Foto kamera";
+      }
+    }
+
+    function renderCalendar(animDir = "") {
+      const grid = document.getElementById("calendarGrid");
+      const label = document.getElementById("calMonthLabel");
+      const holidaysBox = document.getElementById("calHolidaysBox");
+      const monthDate = new Date(calYear, calMonth, 1);
+
+      label.textContent = monthDate.toLocaleDateString("id-ID", {
+        month: "long",
+        year: "numeric"
+      });
+
+      const firstDayIndex = monthDate.getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayKey = getTodayKey();
+      const selectedDate = filterDateInput.value;
+
+      const recordMap = {};
+      myRecords.forEach(r => {
+        if (r.date) recordMap[r.date] = r;
+      });
+
+      const dows = [
+        { name: "Min", isSun: true },
+        { name: "Sen", isSun: false },
+        { name: "Sel", isSun: false },
+        { name: "Rab", isSun: false },
+        { name: "Kam", isSun: false },
+        { name: "Jum", isSun: false },
+        { name: "Sab", isSun: false }
+      ];
+
+      let html = dows.map(d => `<div class="cal-dow ${d.isSun ? "sun" : ""}">${d.name}</div>`).join("");
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        html += `<div class="cal-cell empty"></div>`;
+      }
+
+      const monthImportantDays = [];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const mStr = String(calMonth + 1).padStart(2, "0");
+        const dStr = String(day).padStart(2, "0");
+        const dateKey = `${calYear}-${mStr}-${dStr}`;
+        const rec = recordMap[dateKey];
+        const dowIndex = (firstDayIndex + day - 1) % 7;
+        const isSunday = dowIndex === 0;
+        const importantInfo = getImportantDayInfo(dateKey);
+
+        if (importantInfo) {
+          monthImportantDays.push({ day, dateKey, ...importantInfo });
+        }
+
+        const classes = ["cal-cell"];
+        if (rec) classes.push("has-record");
+        if (isSunday) classes.push("sunday");
+        if (importantInfo && importantInfo.isHoliday) classes.push("holiday");
+        if (dateKey === todayKey) classes.push("today");
+        if (dateKey === selectedDate) classes.push("selected");
+
+        html += `
+          <div class="${classes.join(" ")}" data-cal-date="${dateKey}" ${importantInfo ? `title="${escapeHtml(importantInfo.name)}"` : ""}>
+            <span class="cal-num">${day}</span>
+          </div>
+        `;
+      }
+
+      grid.classList.remove("cal-anim-next", "cal-anim-prev");
+      if (animDir) {
+        void grid.offsetWidth;
+        grid.classList.add(animDir === "next" ? "cal-anim-next" : "cal-anim-prev");
+      }
+      grid.innerHTML = html;
+
+      if (monthImportantDays.length > 0) {
+        holidaysBox.classList.remove("hidden");
+        holidaysBox.innerHTML = monthImportantDays.map(item => `
+          <div class="cal-holiday-item" data-hol-date="${item.dateKey}">
+            <span class="cal-holiday-date">${item.day} ${monthDate.toLocaleDateString("id-ID", { month: "short" })}</span>
+            <span class="cal-holiday-name">• ${escapeHtml(item.name)}</span>
+          </div>
+        `).join("");
+
+        holidaysBox.querySelectorAll("[data-hol-date]").forEach(el => {
+          el.addEventListener("click", () => {
+            const picked = el.dataset.holDate;
+            filterDateInput.value = picked;
+            updateFilterDateDisplay();
+            renderCalendar();
+            renderHistory();
+            document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        });
+      } else {
+        holidaysBox.classList.add("hidden");
+        holidaysBox.innerHTML = "";
+      }
+
+      grid.querySelectorAll("[data-cal-date]").forEach(cell => {
+        cell.addEventListener("click", () => {
+          const picked = cell.dataset.calDate;
+          if (filterDateInput.value === picked) {
+            filterDateInput.value = "";
+          } else {
+            filterDateInput.value = picked;
+            const info = getImportantDayInfo(picked);
+            if (info) {
+              showToast(`${formatShortDateKey(picked)}: ${info.name}`, "info");
+            }
+          }
+          updateFilterDateDisplay();
+          renderCalendar();
+          renderHistory();
+          document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      });
+    }
+
+    function renderDashboardUI() {
+      const todayRec = getTodayRecord();
+      document.getElementById("todayIn").textContent = (todayRec && todayRec.checkIn) ? todayRec.checkIn.slice(0, 5) : "--:--";
+      document.getElementById("todayOut").textContent = (todayRec && todayRec.checkOut) ? todayRec.checkOut.slice(0, 5) : "--:--";
+
+      const noteBadge = document.getElementById("noteSavedBadge");
+      const previewWrap = document.getElementById("savedNotePreview");
+      const previewBody = document.getElementById("savedNoteBody");
+      const previewThumbs = document.getElementById("savedNoteThumbs");
+      const noteTs = document.getElementById("noteTimestamp");
+
+      if (todayRec && todayRec.note) {
+        noteBadge.classList.remove("hidden");
+        previewWrap.classList.remove("hidden");
+        previewBody.textContent = cleanNoteLines(todayRec.note);
+        noteTs.textContent = todayRec.noteUpdatedAt ? todayRec.noteUpdatedAt.slice(0, 5) : "-";
+
+        const allTodayPhotos = collectRecordPhotos(todayRec);
+        const notePhotos = Array.isArray(todayRec.notePhotos) ? todayRec.notePhotos : [];
+
+        previewThumbs.innerHTML = notePhotos.map(url => {
+          const idxInAll = allTodayPhotos.findIndex(p => p.url === url);
+          return `<button type="button" class="photo-thumb-btn" data-today-photo="${idxInAll >= 0 ? idxInAll : 0}"><img src="${escapeHtml(url)}" alt="Dokumentasi"></button>`;
+        }).join("");
+
+        previewThumbs.querySelectorAll("[data-today-photo]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            openPhotoGallery(allTodayPhotos, Number(btn.dataset.todayPhoto), `Foto Hari Ini (${formatShortDateKey(todayRec.date)})`);
+          });
+        });
+      } else {
+        noteBadge.classList.add("hidden");
+        previewWrap.classList.add("hidden");
+        previewBody.textContent = "";
+        previewThumbs.innerHTML = "";
+      }
+
+      renderAttendanceChart();
+      renderCalendar();
+      renderHistory();
+      updateClockAndButtons();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById("historyList");
+      const countLabel = document.getElementById("historyCountLabel");
+      const filterVal = filterDateInput.value;
+
+      let sorted = [...myRecords].sort((a, b) => b.date.localeCompare(a.date));
+      if (filterVal) {
+        sorted = sorted.filter(r => r.date === filterVal);
+      }
+
+      countLabel.textContent = `${sorted.length} Data`;
+
+      if (sorted.length === 0) {
+        const msg = filterVal
+          ? `Tidak ada data pada ${formatShortDateKey(filterVal)}`
+          : "Belum ada riwayat kerja.";
+        container.innerHTML = `<div class="empty-state">${msg}</div>`;
+        return;
+      }
+
+      const cardsHtml = sorted.map((rec, rIdx) => {
+        const allPhotos = collectRecordPhotos(rec);
+        const inIdx = allPhotos.findIndex(p => p.url === rec.checkInPhoto);
+        const outIdx = allPhotos.findIndex(p => p.url === rec.checkOutPhoto);
+
+        const inChip = rec.checkIn
+          ? (rec.checkInPhoto
+              ? `<button type="button" class="time-chip in" data-rec-idx="${rIdx}" data-photo-idx="${inIdx}">M ${rec.checkIn.slice(0, 5)} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip in">M ${rec.checkIn.slice(0, 5)}</span>`)
+          : `<span class="time-chip empty">M --:--</span>`;
+
+        const outChip = rec.checkOut
+          ? (rec.checkOutPhoto
+              ? `<button type="button" class="time-chip out" data-rec-idx="${rIdx}" data-photo-idx="${outIdx}">K ${rec.checkOut.slice(0, 5)} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip out">K ${rec.checkOut.slice(0, 5)}</span>`)
+          : `<span class="time-chip empty">K --:--</span>`;
+
+        const cleanedNote = cleanNoteLines(rec.note);
+        const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
+        const thumbsHtml = notePhotos.length > 0
+          ? `<div class="photo-thumbs">${notePhotos.map(u => {
+              const pIdx = allPhotos.findIndex(p => p.url === u);
+              return `<button type="button" class="photo-thumb-btn" data-rec-idx="${rIdx}" data-photo-idx="${pIdx >= 0 ? pIdx : 0}"><img src="${escapeHtml(u)}" alt="Doc"></button>`;
+            }).join("")}</div>`
+          : "";
+
+        const noteSection = (cleanedNote || notePhotos.length > 0)
+          ? `<div class="history-note-box">${cleanedNote ? `<div class="history-note-text">${escapeHtml(cleanedNote)}</div>` : ""}${thumbsHtml}</div>`
+          : "";
+
+        return `<div class="history-item"><div class="history-top"><div class="history-date-wrap"><span class="history-date">${formatShortDateKey(rec.date)}</span></div><div class="history-badges">${inChip}${outChip}</div></div>${noteSection}</div>`;
+      }).join("");
+
+      container.innerHTML = `<div class="history-list">${cardsHtml}</div>`;
+
+      container.querySelectorAll("[data-rec-idx]").forEach(el => {
+        el.addEventListener("click", () => {
+          const rec = sorted[Number(el.dataset.recIdx)];
+          const startIdx = Number(el.dataset.photoIdx) || 0;
+          if (!rec) return;
+          const allPhotos = collectRecordPhotos(rec);
+          openPhotoGallery(allPhotos, startIdx, formatShortDateKey(rec.date));
+        });
+      });
+    }
+
+    function listenScheduleFromAdmin() {
+      onSnapshot(doc(db, "absen_pengaturan", "jadwal"), (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          jadwal = {
+            masukMulai: data.masukMulai || "07:00",
+            masukSelesai: data.masukSelesai || "09:00",
+            keluarMulai: data.keluarMulai || "16:00",
+            keluarSelesai: data.keluarSelesai || "18:00"
+          };
+          renderSchedulePills();
+          updateClockAndButtons();
+        }
+      }, (err) => {
+        console.error(err);
+      });
+    }
+
+    function startListeningRecords(empId) {
+      if (unsubscribeRecords) unsubscribeRecords();
+      const q = query(collection(db, "absen_riwayat"), where("empId", "==", empId));
+      unsubscribeRecords = onSnapshot(q, (snapshot) => {
+        myRecords = snapshot.docs.map(d => d.data());
+        renderDashboardUI();
+      }, (err) => {
+        console.error(err);
+        showToast("Gagal sinkronisasi data.", "error");
+      });
+    }
+
+    function openDashboard(user) {
+      currentUser = user;
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("mainApp").classList.remove("hidden");
+      document.getElementById("displayUserName").textContent = user.username;
+      document.getElementById("displayUserId").textContent = `ID: ${user.id}`;
+      document.getElementById("userAvatar").textContent = (user.username || "K").charAt(0);
+      initReminderPickers();
+      watchCurrentUserStatus(user.id);
+      startListeningRecords(user.id);
+      startListeningReminders(user.id);
+      renderCalendar();
+      updateClockAndButtons();
+    }
+
+    document.getElementById("calPrevBtn").addEventListener("click", () => {
+      calMonth--;
+      if (calMonth < 0) {
+        calMonth = 11;
+        calYear--;
+      }
+      renderCalendar("prev");
+    });
+
+    document.getElementById("calNextBtn").addEventListener("click", () => {
+      calMonth++;
+      if (calMonth > 11) {
+        calMonth = 0;
+        calYear++;
+      }
+      renderCalendar("next");
+    });
+
+    filterDateInput.addEventListener("change", (e) => {
+      const val = e.target.value;
+      updateFilterDateDisplay();
+      if (val) {
+        const [y, m] = val.split("-").map(Number);
+        calYear = y;
+        calMonth = m - 1;
+      }
+      renderCalendar();
+      renderHistory();
+    });
+
+    document.getElementById("resetFilterDateBtn").addEventListener("click", () => {
+      filterDateInput.value = "";
+      updateFilterDateDisplay();
+      renderCalendar();
+      renderHistory();
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const rawId = document.getElementById("loginId").value.trim().toUpperCase();
+      const rawUsername = document.getElementById("loginUsername").value.trim();
+      const loginBtn = document.getElementById("loginBtn");
+
+      if (!rawId || !rawUsername) return;
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Memverifikasi...";
+
+      try {
+        const empRef = doc(db, "absen_karyawan", rawId);
+        const empSnap = await getDoc(empRef);
+
+        if (!empSnap.exists()) {
+          showToast("ID Karyawan tidak ditemukan.", "error");
+          return;
+        }
+
+        const empData = empSnap.data();
+        if (empData.username.toLowerCase() !== rawUsername.toLowerCase()) {
+          showToast("Username tidak sesuai.", "error");
+          return;
+        }
+
+        localStorage.setItem(SESSION_KEY, JSON.stringify(empData));
+        showToast(`Halo, ${empData.username}`, "success");
+        openDashboard(empData);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal terhubung ke server.", "error");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Masuk";
+      }
+    });
+
+    document.getElementById("btnCheckIn").addEventListener("click", () => {
+      if (!currentUser) return;
+      if (!isWithinTimeRange(jadwal.masukMulai, jadwal.masukSelesai)) {
+        showToast(`Buka pukul ${jadwal.masukMulai} - ${jadwal.masukSelesai}`, "warn");
+        return;
+      }
+      openCameraModal("checkin", "Foto Absen Masuk", "user");
+    });
+
+    document.getElementById("btnCheckOut").addEventListener("click", () => {
+      if (!currentUser) return;
+      if (!isWithinTimeRange(jadwal.keluarMulai, jadwal.keluarSelesai)) {
+        showToast(`Buka pukul ${jadwal.keluarMulai} - ${jadwal.keluarSelesai}`, "warn");
+        return;
+      }
+      const todayRec = getTodayRecord();
+      if (!todayRec || !todayRec.checkIn) {
+        showToast("Absen masuk terlebih dahulu.", "warn");
+        return;
+      }
+      openCameraModal("checkout", "Foto Absen Keluar", "user");
+    });
+
+    document.getElementById("openDocCamBtn").addEventListener("click", () => {
+      openCameraModal("note", "Foto Dokumentasi", "environment");
+    });
+
+    document.getElementById("openDocFileBtn").addEventListener("click", () => {
+      docFileInput.click();
+    });
+
+    function processImageFile(file) {
+      return new Promise((resolve, reject) => {
+        if (!file.type || !file.type.startsWith("image/")) {
+          reject(new Error("Bukan gambar"));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const maxWidth = 900;
+            const scale = Math.min(1, maxWidth / img.width);
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+            canvas.toBlob((blob) => {
+              if (!blob) {
+                reject(new Error("Gagal blob"));
+                return;
+              }
+              resolve({ blob, dataUrl });
+            }, "image/jpeg", 0.8);
+          };
+          img.onerror = () => reject(new Error("Rusak"));
+          img.src = ev.target.result;
+        };
+        reader.onerror = () => reject(new Error("Baca gagal"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    docFileInput.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+
+      let addedCount = 0;
+      for (const file of files) {
+        try {
+          const item = await processImageFile(file);
+          pendingDocPhotos.push(item);
+          addedCount++;
+        } catch {}
+      }
+
+      docFileInput.value = "";
+      if (addedCount > 0) {
+        renderPendingDocThumbs();
+        showToast(`${pendingDocPhotos.length} foto siap disimpan`, "success");
+      } else {
+        showToast("Pilih file gambar yang valid.", "error");
+      }
+    });
+
+    document.getElementById("saveNoteBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+      const noteText = noteInputEl.value.trim();
+      if (!noteText) {
+        showToast("Isi catatan terlebih dahulu.", "warn");
+        return;
+      }
+
+      if (pendingDocPhotos.length === 0) {
+        showToast("Lampirkan minimal 1 foto dokumentasi.", "warn");
+        return;
+      }
+
+      const todayKey = getTodayKey();
+      const docId = `${todayKey}_${currentUser.id}`;
+      const timeNow = getNowTimeStr();
+      const saveBtn = document.getElementById("saveNoteBtn");
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = `Mengunggah (${pendingDocPhotos.length} foto)...`;
+
+      try {
+        const uploadedUrls = [];
+        for (const item of pendingDocPhotos) {
+          const url = await uploadPhotoToSupabase(item.blob, "dokumentasi", "tugas");
+          uploadedUrls.push(url);
+        }
+
+        const todayRec = getTodayRecord();
+        const combinedNote = (todayRec && todayRec.note)
+          ? `${cleanNoteLines(todayRec.note)}\n• ${noteText}`
+          : `• ${noteText}`;
+
+        const existingPhotos = (todayRec && Array.isArray(todayRec.notePhotos))
+          ? todayRec.notePhotos
+          : [];
+        const updatedPhotos = [...existingPhotos, ...uploadedUrls];
+
+        await setDoc(doc(db, "absen_riwayat", docId), {
+          date: todayKey,
+          empId: currentUser.id,
+          username: currentUser.username,
+          note: combinedNote,
+          notePhotos: updatedPhotos,
+          noteUpdatedAt: timeNow,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        noteInputEl.value = "";
+        noteCharEl.textContent = "0 karakter";
+        pendingDocPhotos = [];
+        docFileInput.value = "";
+        renderPendingDocThumbs();
+
+        showToast("Catatan & foto tersimpan.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan catatan.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Catatan";
+      }
+    });
+
+    (function init() {
+      updateFilterDateDisplay();
+      renderSchedulePills();
+      listenScheduleFromAdmin();
+      updateClockAndButtons();
+      setInterval(updateClockAndButtons, 1000);
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (saved && saved.id && saved.username) {
+          openDashboard(saved);
+          return;
+        }
+      } catch {}
+
+      document.getElementById("loginScreen").classList.remove("hidden");
+    })();
+  </script>
+</body>
+</html>
