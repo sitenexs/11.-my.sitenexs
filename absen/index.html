@@ -1763,12 +1763,12 @@
       <section class="card" id="loginCard">
         <form id="loginForm">
           <div class="form-group">
-            <label class="form-label" for="loginId">ID Karyawan</label>
-            <input type="text" id="loginId" class="form-input" placeholder="EMP001" autocomplete="off" required>
-          </div>
-          <div class="form-group">
             <label class="form-label" for="loginUsername">Username</label>
             <input type="text" id="loginUsername" class="form-input" placeholder="Username terdaftar" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginId">ID Karyawan</label>
+            <input type="text" id="loginId" class="form-input" placeholder="EMP001" autocomplete="off" required>
           </div>
           <button type="submit" class="btn btn-primary" id="loginBtn">Masuk</button>
         </form>
@@ -3443,8 +3443,8 @@
 
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const rawId = document.getElementById("loginId").value.trim().toUpperCase();
       const rawUsername = document.getElementById("loginUsername").value.trim();
+      const rawId = document.getElementById("loginId").value.trim().toUpperCase();
       const loginBtn = document.getElementById("loginBtn");
 
       if (!rawId || !rawUsername) return;
