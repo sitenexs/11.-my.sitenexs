@@ -1503,6 +1503,10 @@
       display: block;
     }
 
+    .cam-video.mirror {
+      transform: scaleX(-1);
+    }
+
     .cam-controls {
       padding: 12px 12px calc(14px + env(safe-area-inset-bottom, 0px));
       background: #0f172a;
@@ -2069,7 +2073,7 @@
       <button type="button" class="cam-close-btn" id="camCloseBtn">Tutup</button>
     </div>
     <div class="cam-stage">
-      <video id="camVideo" class="cam-video" autoplay playsinline muted></video>
+      <video id="camVideo" class="cam-video mirror" autoplay playsinline muted></video>
       <img id="camPreview" class="cam-preview hidden" alt="Hasil foto">
       <canvas id="camCanvas" class="hidden"></canvas>
     </div>
@@ -2536,7 +2540,7 @@
       return data.publicUrl;
     }
 
-    // ================= CAMERA ENGINE =================
+    // ================= CAMERA ENGINE (MIRROR UNTUK KAMERA DEPAN) =================
     function stopCameraStream() {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -2545,8 +2549,17 @@
       camVideo.srcObject = null;
     }
 
+    function updateCameraMirrorClass() {
+      if (currentFacingMode === "user") {
+        camVideo.classList.add("mirror");
+      } else {
+        camVideo.classList.remove("mirror");
+      }
+    }
+
     async function startCameraStream() {
       stopCameraStream();
+      updateCameraMirrorClass();
       try {
         cameraStream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -2614,7 +2627,13 @@
       camCanvas.height = Math.round(camVideo.videoHeight * scale);
 
       const ctx = camCanvas.getContext("2d");
+      ctx.save();
+      if (currentFacingMode === "user") {
+        ctx.translate(camCanvas.width, 0);
+        ctx.scale(-1, 1);
+      }
       ctx.drawImage(camVideo, 0, 0, camCanvas.width, camCanvas.height);
+      ctx.restore();
 
       tempCapturedDataUrl = camCanvas.toDataURL("image/jpeg", 0.8);
       camCanvas.toBlob((blob) => {
