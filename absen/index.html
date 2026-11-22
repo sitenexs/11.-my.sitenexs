@@ -394,6 +394,11 @@
       padding: 9px 8px;
       min-width: 0;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
     }
 
     .status-label {
@@ -402,7 +407,6 @@
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.3px;
-      margin-bottom: 2px;
     }
 
     .status-val {
@@ -410,6 +414,19 @@
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       color: var(--text);
+      line-height: 1.15;
+    }
+
+    .status-late-tag {
+      display: inline-block;
+      margin-top: 2px;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
     }
 
     .status-box.in-box {
@@ -945,6 +962,12 @@
       box-shadow: 0 5px 14px rgba(225, 29, 72, 0.22);
     }
 
+    .btn-late {
+      background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+      color: #ffffff !important;
+      box-shadow: 0 5px 14px rgba(217, 119, 6, 0.26) !important;
+    }
+
     .btn-sub {
       font-size: 10px;
       font-weight: 600;
@@ -1409,6 +1432,11 @@
       color: var(--danger);
     }
 
+    .time-chip.late {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
     .time-chip.empty {
       background: #e2e8f0;
       color: var(--muted);
@@ -1419,6 +1447,16 @@
       font-size: 9.5px;
       opacity: 0.9;
       text-decoration: underline;
+    }
+
+    .chip-late-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(217, 119, 6, 0.16);
+      color: #b45309;
+      text-transform: uppercase;
     }
 
     .history-note-box {
@@ -1941,10 +1979,12 @@
                 <div class="status-box in-box">
                   <div class="status-label">Masuk</div>
                   <div class="status-val" id="todayIn">--:--</div>
+                  <span class="status-late-tag hidden" id="todayInLateTag">Telat</span>
                 </div>
                 <div class="status-box out-box">
                   <div class="status-label">Keluar</div>
                   <div class="status-val" id="todayOut">--:--</div>
+                  <span class="status-late-tag hidden" id="todayOutLateTag">Telat</span>
                 </div>
               </div>
 
@@ -2477,15 +2517,37 @@
       return h * 60 + m;
     }
 
-    function isWithinTimeRange(startStr, endStr) {
+    // Status jendela waktu absen: "early" (belum buka), "ontime" (tepat waktu), "late" (telat)
+    function getScheduleWindowStatus(startStr, endStr) {
       const now = new Date();
       const currentMins = now.getHours() * 60 + now.getMinutes();
       const startMins = toMinutes(startStr);
       const endMins = toMinutes(endStr);
+
       if (startMins <= endMins) {
-        return currentMins >= startMins && currentMins <= endMins;
+        if (currentMins < startMins) {
+          return { status: "early", lateMinutes: 0 };
+        }
+        if (currentMins <= endMins) {
+          return { status: "ontime", lateMinutes: 0 };
+        }
+        return { status: "late", lateMinutes: currentMins - endMins };
+      } else {
+        // Jika rentang melewati tengah malam
+        if (currentMins >= startMins || currentMins <= endMins) {
+          return { status: "ontime", lateMinutes: 0 };
+        }
+        // Di luar jendela lintas hari: hitung selisih dari endMins
+        return { status: "late", lateMinutes: currentMins - endMins };
       }
-      return currentMins >= startMins || currentMins <= endMins;
+    }
+
+    function formatLateDuration(mins) {
+      if (!mins || mins <= 0) return "Telat";
+      if (mins < 60) return `Telat ${mins} mnt`;
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return m > 0 ? `Telat ${h}j ${m}m` : `Telat ${h} jam`;
     }
 
     function formatShortDateKey(dateKey) {
@@ -2614,10 +2676,12 @@
     function collectRecordPhotos(rec) {
       const list = [];
       if (rec.checkInPhoto) {
-        list.push({ url: rec.checkInPhoto, label: `Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"})` });
+        const lateTxt = rec.checkInLate ? " - Telat" : "";
+        list.push({ url: rec.checkInPhoto, label: `Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"}${lateTxt})` });
       }
       if (rec.checkOutPhoto) {
-        list.push({ url: rec.checkOutPhoto, label: `Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"})` });
+        const lateTxt = rec.checkOutLate ? " - Telat" : "";
+        list.push({ url: rec.checkOutPhoto, label: `Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"}${lateTxt})` });
       }
       const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
       notePhotos.forEach((u, i) => {
@@ -2819,10 +2883,15 @@
 
       try {
         const isMasuk = (cameraPurpose === "checkin");
+        const winInfo = isMasuk
+          ? getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai)
+          : getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
+        const isLate = (winInfo.status === "late");
+
         const photoUrl = await uploadPhotoToSupabase(
           tempCapturedBlob,
           "absen",
-          isMasuk ? "masuk" : "keluar"
+          isMasuk ? (isLate ? "masuk_telat" : "masuk") : (isLate ? "keluar_telat" : "keluar")
         );
 
         const todayKey = getTodayKey();
@@ -2839,18 +2908,33 @@
         if (isMasuk) {
           payload.checkIn = timeNow;
           payload.checkInPhoto = photoUrl;
+          payload.checkInLate = isLate;
+          payload.checkInLateMinutes = isLate ? winInfo.lateMinutes : 0;
         } else {
           payload.checkOut = timeNow;
           payload.checkOutPhoto = photoUrl;
+          payload.checkOutLate = isLate;
+          payload.checkOutLateMinutes = isLate ? winInfo.lateMinutes : 0;
         }
 
         await setDoc(doc(db, "absen_riwayat", docId), payload, { merge: true });
         closeCameraModal();
-        showToast(isMasuk
-          ? `Masuk tercatat (${timeNow})`
-          : `Keluar tercatat (${timeNow})`,
-          "success"
-        );
+
+        if (isLate) {
+          showToast(
+            isMasuk
+              ? `Masuk tercatat dengan catatan TELAT (${timeNow})`
+              : `Keluar tercatat dengan catatan TELAT (${timeNow})`,
+            "warn"
+          );
+        } else {
+          showToast(
+            isMasuk
+              ? `Masuk tercatat (${timeNow})`
+              : `Keluar tercatat (${timeNow})`,
+            "success"
+          );
+        }
       } catch (err) {
         console.error(err);
         showToast("Gagal unggah foto.", "error");
@@ -3248,29 +3332,41 @@
       const subIn = document.getElementById("subCheckIn");
       const subOut = document.getElementById("subCheckOut");
 
-      const inWindow = isWithinTimeRange(jadwal.masukMulai, jadwal.masukSelesai);
-      const outWindow = isWithinTimeRange(jadwal.keluarMulai, jadwal.keluarSelesai);
+      const inWin = getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai);
+      const outWin = getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
 
+      // Pengaturan Tombol Absen Masuk (tetap bisa jika telat)
+      inBtn.classList.remove("btn-late");
       if (todayRec && todayRec.checkIn) {
         inBtn.disabled = true;
-        subIn.textContent = "Selesai";
-      } else if (!inWindow) {
+        subIn.textContent = todayRec.checkInLate ? "Selesai (Telat)" : "Selesai";
+      } else if (inWin.status === "early") {
         inBtn.disabled = true;
-        subIn.textContent = `${jadwal.masukMulai}-${jadwal.masukSelesai}`;
+        subIn.textContent = `Buka ${jadwal.masukMulai}`;
+      } else if (inWin.status === "late") {
+        inBtn.disabled = false;
+        inBtn.classList.add("btn-late");
+        subIn.textContent = "Telat • Foto kamera";
       } else {
         inBtn.disabled = false;
         subIn.textContent = "Foto kamera";
       }
 
+      // Pengaturan Tombol Absen Keluar (tetap bisa jika telat)
+      outBtn.classList.remove("btn-late");
       if (todayRec && todayRec.checkOut) {
         outBtn.disabled = true;
-        subOut.textContent = "Selesai";
+        subOut.textContent = todayRec.checkOutLate ? "Selesai (Telat)" : "Selesai";
       } else if (!todayRec || !todayRec.checkIn) {
         outBtn.disabled = true;
         subOut.textContent = "Masuk dulu";
-      } else if (!outWindow) {
+      } else if (outWin.status === "early") {
         outBtn.disabled = true;
-        subOut.textContent = `${jadwal.keluarMulai}-${jadwal.keluarSelesai}`;
+        subOut.textContent = `Buka ${jadwal.keluarMulai}`;
+      } else if (outWin.status === "late") {
+        outBtn.disabled = false;
+        outBtn.classList.add("btn-late");
+        subOut.textContent = "Telat • Foto kamera";
       } else {
         outBtn.disabled = false;
         subOut.textContent = "Foto kamera";
@@ -3405,6 +3501,23 @@
       document.getElementById("todayIn").textContent = (todayRec && todayRec.checkIn) ? todayRec.checkIn.slice(0, 5) : "--:--";
       document.getElementById("todayOut").textContent = (todayRec && todayRec.checkOut) ? todayRec.checkOut.slice(0, 5) : "--:--";
 
+      const todayInLateTag = document.getElementById("todayInLateTag");
+      const todayOutLateTag = document.getElementById("todayOutLateTag");
+
+      if (todayRec && todayRec.checkIn && todayRec.checkInLate) {
+        todayInLateTag.textContent = formatLateDuration(todayRec.checkInLateMinutes);
+        todayInLateTag.classList.remove("hidden");
+      } else {
+        todayInLateTag.classList.add("hidden");
+      }
+
+      if (todayRec && todayRec.checkOut && todayRec.checkOutLate) {
+        todayOutLateTag.textContent = formatLateDuration(todayRec.checkOutLateMinutes);
+        todayOutLateTag.classList.remove("hidden");
+      } else {
+        todayOutLateTag.classList.add("hidden");
+      }
+
       const noteBadge = document.getElementById("noteSavedBadge");
       const previewWrap = document.getElementById("savedNotePreview");
       const previewBody = document.getElementById("savedNoteBody");
@@ -3468,16 +3581,19 @@
         const inIdx = allPhotos.findIndex(p => p.url === rec.checkInPhoto);
         const outIdx = allPhotos.findIndex(p => p.url === rec.checkOutPhoto);
 
+        const inLateBadge = rec.checkInLate ? `<span class="chip-late-pill">Telat</span>` : "";
+        const outLateBadge = rec.checkOutLate ? `<span class="chip-late-pill">Telat</span>` : "";
+
         const inChip = rec.checkIn
           ? (rec.checkInPhoto
-              ? `<button type="button" class="time-chip in" data-rec-idx="${rIdx}" data-photo-idx="${inIdx}">M ${rec.checkIn.slice(0, 5)} <span class="chip-cam">Foto</span></button>`
-              : `<span class="time-chip in">M ${rec.checkIn.slice(0, 5)}</span>`)
+              ? `<button type="button" class="time-chip ${rec.checkInLate ? "late" : "in"}" data-rec-idx="${rIdx}" data-photo-idx="${inIdx}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip ${rec.checkInLate ? "late" : "in"}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge}</span>`)
           : `<span class="time-chip empty">M --:--</span>`;
 
         const outChip = rec.checkOut
           ? (rec.checkOutPhoto
-              ? `<button type="button" class="time-chip out" data-rec-idx="${rIdx}" data-photo-idx="${outIdx}">K ${rec.checkOut.slice(0, 5)} <span class="chip-cam">Foto</span></button>`
-              : `<span class="time-chip out">K ${rec.checkOut.slice(0, 5)}</span>`)
+              ? `<button type="button" class="time-chip ${rec.checkOutLate ? "late" : "out"}" data-rec-idx="${rIdx}" data-photo-idx="${outIdx}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip ${rec.checkOutLate ? "late" : "out"}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge}</span>`)
           : `<span class="time-chip empty">K --:--</span>`;
 
         const cleanedNote = cleanNoteLines(rec.note);
@@ -3631,25 +3747,33 @@
 
     document.getElementById("btnCheckIn").addEventListener("click", () => {
       if (!currentUser) return;
-      if (!isWithinTimeRange(jadwal.masukMulai, jadwal.masukSelesai)) {
-        showToast(`Buka pukul ${jadwal.masukMulai} - ${jadwal.masukSelesai}`, "warn");
+      const inWin = getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai);
+      if (inWin.status === "early") {
+        showToast(`Absen masuk dibuka mulai pukul ${jadwal.masukMulai}`, "warn");
         return;
       }
-      openCameraModal("checkin", "Foto Absen Masuk", "user");
+      const modalTitle = (inWin.status === "late")
+        ? "Foto Absen Masuk (Telat)"
+        : "Foto Absen Masuk";
+      openCameraModal("checkin", modalTitle, "user");
     });
 
     document.getElementById("btnCheckOut").addEventListener("click", () => {
       if (!currentUser) return;
-      if (!isWithinTimeRange(jadwal.keluarMulai, jadwal.keluarSelesai)) {
-        showToast(`Buka pukul ${jadwal.keluarMulai} - ${jadwal.keluarSelesai}`, "warn");
-        return;
-      }
       const todayRec = getTodayRecord();
       if (!todayRec || !todayRec.checkIn) {
         showToast("Absen masuk terlebih dahulu.", "warn");
         return;
       }
-      openCameraModal("checkout", "Foto Absen Keluar", "user");
+      const outWin = getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
+      if (outWin.status === "early") {
+        showToast(`Absen keluar dibuka mulai pukul ${jadwal.keluarMulai}`, "warn");
+        return;
+      }
+      const modalTitle = (outWin.status === "late")
+        ? "Foto Absen Keluar (Telat)"
+        : "Foto Absen Keluar";
+      openCameraModal("checkout", modalTitle, "user");
     });
 
     document.getElementById("openDocCamBtn").addEventListener("click", () => {
