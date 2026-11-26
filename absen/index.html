@@ -326,7 +326,7 @@
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= MODE SWITCHER (MODE ADMIN <-> MODE BIASA) ================= */
+    /* ================= MODE SWITCHER (ADMIN <-> BIASA) ================= */
     .mode-switcher-bar {
       width: 100%;
       background: #e2e8f0;
@@ -374,7 +374,7 @@
       animation: tabFadeSlide 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= ADMIN MODE HERO & CONSOLE ================= */
+    /* ================= ADMIN CONSOLE ================= */
     .admin-console-card {
       width: 100%;
       background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
@@ -481,33 +481,6 @@
       margin-top: 2px;
     }
 
-    .btn-admin-portal {
-      width: 100%;
-      text-decoration: none;
-      background: #ffffff;
-      color: #1e3a8a;
-      border-radius: 12px;
-      padding: 11px 13px;
-      font-size: 12.5px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
-      transition: transform 0.12s ease;
-    }
-
-    .btn-admin-portal:active {
-      transform: scale(0.98);
-    }
-
-    .btn-admin-portal-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .admin-switch-hint-card {
       background: var(--surface);
       border: 1px solid rgba(147, 197, 253, 0.75);
@@ -552,6 +525,80 @@
 
     .btn-to-user-mode:active {
       transform: scale(0.96);
+    }
+
+    .admin-sub-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 11px;
+    }
+
+    .admin-sub-tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 7px 8px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .admin-sub-tab-btn.active {
+      background: var(--admin-bg);
+      color: var(--admin-dark);
+      box-shadow: 0 1px 4px rgba(30, 58, 138, 0.12);
+    }
+
+    .admin-emp-list {
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .admin-emp-row {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
+    }
+
+    .admin-emp-name {
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .admin-emp-meta {
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    .btn-del-emp-row {
+      border: 1px solid #fecdd3;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
     /* ================= UNIFIED HERO CLOCK & ATTENDANCE CARD ================= */
@@ -1092,6 +1139,12 @@
       box-shadow: 0 5px 14px rgba(15, 118, 110, 0.24);
     }
 
+    .btn-admin-action {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(29, 78, 216, 0.24);
+    }
+
     .btn-masuk {
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
@@ -1138,6 +1191,7 @@
     }
 
     .badge-ok { background: var(--primary-bg); color: var(--primary); }
+    .badge-admin { background: var(--admin-bg); color: var(--admin-dark); }
     .badge-warn { background: var(--warning-bg); color: var(--warning); }
 
     /* ================= BANNER PENGINGAT AKTIF ================= */
@@ -1742,18 +1796,18 @@
           </svg>
         </div>
         <h1>Absensi Karyawan</h1>
-        <p class="login-sub">Masuk untuk mencatat kehadiran &amp; progres kerja</p>
+        <p class="login-sub">Silakan masuk untuk mencatat kehadiran dan aktivitas kerja</p>
       </div>
 
       <section class="card" id="loginCard">
         <form id="loginForm">
           <div class="form-group">
             <label class="form-label" for="loginUsername">Username</label>
-            <input type="text" id="loginUsername" class="form-input" placeholder="Username terdaftar" autocomplete="off" required>
+            <input type="text" id="loginUsername" class="form-input" placeholder="Masukkan username terdaftar" autocomplete="off" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="loginId">ID Karyawan</label>
-            <input type="text" id="loginId" class="form-input" placeholder="EMP001" autocomplete="off" required>
+            <input type="text" id="loginId" class="form-input" placeholder="Contoh: EMP001" autocomplete="off" required>
           </div>
           <button type="submit" class="btn btn-primary" id="loginBtn">Masuk</button>
         </form>
@@ -1803,7 +1857,7 @@
                 </div>
                 <div>
                   <div class="admin-console-title">Mode Admin Absensi</div>
-                  <div class="admin-console-sub" id="adminBizSubtitle">Bisnis: -</div>
+                  <div class="admin-console-sub" id="adminBizSubtitle">Unit Bisnis: -</div>
                 </div>
               </div>
             </div>
@@ -1827,27 +1881,58 @@
                 <div class="admin-mini-lbl">Grup Aktif</div>
               </div>
             </div>
-
-            <a href="https://my.sitenexs.com/absen/admin" class="btn-admin-portal">
-              <span class="btn-admin-portal-left">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="14" width="7" height="7"></rect>
-                  <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-                <span>Buka Panel Admin Absen</span>
-              </span>
-              <span>&rarr;</span>
-            </a>
           </section>
 
           <section class="admin-switch-hint-card">
             <div class="admin-switch-hint-text">
               <div class="admin-switch-hint-title">Ingin melakukan absen pribadi?</div>
-              <div class="admin-switch-hint-sub">Ubah tampilan ke Mode Biasa untuk absen masuk, keluar &amp; catatan kerja.</div>
+              <div class="admin-switch-hint-sub">Alihkan tampilan ke Mode Biasa untuk mencatat presensi masuk, keluar, dan catatan kerja.</div>
             </div>
             <button type="button" class="btn-to-user-mode" id="quickToUserModeBtn">Mode Biasa</button>
+          </section>
+
+          <!-- Kelola Karyawan: Tambah & Hapus Berdasarkan Username dan ID -->
+          <section class="card" id="adminEmployeeCard">
+            <div class="card-title">
+              <span>Kelola Karyawan</span>
+              <span class="badge badge-admin" id="adminEmpListCount">0 Karyawan</span>
+            </div>
+
+            <div class="admin-sub-tabs">
+              <button type="button" class="admin-sub-tab-btn active" data-emp-action="add">Tambah Karyawan</button>
+              <button type="button" class="admin-sub-tab-btn" data-emp-action="delete">Hapus Karyawan</button>
+            </div>
+
+            <!-- Form Tambah Karyawan -->
+            <form id="adminAddEmpForm">
+              <div class="form-group">
+                <label class="form-label" for="admAddEmpUsername">Username Karyawan</label>
+                <input type="text" id="admAddEmpUsername" class="form-input" placeholder="Masukkan username karyawan" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="admAddEmpId">ID Karyawan</label>
+                <input type="text" id="admAddEmpId" class="form-input" placeholder="Contoh: EMP002 atau 102938" required>
+              </div>
+              <button type="submit" class="btn btn-admin-action" id="admAddEmpSubmitBtn">Tambah Karyawan</button>
+            </form>
+
+            <!-- Form Hapus Karyawan Berdasarkan Username dan ID -->
+            <form id="adminDelEmpForm" class="hidden">
+              <div class="form-group">
+                <label class="form-label" for="admDelEmpUsername">Username Karyawan</label>
+                <input type="text" id="admDelEmpUsername" class="form-input" placeholder="Masukkan username karyawan yang akan dihapus" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="admDelEmpId">ID Karyawan</label>
+                <input type="text" id="admDelEmpId" class="form-input" placeholder="Masukkan ID karyawan yang akan dihapus" required>
+              </div>
+              <button type="submit" class="btn btn-keluar" id="admDelEmpSubmitBtn">Hapus Karyawan</button>
+            </form>
+
+            <!-- Daftar Singkat Karyawan pada Unit Bisnis -->
+            <div class="admin-emp-list" id="adminEmpDirectory">
+              <div class="admin-emp-meta" style="text-align:center; padding:6px;">Memuat data karyawan...</div>
+            </div>
           </section>
         </div>
 
@@ -1957,7 +2042,7 @@
             </div>
 
             <div class="note-box">
-              <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
+              <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tuliskan progres pekerjaan hari ini..."></textarea>
               <div class="note-footer">
                 <span id="noteCharCount">0 karakter</span>
               </div>
@@ -2073,7 +2158,7 @@
           <input type="range" id="profilePosYRange" class="range-input" min="-80" max="80" step="1" value="0">
         </div>
 
-        <button type="button" class="btn-outline-sm" id="resetProfileAdjustBtn" style="width:100%;">Reset Posisi</button>
+        <button type="button" class="btn-outline-sm" id="resetProfileAdjustBtn" style="width:100%;">Atur Ulang Posisi</button>
       </div>
 
       <input type="file" id="profileFileInput" accept="image/*" class="hidden">
@@ -2114,7 +2199,7 @@
       <div class="confirm-msg" id="confirmMsg">-</div>
       <div class="confirm-actions">
         <button type="button" class="btn-outline-sm" id="confirmCancelBtn">Batal</button>
-        <button type="button" class="btn btn-keluar" style="padding:8px;" id="confirmOkBtn">Ya, Lanjut</button>
+        <button type="button" class="btn btn-keluar" style="padding:8px;" id="confirmOkBtn">Ya, Lanjutkan</button>
       </div>
     </div>
   </div>
@@ -2134,6 +2219,7 @@
       getDoc,
       setDoc,
       updateDoc,
+      deleteDoc,
       collection,
       query,
       where,
@@ -2178,6 +2264,7 @@
     let activeViewMode = "user"; // "admin" | "user"
     let myRecords = [];
     let myReminders = [];
+    let adminBusinessEmployees = [];
     let unsubscribeRecords = null;
     let unsubscribeReminders = null;
     let unsubscribeUserWatch = null;
@@ -2236,7 +2323,7 @@
       toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
     }
 
-    function showCustomConfirm(title, message, okLabel = "Ya, Lanjut") {
+    function showCustomConfirm(title, message, okLabel = "Ya, Lanjutkan") {
       return new Promise((resolve) => {
         const overlay = document.getElementById("confirmOverlay");
         document.getElementById("confirmTitle").textContent = title;
@@ -2324,7 +2411,7 @@
       profileFileInputEl.value = "";
       if (!file) return;
       if (!file.type || !file.type.startsWith("image/")) {
-        showToast("Pilih file gambar yang valid.", "error");
+        showToast("Pilih berkas gambar yang valid.", "error");
         return;
       }
 
@@ -2361,7 +2448,6 @@
       updateProfileTransformPreview();
     });
 
-    // Geser foto profil langsung dengan sentuhan/pointer pada lingkaran pratinjau
     const profileCropStageEl = document.getElementById("profileCropStage");
     profileCropStageEl.addEventListener("pointerdown", (e) => {
       if (!profileSrcDataUrl) return;
@@ -2389,7 +2475,7 @@
     function buildAdjustedProfileBlob() {
       return new Promise((resolve, reject) => {
         if (!profileSrcDataUrl) {
-          reject(new Error("Belum ada foto dipilih"));
+          reject(new Error("Belum ada foto yang dipilih"));
           return;
         }
         const img = new Image();
@@ -2404,7 +2490,6 @@
           canvas.height = outSize;
           const ctx = canvas.getContext("2d");
 
-          // Isi penuh persegi sesuai object-fit: cover
           const imgRatio = img.width / img.height;
           let drawW = outSize;
           let drawH = outSize;
@@ -2421,7 +2506,7 @@
           ctx.restore();
 
           canvas.toBlob((blob) => {
-            if (!blob) return reject(new Error("Gagal membuat gambar profil"));
+            if (!blob) return reject(new Error("Gagal memproses gambar profil"));
             resolve(blob);
           }, "image/jpeg", 0.85);
         };
@@ -2499,6 +2584,158 @@
       return "admin";
     }
 
+    // ================= KELOLA KARYAWAN (TAMBAH & HAPUS BY USERNAME & ID) =================
+    const addEmpFormEl = document.getElementById("adminAddEmpForm");
+    const delEmpFormEl = document.getElementById("adminDelEmpForm");
+
+    document.querySelectorAll("[data-emp-action]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.empAction;
+        document.querySelectorAll("[data-emp-action]").forEach(b => {
+          b.classList.toggle("active", b.dataset.empAction === mode);
+        });
+        addEmpFormEl.classList.toggle("hidden", mode !== "add");
+        delEmpFormEl.classList.toggle("hidden", mode !== "delete");
+      });
+    });
+
+    function renderAdminEmployeeDirectory() {
+      const countBadge = document.getElementById("adminEmpListCount");
+      const listEl = document.getElementById("adminEmpDirectory");
+      countBadge.textContent = `${adminBusinessEmployees.length} Karyawan`;
+
+      if (adminBusinessEmployees.length === 0) {
+        listEl.innerHTML = `<div class="admin-emp-meta" style="text-align:center; padding:6px;">Belum ada data karyawan pada unit bisnis ini.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = adminBusinessEmployees.map(emp => {
+        const empId = String(emp.id || emp.docId || "");
+        const empUsername = String(emp.username || empId);
+        const isSelf = currentUser && empId === currentUser.id;
+        return `
+          <div class="admin-emp-row">
+            <div>
+              <div class="admin-emp-name">${escapeHtml(empUsername)}</div>
+              <div class="admin-emp-meta">ID: ${escapeHtml(empId)}</div>
+            </div>
+            ${!isSelf
+              ? `<button type="button" class="btn-del-emp-row" data-quick-del-user="${escapeHtml(empUsername)}" data-quick-del-id="${escapeHtml(empId)}">Hapus</button>`
+              : `<span class="badge badge-admin">Akun Anda</span>`
+            }
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll("[data-quick-del-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById("admDelEmpUsername").value = btn.dataset.quickDelUser || "";
+          document.getElementById("admDelEmpId").value = btn.dataset.quickDelId || "";
+          document.querySelectorAll("[data-emp-action]").forEach(b => {
+            b.classList.toggle("active", b.dataset.empAction === "delete");
+          });
+          addEmpFormEl.classList.add("hidden");
+          delEmpFormEl.classList.remove("hidden");
+          document.getElementById("admDelEmpId").focus();
+        });
+      });
+    }
+
+    addEmpFormEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isUserAdmin(currentUser)) return;
+      const bizId = (currentUser.businessId || "").trim().toUpperCase();
+      if (!bizId) {
+        showToast("Unit bisnis admin belum diatur.", "warn");
+        return;
+      }
+
+      const username = document.getElementById("admAddEmpUsername").value.trim();
+      const empId = document.getElementById("admAddEmpId").value.trim().toUpperCase();
+      const submitBtn = document.getElementById("admAddEmpSubmitBtn");
+
+      if (!username || !empId) {
+        showToast("Mohon lengkapi username dan ID karyawan.", "warn");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      try {
+        await setDoc(doc(db, "absen_karyawan", empId), {
+          id: empId,
+          username,
+          businessId: bizId,
+          isAbsenAdmin: false,
+          role: "karyawan",
+          createdAt: new Date().toISOString()
+        }, { merge: true });
+
+        document.getElementById("admAddEmpUsername").value = "";
+        document.getElementById("admAddEmpId").value = "";
+        showToast(`Karyawan ${username} (${empId}) berhasil ditambahkan.`, "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menambahkan data karyawan.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    delEmpFormEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isUserAdmin(currentUser)) return;
+      const bizId = (currentUser.businessId || "").trim().toUpperCase();
+      if (!bizId) {
+        showToast("Unit bisnis admin belum diatur.", "warn");
+        return;
+      }
+
+      const inputUsername = document.getElementById("admDelEmpUsername").value.trim();
+      const inputId = document.getElementById("admDelEmpId").value.trim().toUpperCase();
+      const submitBtn = document.getElementById("admDelEmpSubmitBtn");
+
+      if (!inputUsername || !inputId) {
+        showToast("Mohon masukkan username dan ID karyawan.", "warn");
+        return;
+      }
+
+      if (currentUser && inputId === currentUser.id) {
+        showToast("Akun admin yang sedang aktif tidak dapat dihapus.", "warn");
+        return;
+      }
+
+      const matched = adminBusinessEmployees.find(emp => {
+        const empId = String(emp.id || emp.docId || "").toUpperCase();
+        const empName = String(emp.username || "").trim().toLowerCase();
+        return empId === inputId && empName === inputUsername.toLowerCase();
+      });
+
+      if (!matched) {
+        showToast("Kombinasi username dan ID karyawan tidak ditemukan pada unit bisnis ini.", "error");
+        return;
+      }
+
+      const confirmed = await showCustomConfirm(
+        "Konfirmasi Penghapusan Karyawan",
+        `Apakah Anda yakin ingin menghapus karyawan ${matched.username} (${matched.id})?`,
+        "Ya, Hapus"
+      );
+      if (!confirmed) return;
+
+      submitBtn.disabled = true;
+      try {
+        await deleteDoc(doc(db, "absen_karyawan", matched.id));
+        document.getElementById("admDelEmpUsername").value = "";
+        document.getElementById("admDelEmpId").value = "";
+        showToast(`Karyawan ${matched.username} (${matched.id}) berhasil dihapus.`, "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menghapus data karyawan.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
     // ================= PENGATURAN MODE ADMIN VS MODE BIASA =================
     function switchAppMode(targetMode) {
       const isAdminAccount = isUserAdmin(currentUser);
@@ -2534,12 +2771,12 @@
 
     document.getElementById("btnSwitchUserMode").addEventListener("click", () => {
       switchAppMode("user");
-      showToast("Beralih ke Mode Biasa untuk absensi.", "info");
+      showToast("Tampilan dialihkan ke Mode Biasa untuk presensi.", "info");
     });
 
     document.getElementById("quickToUserModeBtn").addEventListener("click", () => {
       switchAppMode("user");
-      showToast("Mode Biasa aktif. Silakan lakukan absen.", "info");
+      showToast("Mode Biasa telah aktif. Silakan lakukan presensi.", "info");
     });
 
     // ================= INDIKATOR TITIK PESAN CHAT BELUM DIBACA =================
@@ -2630,6 +2867,8 @@
       activeAdminBizId = "";
       adminTeamEmpIds = new Set();
       adminTodayAllRecs = [];
+      adminBusinessEmployees = [];
+      renderAdminEmployeeDirectory();
     }
 
     function updateAdminPresentCounter() {
@@ -2658,7 +2897,7 @@
       }
 
       const bizId = (userObj.businessId || "").trim().toUpperCase();
-      adminBizSubEl.textContent = bizId ? `Bisnis: ${bizId}` : "Bisnis belum ditetapkan";
+      adminBizSubEl.textContent = bizId ? `Unit Bisnis: ${bizId}` : "Unit bisnis belum ditetapkan";
 
       if (bizId !== activeAdminBizId) {
         stopAdminPreviewListeners();
@@ -2667,8 +2906,10 @@
         if (bizId) {
           const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", bizId));
           unsubscribeAdminTeam = onSnapshot(qEmp, (snap) => {
-            adminTeamEmpIds = new Set(snap.docs.map(d => d.data().id || d.id));
+            adminBusinessEmployees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+            adminTeamEmpIds = new Set(adminBusinessEmployees.map(e => e.id || e.docId));
             document.getElementById("admTeamCount").textContent = snap.size;
+            renderAdminEmployeeDirectory();
             updateAdminPresentCounter();
           });
 
@@ -2686,6 +2927,7 @@
           document.getElementById("admTeamCount").textContent = "0";
           document.getElementById("admPresentToday").textContent = "0";
           document.getElementById("admGroupCount").textContent = "0";
+          renderAdminEmployeeDirectory();
         }
       }
     }
@@ -2940,7 +3182,6 @@
         cameraPopupWin = popup;
         popup.focus();
       } else {
-        // Fallback jika pop-up browser diblokir oleh perangkat
         cameraPopupFrame.src = url;
         cameraPopupModal.classList.remove("hidden");
       }
@@ -3007,21 +3248,21 @@
           if (isLate) {
             showToast(
               isMasuk
-                ? `Masuk tercatat dengan catatan TELAT (${timeNow})`
-                : `Keluar tercatat dengan catatan TELAT (${timeNow})`,
+                ? `Presensi masuk tercatat dengan keterangan terlambat (${timeNow})`
+                : `Presensi keluar tercatat dengan keterangan terlambat (${timeNow})`,
               "warn"
             );
           } else {
             showToast(
               isMasuk
-                ? `Masuk tercatat (${timeNow})`
-                : `Keluar tercatat (${timeNow})`,
+                ? `Presensi masuk berhasil dicatat (${timeNow})`
+                : `Presensi keluar berhasil dicatat (${timeNow})`,
               "success"
             );
           }
         } catch (err) {
           console.error(err);
-          showToast("Gagal unggah foto absensi.", "error");
+          showToast("Gagal mengunggah foto presensi.", "error");
           updateClockAndButtons();
         }
       }
@@ -3087,7 +3328,7 @@
       clearTimeout(noteReminderTimer);
       noteReminderTimer = setTimeout(() => {
         if (currentUser && activeViewMode === "user") {
-          showToast("catatan jangan lupa di isi yaaa", "warn");
+          showToast("Mohon lengkapi catatan pekerjaan hari ini.", "warn");
         }
       }, 3000);
     }
@@ -3139,12 +3380,12 @@
     document.getElementById("logoutBtn").addEventListener("click", async () => {
       if (!currentUser) return;
       const ok = await showCustomConfirm(
-        "Keluar Akun",
-        `Keluar dari sesi ${currentUser.username} (${currentUser.id})?`,
+        "Keluar dari Sesi",
+        `Apakah Anda yakin ingin keluar dari akun ${currentUser.username} (${currentUser.id})?`,
         "Keluar"
       );
       if (!ok) return;
-      forceLogout("Berhasil keluar.", "success");
+      forceLogout("Anda telah keluar dari sesi.", "success");
     });
 
     function watchCurrentUserStatus(empId) {
@@ -3153,7 +3394,7 @@
       let firstSnapHandled = false;
       unsubscribeUserWatch = onSnapshot(userRef, (snap) => {
         if (!snap.exists()) {
-          forceLogout("Akun dihapus oleh Admin.", "error");
+          forceLogout("Akun telah dinonaktifkan atau dihapus oleh administrator.", "error");
           return;
         }
         const wasAdmin = isUserAdmin(currentUser);
@@ -3303,7 +3544,7 @@
       chartAlert.classList.remove("hidden", "warn", "ok");
       if (daysWithoutNote > 0) {
         chartAlert.classList.add("warn");
-        chartAlert.textContent = `${daysWithoutNote} hari tanpa catatan kerja.`;
+        chartAlert.textContent = `${daysWithoutNote} hari belum memiliki catatan kerja.`;
       } else {
         chartAlert.classList.add("ok");
         chartAlert.textContent = "Catatan kerja lengkap.";
@@ -3349,7 +3590,7 @@
       } else if (inWin.status === "late") {
         inBtn.disabled = false;
         inBtn.classList.add("btn-late");
-        subIn.textContent = "Telat • Foto kamera";
+        subIn.textContent = "Terlambat • Foto kamera";
       } else {
         inBtn.disabled = false;
         subIn.textContent = "Foto kamera";
@@ -3361,14 +3602,14 @@
         subOut.textContent = todayRec.checkOutLate ? "Selesai (Telat)" : "Selesai";
       } else if (!todayRec || !todayRec.checkIn) {
         outBtn.disabled = true;
-        subOut.textContent = "Masuk dulu";
+        subOut.textContent = "Masuk terlebih dahulu";
       } else if (outWin.status === "early") {
         outBtn.disabled = true;
         subOut.textContent = `Buka ${jadwal.keluarMulai}`;
       } else if (outWin.status === "late") {
         outBtn.disabled = false;
         outBtn.classList.add("btn-late");
-        subOut.textContent = "Telat • Foto kamera";
+        subOut.textContent = "Terlambat • Foto kamera";
       } else {
         outBtn.disabled = false;
         subOut.textContent = "Foto kamera";
@@ -3458,7 +3699,7 @@
         renderDashboardUI();
       }, (err) => {
         console.error(err);
-        showToast("Gagal sinkronisasi data.", "error");
+        showToast("Gagal menyinkronkan data.", "error");
       });
     }
 
@@ -3508,14 +3749,14 @@
 
         const empData = empSnap.data();
         if (empData.username.toLowerCase() !== rawUsername.toLowerCase()) {
-          showToast("Username tidak sesuai.", "error");
+          showToast("Username tidak sesuai dengan ID Karyawan.", "error");
           return;
         }
 
         localStorage.setItem(SESSION_KEY, JSON.stringify(empData));
         const welcomeLabel = isUserAdmin(empData)
-          ? `Halo Admin, ${empData.username}`
-          : `Halo, ${empData.username}`;
+          ? `Selamat datang, Administrator ${empData.username}`
+          : `Selamat datang, ${empData.username}`;
         showToast(welcomeLabel, "success");
         openDashboard(empData, true);
       } catch (err) {
@@ -3527,40 +3768,37 @@
       }
     });
 
-    // Tombol Absen Masuk memanggil pop-up kamera/
     document.getElementById("btnCheckIn").addEventListener("click", () => {
       if (!currentUser) return;
       const inWin = getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai);
       if (inWin.status === "early") {
-        showToast(`Absen masuk dibuka mulai pukul ${jadwal.masukMulai}`, "warn");
+        showToast(`Presensi masuk dibuka mulai pukul ${jadwal.masukMulai}`, "warn");
         return;
       }
       const modalTitle = (inWin.status === "late")
-        ? "Foto Absen Masuk (Telat)"
-        : "Foto Absen Masuk";
+        ? "Foto Presensi Masuk (Terlambat)"
+        : "Foto Presensi Masuk";
       openCameraPopup("checkin", modalTitle, "user");
     });
 
-    // Tombol Absen Keluar memanggil pop-up kamera/
     document.getElementById("btnCheckOut").addEventListener("click", () => {
       if (!currentUser) return;
       const todayRec = getTodayRecord();
       if (!todayRec || !todayRec.checkIn) {
-        showToast("Absen masuk terlebih dahulu.", "warn");
+        showToast("Silakan lakukan presensi masuk terlebih dahulu.", "warn");
         return;
       }
       const outWin = getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
       if (outWin.status === "early") {
-        showToast(`Absen keluar dibuka mulai pukul ${jadwal.keluarMulai}`, "warn");
+        showToast(`Presensi keluar dibuka mulai pukul ${jadwal.keluarMulai}`, "warn");
         return;
       }
       const modalTitle = (outWin.status === "late")
-        ? "Foto Absen Keluar (Telat)"
-        : "Foto Absen Keluar";
+        ? "Foto Presensi Keluar (Terlambat)"
+        : "Foto Presensi Keluar";
       openCameraPopup("checkout", modalTitle, "user");
     });
 
-    // Tombol Kamera Dokumentasi memanggil pop-up kamera/
     document.getElementById("openDocCamBtn").addEventListener("click", () => {
       openCameraPopup("note", "Foto Dokumentasi", "environment");
     });
@@ -3623,7 +3861,7 @@
         renderPendingDocThumbs();
         showToast(`${pendingDocPhotos.length} foto siap disimpan`, "success");
       } else {
-        showToast("Pilih file gambar yang valid.", "error");
+        showToast("Pilih berkas gambar yang valid.", "error");
       }
     });
 
@@ -3631,12 +3869,12 @@
       if (!currentUser) return;
       const noteText = noteInputEl.value.trim();
       if (!noteText) {
-        showToast("Isi catatan terlebih dahulu.", "warn");
+        showToast("Mohon isi catatan terlebih dahulu.", "warn");
         return;
       }
 
       if (pendingDocPhotos.length === 0) {
-        showToast("Lampirkan minimal 1 foto dokumentasi.", "warn");
+        showToast("Mohon lampirkan minimal 1 foto dokumentasi.", "warn");
         return;
       }
 
@@ -3681,7 +3919,7 @@
         docFileInput.value = "";
         renderPendingDocThumbs();
 
-        showToast("Catatan & foto tersimpan.", "success");
+        showToast("Catatan dan foto berhasil disimpan.", "success");
       } catch (err) {
         console.error(err);
         showToast("Gagal menyimpan catatan.", "error");
