@@ -2173,6 +2173,7 @@
     const VIEW_MODE_KEY = "absen_active_view_mode";
     const CAMERA_RESULT_KEY = "absen_camera_result_payload";
     const CHAT_LAST_SEEN_PREFIX = "absen_chat_last_seen_";
+    const ADMIN_MESSENGE_URL = "https://my.sitenexs.com/absen/messenge/";
     let currentUser = null;
     let activeViewMode = "user"; // "admin" | "user"
     let myRecords = [];
@@ -2483,6 +2484,12 @@
       return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
     }
 
+    function syncChatBubbleTarget() {
+      const fabBtn = document.getElementById("fabChatBtn");
+      if (!fabBtn) return;
+      fabBtn.href = isUserAdmin(currentUser) ? ADMIN_MESSENGE_URL : "messenge/chat/";
+    }
+
     function getSavedModeForSession(userObj) {
       if (!isUserAdmin(userObj)) return "user";
       const savedMode = localStorage.getItem(VIEW_MODE_KEY);
@@ -2501,6 +2508,7 @@
         activeViewMode = (targetMode === "admin") ? "admin" : "user";
       }
       localStorage.setItem(VIEW_MODE_KEY, activeViewMode);
+      syncChatBubbleTarget();
 
       const mainAppEl = document.getElementById("mainApp");
       const switcherBar = document.getElementById("modeSwitcherBar");
@@ -2559,11 +2567,17 @@
       refreshChatUnreadDot();
     }
 
-    document.getElementById("fabChatBtn").addEventListener("click", () => {
+    document.getElementById("fabChatBtn").addEventListener("click", (e) => {
+      syncChatBubbleTarget();
       markChatAsReadNow();
+      if (isUserAdmin(currentUser)) {
+        e.preventDefault();
+        window.location.href = ADMIN_MESSENGE_URL;
+      }
     });
 
     window.addEventListener("pageshow", () => {
+      syncChatBubbleTarget();
       refreshChatUnreadDot();
     });
 
@@ -2629,6 +2643,7 @@
 
       const isAdmin = isUserAdmin(userObj);
       adminBadgeEl.classList.toggle("hidden", !isAdmin);
+      syncChatBubbleTarget();
 
       if (!isAdmin) {
         stopAdminPreviewListeners();
@@ -3454,6 +3469,7 @@
         : getSavedModeForSession(user);
       activeViewMode = initialMode;
       localStorage.setItem(VIEW_MODE_KEY, activeViewMode);
+      syncChatBubbleTarget();
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
