@@ -310,18 +310,65 @@
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= ADMIN CONSOLE BANNER CARD ================= */
+    /* ================= MODE SWITCHER (MODE ADMIN <-> MODE BIASA) ================= */
+    .mode-switcher-bar {
+      width: 100%;
+      background: #e2e8f0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .mode-switch-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .mode-switch-btn.active.admin-tab {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(30, 58, 138, 0.24);
+    }
+
+    .mode-switch-btn.active.user-tab {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .mode-view-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      animation: tabFadeSlide 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ================= ADMIN MODE HERO & CONSOLE ================= */
     .admin-console-card {
       width: 100%;
       background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
       color: #ffffff;
       border-radius: 20px;
-      padding: 14px;
+      padding: 15px;
       box-shadow: 0 12px 26px -6px rgba(30, 58, 138, 0.34);
       display: flex;
       flex-direction: column;
-      gap: 11px;
-      animation: tabFadeSlide 0.25s ease;
+      gap: 12px;
     }
 
     .admin-console-top {
@@ -339,8 +386,8 @@
     }
 
     .admin-console-icon {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.14);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -352,7 +399,7 @@
     }
 
     .admin-console-title {
-      font-size: 14px;
+      font-size: 14.5px;
       font-weight: 800;
       letter-spacing: -0.2px;
       line-height: 1.2;
@@ -365,6 +412,30 @@
       margin-top: 2px;
     }
 
+    .admin-clock-strip {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .admin-clock-date {
+      font-size: 11px;
+      font-weight: 600;
+      color: #dbeafe;
+    }
+
+    .admin-clock-time {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+    }
+
     .admin-stats-strip {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -375,12 +446,12 @@
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 11px;
-      padding: 7px 8px;
+      padding: 8px;
       text-align: center;
     }
 
     .admin-mini-val {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       color: #ffffff;
       font-variant-numeric: tabular-nums;
@@ -391,7 +462,7 @@
       font-size: 9.5px;
       font-weight: 600;
       color: #dbeafe;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     .btn-admin-portal {
@@ -400,7 +471,7 @@
       background: #ffffff;
       color: #1e3a8a;
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 11px 13px;
       font-size: 12.5px;
       font-weight: 800;
       display: flex;
@@ -419,6 +490,52 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .admin-switch-hint-card {
+      background: var(--surface);
+      border: 1px solid rgba(147, 197, 253, 0.75);
+      border-radius: var(--radius);
+      padding: 13px 14px;
+      box-shadow: var(--clay-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .admin-switch-hint-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .admin-switch-hint-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .admin-switch-hint-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn-to-user-mode {
+      flex-shrink: 0;
+      border: none;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(15, 118, 110, 0.22);
+    }
+
+    .btn-to-user-mode:active {
+      transform: scale(0.96);
     }
 
     /* ================= UNIFIED HERO CLOCK & ATTENDANCE CARD ================= */
@@ -440,11 +557,6 @@
       text-align: center;
     }
 
-    .main-app.is-admin-mode .clock-box {
-      background: radial-gradient(circle at 85% 15%, rgba(96, 165, 250, 0.3) 0%, transparent 50%),
-                  linear-gradient(145deg, #0f172a 0%, #1e293b 55%, #1e3a8a 100%);
-    }
-
     .clock-date {
       display: inline-block;
       font-size: 11px;
@@ -456,10 +568,6 @@
       border-radius: 999px;
       margin-bottom: 7px;
       backdrop-filter: blur(4px);
-    }
-
-    .main-app.is-admin-mode .clock-date {
-      color: #dbeafe;
     }
 
     .clock-time {
@@ -1504,7 +1612,7 @@
       </section>
     </div>
 
-    <!-- HALAMAN UTAMA PRESENSI -->
+    <!-- HALAMAN UTAMA -->
     <div id="mainApp" class="main-app hidden">
       <!-- Fixed Topbar -->
       <header class="topbar">
@@ -1525,195 +1633,223 @@
       </header>
 
       <main class="content-area">
-        <!-- Kartu Konsol Admin (Muncul Otomatis Jika User Terindikasi Sebagai Admin) -->
-        <section class="admin-console-card hidden" id="adminConsoleCard">
-          <div class="admin-console-top">
-            <div class="admin-console-title-wrap">
-              <div class="admin-console-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <!-- Sakelar Mode: Mode Admin vs Mode Biasa/User (Hanya Muncul Untuk Akun Admin) -->
+        <div class="mode-switcher-bar hidden" id="modeSwitcherBar">
+          <button type="button" class="mode-switch-btn admin-tab active" id="btnSwitchAdminMode">
+            <span>Mode Admin</span>
+          </button>
+          <button type="button" class="mode-switch-btn user-tab" id="btnSwitchUserMode">
+            <span>Mode Biasa</span>
+          </button>
+        </div>
+
+        <!-- ==================== TAMPILAN MODE ADMIN ==================== -->
+        <div id="adminModeView" class="mode-view-stack hidden">
+          <section class="admin-console-card" id="adminConsoleCard">
+            <div class="admin-console-top">
+              <div class="admin-console-title-wrap">
+                <div class="admin-console-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="admin-console-title">Mode Admin Absensi</div>
+                  <div class="admin-console-sub" id="adminBizSubtitle">Bisnis: -</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-clock-strip">
+              <span class="admin-clock-date" id="adminClockDate">-</span>
+              <span class="admin-clock-time" id="adminClockTime">00:00:00</span>
+            </div>
+
+            <div class="admin-stats-strip">
+              <div class="admin-mini-stat">
+                <div class="admin-mini-val" id="admTeamCount">0</div>
+                <div class="admin-mini-lbl">Karyawan</div>
+              </div>
+              <div class="admin-mini-stat">
+                <div class="admin-mini-val" id="admPresentToday">0</div>
+                <div class="admin-mini-lbl">Hadir Hari Ini</div>
+              </div>
+              <div class="admin-mini-stat">
+                <div class="admin-mini-val" id="admGroupCount">0</div>
+                <div class="admin-mini-lbl">Grup Aktif</div>
+              </div>
+            </div>
+
+            <a href="https://my.sitenexs.com/absen/admin" class="btn-admin-portal">
+              <span class="btn-admin-portal-left">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Buka Panel Admin Absen</span>
+              </span>
+              <span>&rarr;</span>
+            </a>
+          </section>
+
+          <section class="admin-switch-hint-card">
+            <div class="admin-switch-hint-text">
+              <div class="admin-switch-hint-title">Ingin melakukan absen pribadi?</div>
+              <div class="admin-switch-hint-sub">Ubah tampilan ke Mode Biasa untuk absen masuk, keluar &amp; catatan kerja.</div>
+            </div>
+            <button type="button" class="btn-to-user-mode" id="quickToUserModeBtn">Mode Biasa</button>
+          </section>
+        </div>
+
+        <!-- ==================== TAMPILAN MODE BIASA / USER ==================== -->
+        <div id="userModeView" class="mode-view-stack hidden">
+          <!-- Banner Pengingat Aktif (Langsung membuka halaman https://my.sitenexs.com/absen/target) -->
+          <a href="https://my.sitenexs.com/absen/target" id="activeReminderBanner" class="reminder-banner hidden">
+            <div class="reminder-banner-left">
+              <div class="reminder-bell">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
               </div>
-              <div>
-                <div class="admin-console-title">Mode Admin Absensi</div>
-                <div class="admin-console-sub" id="adminBizSubtitle">Bisnis: -</div>
+              <div class="reminder-banner-text">
+                <div class="reminder-banner-title" id="bannerRemTitle">-</div>
+                <div class="reminder-banner-sub" id="bannerRemSub">-</div>
               </div>
             </div>
-          </div>
-
-          <div class="admin-stats-strip">
-            <div class="admin-mini-stat">
-              <div class="admin-mini-val" id="admTeamCount">0</div>
-              <div class="admin-mini-lbl">Karyawan</div>
-            </div>
-            <div class="admin-mini-stat">
-              <div class="admin-mini-val" id="admPresentToday">0</div>
-              <div class="admin-mini-lbl">Hadir Hari Ini</div>
-            </div>
-            <div class="admin-mini-stat">
-              <div class="admin-mini-val" id="admGroupCount">0</div>
-              <div class="admin-mini-lbl">Grup Aktif</div>
-            </div>
-          </div>
-
-          <a href="https://my.sitenexs.com/absen/admin" class="btn-admin-portal">
-            <span class="btn-admin-portal-left">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-              <span>Buka Panel Admin Absen</span>
-            </span>
-            <span>&rarr;</span>
+            <span class="badge badge-warn" id="bannerRemCount">0</span>
           </a>
-        </section>
 
-        <!-- Banner Pengingat Aktif (Langsung membuka halaman https://my.sitenexs.com/absen/target) -->
-        <a href="https://my.sitenexs.com/absen/target" id="activeReminderBanner" class="reminder-banner hidden">
-          <div class="reminder-banner-left">
-            <div class="reminder-bell">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-              </svg>
-            </div>
-            <div class="reminder-banner-text">
-              <div class="reminder-banner-title" id="bannerRemTitle">-</div>
-              <div class="reminder-banner-sub" id="bannerRemSub">-</div>
-            </div>
-          </div>
-          <span class="badge badge-warn" id="bannerRemCount">0</span>
-        </a>
-
-        <!-- Unified Hero Clock & Attendance Card -->
-        <section class="hero-attendance-card">
-          <div class="clock-box">
-            <div class="clock-date" id="clockDate">-</div>
-            <div class="clock-time" id="clockTime">00:00:00</div>
-          </div>
-
-          <div class="hero-body">
-            <div class="today-status">
-              <div class="status-box in-box">
-                <div class="status-label">Masuk</div>
-                <div class="status-val" id="todayIn">--:--</div>
-                <span class="status-late-tag hidden" id="todayInLateTag">Telat</span>
-              </div>
-              <div class="status-box out-box">
-                <div class="status-label">Keluar</div>
-                <div class="status-val" id="todayOut">--:--</div>
-                <span class="status-late-tag hidden" id="todayOutLateTag">Telat</span>
-              </div>
+          <!-- Unified Hero Clock & Attendance Card -->
+          <section class="hero-attendance-card">
+            <div class="clock-box">
+              <div class="clock-date" id="clockDate">-</div>
+              <div class="clock-time" id="clockTime">00:00:00</div>
             </div>
 
-            <div class="action-grid">
-              <button type="button" class="btn btn-masuk" id="btnCheckIn" disabled>
-                <span>Absen Masuk</span>
-                <span class="btn-sub" id="subCheckIn">Memuat...</span>
-              </button>
-              <button type="button" class="btn btn-keluar" id="btnCheckOut" disabled>
-                <span>Absen Keluar</span>
-                <span class="btn-sub" id="subCheckOut">Memuat...</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Grafik Persentase Hadir & Aktif -->
-        <section class="card">
-          <div class="card-title">
-            <span>Performa</span>
-            <span class="badge badge-ok" id="chartDaysLabel">0 Hari</span>
-          </div>
-
-          <div class="chart-layout">
-            <div class="donut-wrap">
-              <svg class="donut-svg" viewBox="0 0 78 78">
-                <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
-                <circle class="donut-progress" id="activeRing" cx="39" cy="39" r="34"></circle>
-              </svg>
-              <div class="donut-center">
-                <span class="donut-pct" id="activePctText">0%</span>
-                <span class="donut-sub">Aktif</span>
-              </div>
-            </div>
-
-            <div class="chart-metrics">
-              <div class="metric-row">
-                <div class="metric-head">
-                  <span class="metric-name">Kehadiran</span>
-                  <span class="metric-val" id="hadirPctText">0%</span>
+            <div class="hero-body">
+              <div class="today-status">
+                <div class="status-box in-box">
+                  <div class="status-label">Masuk</div>
+                  <div class="status-val" id="todayIn">--:--</div>
+                  <span class="status-late-tag hidden" id="todayInLateTag">Telat</span>
                 </div>
-                <div class="bar-track">
-                  <div class="bar-fill bar-hadir" id="hadirBar"></div>
+                <div class="status-box out-box">
+                  <div class="status-label">Keluar</div>
+                  <div class="status-val" id="todayOut">--:--</div>
+                  <span class="status-late-tag hidden" id="todayOutLateTag">Telat</span>
                 </div>
               </div>
 
-              <div class="metric-row">
-                <div class="metric-head">
-                  <span class="metric-name">Catatan Kerja</span>
-                  <span class="metric-val" id="notePctText">0%</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-fill bar-catatan" id="noteBar"></div>
-                </div>
+              <div class="action-grid">
+                <button type="button" class="btn btn-masuk" id="btnCheckIn" disabled>
+                  <span>Absen Masuk</span>
+                  <span class="btn-sub" id="subCheckIn">Memuat...</span>
+                </button>
+                <button type="button" class="btn btn-keluar" id="btnCheckOut" disabled>
+                  <span>Absen Keluar</span>
+                  <span class="btn-sub" id="subCheckOut">Memuat...</span>
+                </button>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="chart-alert warn hidden" id="chartAlert"></div>
-        </section>
-
-        <!-- Daily Work Note Card -->
-        <section class="card">
-          <div class="card-title">
-            <span>Catatan (<span id="noteDateLabel">-</span>)</span>
-            <span class="badge badge-ok hidden" id="noteSavedBadge">Tersimpan</span>
-          </div>
-
-          <div class="note-box">
-            <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
-            <div class="note-footer">
-              <span id="noteCharCount">0 karakter</span>
+          <!-- Grafik Persentase Hadir & Aktif -->
+          <section class="card">
+            <div class="card-title">
+              <span>Performa</span>
+              <span class="badge badge-ok" id="chartDaysLabel">0 Hari</span>
             </div>
-          </div>
 
-          <!-- Foto Dokumentasi -->
-          <div class="doc-photo-box">
-            <div id="pendingThumbsRow" class="pending-thumbs-row hidden"></div>
-            <div class="doc-photo-actions">
-              <button type="button" class="doc-photo-trigger" id="openDocCamBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                  <circle cx="12" cy="13" r="4"></circle>
+            <div class="chart-layout">
+              <div class="donut-wrap">
+                <svg class="donut-svg" viewBox="0 0 78 78">
+                  <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
+                  <circle class="donut-progress" id="activeRing" cx="39" cy="39" r="34"></circle>
                 </svg>
-                <span>Kamera</span>
-              </button>
-              <button type="button" class="doc-photo-trigger file-trigger" id="openDocFileBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                  <polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
-                <span>Galeri</span>
-              </button>
-            </div>
-            <input type="file" id="docFileInput" accept="image/*" multiple class="hidden">
-          </div>
+                <div class="donut-center">
+                  <span class="donut-pct" id="activePctText">0%</span>
+                  <span class="donut-sub">Aktif</span>
+                </div>
+              </div>
 
-          <button type="button" class="btn btn-primary" id="saveNoteBtn">Simpan Catatan</button>
+              <div class="chart-metrics">
+                <div class="metric-row">
+                  <div class="metric-head">
+                    <span class="metric-name">Kehadiran</span>
+                    <span class="metric-val" id="hadirPctText">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill bar-hadir" id="hadirBar"></div>
+                  </div>
+                </div>
 
-          <div id="savedNotePreview" class="saved-note-preview hidden">
-            <div class="saved-note-head">
-              <span>Tersimpan</span>
-              <span id="noteTimestamp">-</span>
+                <div class="metric-row">
+                  <div class="metric-head">
+                    <span class="metric-name">Catatan Kerja</span>
+                    <span class="metric-val" id="notePctText">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill bar-catatan" id="noteBar"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="saved-note-body" id="savedNoteBody"></div>
-            <div class="photo-thumbs" id="savedNoteThumbs"></div>
-          </div>
-        </section>
+
+            <div class="chart-alert warn hidden" id="chartAlert"></div>
+          </section>
+
+          <!-- Daily Work Note Card -->
+          <section class="card">
+            <div class="card-title">
+              <span>Catatan (<span id="noteDateLabel">-</span>)</span>
+              <span class="badge badge-ok hidden" id="noteSavedBadge">Tersimpan</span>
+            </div>
+
+            <div class="note-box">
+              <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
+              <div class="note-footer">
+                <span id="noteCharCount">0 karakter</span>
+              </div>
+            </div>
+
+            <!-- Foto Dokumentasi -->
+            <div class="doc-photo-box">
+              <div id="pendingThumbsRow" class="pending-thumbs-row hidden"></div>
+              <div class="doc-photo-actions">
+                <button type="button" class="doc-photo-trigger" id="openDocCamBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <span>Kamera</span>
+                </button>
+                <button type="button" class="doc-photo-trigger file-trigger" id="openDocFileBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span>Galeri</span>
+                </button>
+              </div>
+              <input type="file" id="docFileInput" accept="image/*" multiple class="hidden">
+            </div>
+
+            <button type="button" class="btn btn-primary" id="saveNoteBtn">Simpan Catatan</button>
+
+            <div id="savedNotePreview" class="saved-note-preview hidden">
+              <div class="saved-note-head">
+                <span>Tersimpan</span>
+                <span id="noteTimestamp">-</span>
+              </div>
+              <div class="saved-note-body" id="savedNoteBody"></div>
+              <div class="photo-thumbs" id="savedNoteThumbs"></div>
+            </div>
+          </section>
+        </div>
       </main>
 
       <!-- Floating Round Chat Button -->
@@ -1838,6 +1974,7 @@
     const CAMERA_RESULT_KEY = "absen_camera_result_payload";
     const CHAT_LAST_SEEN_PREFIX = "absen_chat_last_seen_";
     let currentUser = null;
+    let activeViewMode = "user"; // "admin" | "user"
     let myRecords = [];
     let myReminders = [];
     let unsubscribeRecords = null;
@@ -1913,6 +2050,47 @@
       if (!userObj) return false;
       return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
     }
+
+    // ================= PENGATURAN MODE ADMIN VS MODE BIASA =================
+    function switchAppMode(targetMode) {
+      const isAdminAccount = isUserAdmin(currentUser);
+      if (!isAdminAccount) {
+        activeViewMode = "user";
+      } else {
+        activeViewMode = (targetMode === "admin") ? "admin" : "user";
+      }
+
+      const mainAppEl = document.getElementById("mainApp");
+      const switcherBar = document.getElementById("modeSwitcherBar");
+      const adminBtn = document.getElementById("btnSwitchAdminMode");
+      const userBtn = document.getElementById("btnSwitchUserMode");
+      const adminView = document.getElementById("adminModeView");
+      const userView = document.getElementById("userModeView");
+
+      switcherBar.classList.toggle("hidden", !isAdminAccount);
+
+      const isAdminViewActive = isAdminAccount && activeViewMode === "admin";
+      mainAppEl.classList.toggle("is-admin-mode", isAdminViewActive);
+      adminBtn.classList.toggle("active", isAdminViewActive);
+      userBtn.classList.toggle("active", !isAdminViewActive);
+
+      adminView.classList.toggle("hidden", !isAdminViewActive);
+      userView.classList.toggle("hidden", isAdminViewActive);
+    }
+
+    document.getElementById("btnSwitchAdminMode").addEventListener("click", () => {
+      switchAppMode("admin");
+    });
+
+    document.getElementById("btnSwitchUserMode").addEventListener("click", () => {
+      switchAppMode("user");
+      showToast("Beralih ke Mode Biasa untuk absensi.", "info");
+    });
+
+    document.getElementById("quickToUserModeBtn").addEventListener("click", () => {
+      switchAppMode("user");
+      showToast("Mode Biasa aktif. Silakan lakukan absen.", "info");
+    });
 
     // ================= INDIKATOR TITIK PESAN CHAT BELUM DIBACA =================
     function getChatSeenStorageKey() {
@@ -2003,21 +2181,23 @@
       document.getElementById("admPresentToday").textContent = count;
     }
 
-    function applyAdminUIState(userObj) {
-      const mainAppEl = document.getElementById("mainApp");
+    function applyAdminUIState(userObj, forceDefaultAdminLanding = false) {
       const adminBadgeEl = document.getElementById("adminRoleBadge");
-      const adminCardEl = document.getElementById("adminConsoleCard");
       const adminBizSubEl = document.getElementById("adminBizSubtitle");
 
       const isAdmin = isUserAdmin(userObj);
-
-      mainAppEl.classList.toggle("is-admin-mode", isAdmin);
       adminBadgeEl.classList.toggle("hidden", !isAdmin);
-      adminCardEl.classList.toggle("hidden", !isAdmin);
 
       if (!isAdmin) {
         stopAdminPreviewListeners();
+        switchAppMode("user");
         return;
+      }
+
+      if (forceDefaultAdminLanding) {
+        switchAppMode("admin");
+      } else {
+        switchAppMode(activeViewMode);
       }
 
       const bizId = (userObj.businessId || "").trim().toUpperCase();
@@ -2451,7 +2631,7 @@
     function scheduleNoteLoginReminder() {
       clearTimeout(noteReminderTimer);
       noteReminderTimer = setTimeout(() => {
-        if (currentUser) {
+        if (currentUser && activeViewMode === "user") {
           showToast("catatan jangan lupa di isi yaaa", "warn");
         }
       }, 3000);
@@ -2484,6 +2664,7 @@
       }
       closeCameraFallbackModal();
       currentUser = null;
+      activeViewMode = "user";
       myRecords = [];
       myReminders = [];
       pendingDocPhotos = [];
@@ -2512,17 +2693,24 @@
     function watchCurrentUserStatus(empId) {
       if (unsubscribeUserWatch) unsubscribeUserWatch();
       const userRef = doc(db, "absen_karyawan", empId);
+      let firstSnapHandled = false;
       unsubscribeUserWatch = onSnapshot(userRef, (snap) => {
         if (!snap.exists()) {
           forceLogout("Akun dihapus oleh Admin.", "error");
           return;
         }
+        const wasAdmin = isUserAdmin(currentUser);
         const latestData = snap.data();
         currentUser = { ...currentUser, ...latestData };
         localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
         document.getElementById("displayUserName").textContent = currentUser.username;
         document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
-        applyAdminUIState(currentUser);
+
+        const isAdminNow = isUserAdmin(currentUser);
+        const shouldLandAdmin = (!firstSnapHandled && isAdminNow) || (!wasAdmin && isAdminNow);
+        firstSnapHandled = true;
+
+        applyAdminUIState(currentUser, shouldLandAdmin);
         startListeningChatUnread(currentUser);
       }, (err) => {
         console.error(err);
@@ -2673,9 +2861,12 @@
         month: "short",
         year: "numeric"
       });
+      const timeNowStr = getNowTimeStr();
 
       document.getElementById("clockDate").textContent = fullDateStr;
-      document.getElementById("clockTime").textContent = getNowTimeStr();
+      document.getElementById("clockTime").textContent = timeNowStr;
+      document.getElementById("adminClockDate").textContent = fullDateStr;
+      document.getElementById("adminClockTime").textContent = timeNowStr;
       document.getElementById("noteDateLabel").textContent = formatShortDateIndo(now);
 
       if (!currentUser) return;
@@ -2816,18 +3007,19 @@
 
     function openDashboard(user, isFirstLogin = false) {
       currentUser = user;
+      activeViewMode = isUserAdmin(user) ? "admin" : "user";
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
       document.getElementById("displayUserId").textContent = `ID: ${user.id}`;
       document.getElementById("userAvatar").textContent = (user.username || "K").charAt(0);
-      applyAdminUIState(user);
+      applyAdminUIState(user, true);
       startListeningChatUnread(user);
       watchCurrentUserStatus(user.id);
       startListeningRecords(user.id);
       startListeningReminders(user.id);
       updateClockAndButtons();
-      if (isFirstLogin) {
+      if (isFirstLogin && !isUserAdmin(user)) {
         scheduleNoteLoginReminder();
       }
     }
