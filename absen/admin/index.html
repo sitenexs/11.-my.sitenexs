@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Panel Admin Absensi - Absensi Karyawan</title>
+  <title>Admin Sitenexs - Bisnis, Chat &amp; Langganan Admin</title>
   <style>
     :root {
-      --bg: #f1f5f9;
+      --bg: #f3f6f8;
       --surface: #ffffff;
       --surface-soft: #f8fafc;
       --text: #0f172a;
       --text-secondary: #475569;
       --muted: #64748b;
-      --border: rgba(203, 213, 225, 0.78);
-      --primary: #1d4ed8;
-      --primary-dark: #1e3a8a;
-      --primary-light: #3b82f6;
-      --primary-bg: #eff6ff;
+      --border: rgba(203, 213, 225, 0.72);
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #14b8a6;
+      --primary-bg: #f0fdfa;
       --success: #059669;
       --success-bg: #d1fae5;
       --danger: #e11d48;
@@ -25,7 +25,7 @@
       --warning-bg: #fef3c7;
       --radius: 18px;
       --radius-sm: 12px;
-      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
     }
 
     * {
@@ -52,11 +52,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.94); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
     @keyframes itemEnter {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -70,7 +65,7 @@
       display: flex;
       flex-direction: column;
       padding-top: 58px;
-      padding-bottom: 30px;
+      padding-bottom: 28px;
     }
 
     .topbar {
@@ -81,92 +76,67 @@
       width: 100%;
       max-width: 440px;
       z-index: 50;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(147, 197, 253, 0.65);
-      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
 
-    .topbar-user {
+    .topbar-brand {
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
-      flex: 1;
     }
 
-    .avatar {
+    .brand-icon {
       width: 35px;
       height: 35px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background: linear-gradient(135deg, #115e59, #14b8a6);
       color: #ffffff;
-      font-size: 14px;
-      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-transform: uppercase;
       flex-shrink: 0;
-      box-shadow: 0 4px 10px rgba(29, 78, 216, 0.24);
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.22);
     }
 
-    .topbar-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .user-name-row {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      min-width: 0;
-    }
-
-    .user-name {
-      font-size: 13.5px;
+    .brand-title {
+      font-size: 14px;
       font-weight: 800;
       color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      letter-spacing: -0.2px;
       line-height: 1.2;
     }
 
-    .me-tag {
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: var(--primary-bg);
-      color: var(--primary);
-      border: 1px solid rgba(29, 78, 216, 0.24);
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       flex-shrink: 0;
     }
 
-    .user-sub {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .btn-back-link {
+    .btn-link-sm {
       text-decoration: none;
       border: 1px solid var(--border);
       background: var(--surface-soft);
-      color: var(--text);
-      padding: 6px 11px;
+      color: var(--primary);
+      padding: 6px 10px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       flex-shrink: 0;
     }
 
@@ -179,50 +149,10 @@
       animation: tabFadeSlide 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= BANNER LANGGANAN MAU HABIS ================= */
-    .sub-alert-banner {
-      background: linear-gradient(135deg, #fffbeb, #fef3c7);
-      border: 1px solid #f59e0b;
-      border-left: 4px solid var(--warning);
-      border-radius: 14px;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12);
-      animation: itemEnter 0.22s ease;
-    }
-
-    .sub-alert-banner.expired {
-      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
-      border-color: #f43f5e;
-      border-left-color: var(--danger);
-    }
-
-    .sub-alert-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #92400e;
-    }
-
-    .sub-alert-banner.expired .sub-alert-title {
-      color: #9f1239;
-    }
-
-    .sub-alert-desc {
-      font-size: 11px;
-      font-weight: 600;
-      color: #b45309;
-    }
-
-    .sub-alert-banner.expired .sub-alert-desc {
-      color: #be123c;
-    }
-
     .sub-segment {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
       background: #e2e8f0;
       padding: 4px;
       border-radius: 14px;
@@ -232,28 +162,28 @@
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      padding: 8px 4px;
+      padding: 8px 6px;
       border-radius: 10px;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
       transition: all 0.16s ease;
     }
 
     .sub-seg-btn.active {
       background: #ffffff;
       color: var(--primary);
-      box-shadow: 0 2px 6px rgba(29, 78, 216, 0.12);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
     }
 
     .seg-count {
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 800;
-      padding: 1px 5px;
+      padding: 1px 6px;
       border-radius: 999px;
       background: var(--primary-bg);
       color: var(--primary);
@@ -293,7 +223,7 @@
       margin-bottom: 5px;
     }
 
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       max-width: 100%;
       padding: 10px 12px;
@@ -307,223 +237,10 @@
       transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
     }
 
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
-    }
-
-    .form-input:disabled {
-      background: #e2e8f0;
-      color: var(--muted);
-      cursor: not-allowed;
-    }
-
-    .picker-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .custom-picker-box {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 9px 10px;
-      min-height: 38px;
-      cursor: pointer;
-    }
-
-    .custom-picker-text {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .custom-picker-text.placeholder {
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .native-overlay-input {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      border: none;
-    }
-
-    .cat-pills {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .cat-pill-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-secondary);
-      padding: 7px 6px;
-      border-radius: 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-    }
-
-    .cat-pill-btn.active {
-      background: var(--primary-bg);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .note-box {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface-soft);
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-
-    .note-box:focus-within {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
-    }
-
-    .note-textarea {
-      width: 100%;
-      min-height: 56px;
-      padding: 10px 11px;
-      border: none;
-      background: transparent;
-      font-size: 13px;
-      font-family: inherit;
-      color: var(--text);
-      resize: none;
-      outline: none;
-      line-height: 1.45;
-      display: block;
-    }
-
-    .add-emp-form-box {
-      margin-top: 11px;
-      padding-top: 11px;
-      border-top: 1px dashed var(--border);
-      animation: itemEnter 0.2s ease;
-    }
-
-    /* ================= CUSTOM DROPDOWN PICKER ================= */
-    .custom-select-wrap {
-      position: relative;
-      width: 100%;
-    }
-
-    .custom-select-trigger {
-      width: 100%;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      cursor: pointer;
-      text-align: left;
-      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
-    }
-
-    .custom-select-trigger.open,
-    .custom-select-trigger:focus {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
-      outline: none;
-    }
-
-    .custom-select-val {
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .custom-select-val.placeholder {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .custom-select-chevron {
-      width: 16px;
-      height: 16px;
-      color: var(--muted);
-      flex-shrink: 0;
-      transition: transform 0.16s ease;
-    }
-
-    .custom-select-trigger.open .custom-select-chevron {
-      transform: rotate(180deg);
-      color: var(--primary);
-    }
-
-    .custom-select-menu {
-      position: absolute;
-      top: calc(100% + 5px);
-      left: 0;
-      right: 0;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
-      padding: 5px;
-      max-height: 210px;
-      overflow-y: auto;
-      z-index: 40;
-      animation: itemEnter 0.16s ease;
-    }
-
-    .custom-select-option {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      padding: 8px 10px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      transition: background-color 0.12s, color 0.12s;
-    }
-
-    .custom-select-option:hover {
-      background: var(--surface-soft);
-    }
-
-    .custom-select-option.selected {
-      background: var(--primary-bg);
-      color: var(--primary);
-      font-weight: 800;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .btn {
@@ -552,9 +269,9 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: #ffffff;
-      box-shadow: 0 5px 14px rgba(29, 78, 216, 0.25);
+      box-shadow: 0 5px 14px rgba(15, 118, 110, 0.24);
     }
 
     .btn-masuk {
@@ -563,21 +280,16 @@
       box-shadow: 0 5px 14px rgba(5, 150, 105, 0.22);
     }
 
-    .btn-keluar {
-      background: linear-gradient(135deg, #e11d48, #f43f5e);
+    .btn-enter-chat {
+      text-decoration: none;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: #ffffff;
-    }
-
-    .btn-outline-sm {
+      padding: 6px 11px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 800;
       flex-shrink: 0;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 13px;
-      border-radius: 11px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.2);
     }
 
     .btn-danger-sm {
@@ -589,11 +301,10 @@
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      flex-shrink: 0;
     }
 
-    .btn-role-sm {
-      border: 1px solid rgba(29, 78, 216, 0.24);
+    .btn-sub-sm {
+      border: 1px solid rgba(15, 118, 110, 0.24);
       background: var(--primary-bg);
       color: var(--primary);
       padding: 5px 9px;
@@ -601,53 +312,6 @@
       font-size: 10.5px;
       font-weight: 800;
       cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .btn-role-sm.revoke {
-      border-color: #fde68a;
-      background: var(--warning-bg);
-      color: var(--warning);
-    }
-
-    .btn-detail-sm {
-      border: 1px solid rgba(29, 78, 216, 0.24);
-      background: var(--primary-bg);
-      color: var(--primary);
-      padding: 4px 8px;
-      border-radius: 7px;
-      font-size: 10.5px;
-      font-weight: 800;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .copy-chip-btn {
-      border: 1px solid var(--border);
-      background: #ffffff;
-      color: var(--text-secondary);
-      padding: 3px 8px;
-      border-radius: 7px;
-      font-size: 10.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .copy-actions-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 5px;
-    }
-
-    .emp-row-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      flex-shrink: 0;
     }
 
     .badge {
@@ -662,139 +326,24 @@
     .badge-ok { background: var(--primary-bg); color: var(--primary); }
     .badge-success { background: var(--success-bg); color: var(--success); }
     .badge-warn { background: var(--warning-bg); color: var(--warning); }
-
-    /* ================= GRAFIK PERFORMA KARYAWAN ================= */
-    .chart-layout {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 6px;
-    }
-
-    .donut-wrap {
-      position: relative;
-      width: 78px;
-      height: 78px;
-      flex-shrink: 0;
-    }
-
-    .donut-svg {
-      width: 78px;
-      height: 78px;
-      transform: rotate(-90deg);
-    }
-
-    .donut-bg {
-      fill: none;
-      stroke: #e2e8f0;
-      stroke-width: 8;
-    }
-
-    .donut-progress {
-      fill: none;
-      stroke: var(--primary);
-      stroke-width: 8;
-      stroke-linecap: round;
-      stroke-dasharray: 213.6;
-      transition: stroke-dashoffset 0.45s ease, stroke 0.25s ease;
-    }
-
-    .donut-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .donut-pct {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1.1;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .donut-sub {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-
-    .chart-metrics {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .metric-row {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .metric-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      gap: 6px;
-    }
-
-    .metric-name {
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .metric-val {
-      font-weight: 800;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .bar-track {
-      width: 100%;
-      height: 6px;
-      background: var(--bg);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
-
-    .bar-hadir { background: linear-gradient(90deg, #059669, #10b981); }
-    .bar-catatan { background: linear-gradient(90deg, #1e3a8a, #2563eb); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
 
     .item-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
 
     .list-card {
       background: var(--surface-soft);
       border: 1px solid var(--border);
       border-radius: 13px;
-      padding: 11px 12px;
+      padding: 10px 12px;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      animation: itemEnter 0.2s ease;
-    }
-
-    .list-card-row {
-      display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 8px;
+      animation: itemEnter 0.2s ease;
     }
 
     .list-card-body {
@@ -819,113 +368,49 @@
       word-break: break-word;
     }
 
-    .monitor-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .mini-chip {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 2.5px 7px;
-      border-radius: 6px;
-      background: #ffffff;
+    .biz-group-section {
+      background: var(--surface-soft);
       border: 1px solid var(--border);
-      color: var(--text-secondary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .mini-chip.in {
-      background: var(--success-bg);
-      border-color: transparent;
-      color: var(--success);
-    }
-
-    .mini-chip.warn {
-      background: var(--warning-bg);
-      border-color: transparent;
-      color: var(--warning);
-    }
-
-    .note-box-preview {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--primary);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 11.5px;
-      color: var(--text);
-      white-space: pre-line;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-    }
-
-    .photo-section-box {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
+      border-radius: 14px;
+      padding: 11px 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      animation: itemEnter 0.2s ease;
     }
 
-    .photo-section-head {
+    .biz-group-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      font-size: 10.5px;
-      font-weight: 800;
-      color: var(--text-secondary);
-    }
-
-    .photo-thumbs {
-      display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
     }
 
-    .photo-thumb-btn {
-      display: block;
-      width: 46px;
-      height: 46px;
-      border-radius: 8px;
-      overflow: hidden;
+    .biz-group-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .biz-member-row {
+      background: #ffffff;
       border: 1px solid var(--border);
-      background: var(--surface-soft);
-      padding: 0;
-      cursor: pointer;
-      flex-shrink: 0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
-    .photo-thumb-btn img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .denied-card {
-      text-align: center;
-      padding: 24px 16px;
+    .card-actions {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .denied-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--danger);
-    }
-
-    .denied-msg {
-      font-size: 12px;
-      color: var(--text-secondary);
-      max-width: 300px;
+      gap: 5px;
+      flex-shrink: 0;
     }
 
     .empty-state {
@@ -937,141 +422,6 @@
       border: 1px dashed #cbd5e1;
       border-radius: 12px;
     }
-
-    /* ================= LIGHTBOX FOTO ================= */
-    .lightbox-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.96);
-      z-index: 250;
-      display: flex;
-      flex-direction: column;
-      max-width: 440px;
-      margin: 0 auto;
-      color: #ffffff;
-      animation: tabFadeSlide 0.2s ease;
-    }
-
-    .lb-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 12px 14px;
-      background: rgba(15, 23, 42, 0.9);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .lb-info { min-width: 0; }
-    .lb-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .lb-counter { font-size: 11px; color: #94a3b8; }
-
-    .cam-close-btn {
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      padding: 5px 11px;
-      border-radius: 9px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .lb-stage {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 12px;
-    }
-
-    .lb-main-img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      animation: modalPop 0.2s ease;
-    }
-
-    .lb-nav-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(15, 23, 42, 0.72);
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .lb-nav-btn.prev { left: 10px; }
-    .lb-nav-btn.next { right: 10px; }
-
-    .lb-thumbs-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px));
-      background: rgba(15, 23, 42, 0.95);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      overflow-x: auto;
-    }
-
-    .lb-thumb {
-      width: 48px;
-      height: 48px;
-      border-radius: 9px;
-      overflow: hidden;
-      border: 2px solid transparent;
-      opacity: 0.55;
-      cursor: pointer;
-      flex-shrink: 0;
-      padding: 0;
-      background: transparent;
-    }
-
-    .lb-thumb.active { border-color: var(--primary-light); opacity: 1; }
-    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    /* ================= KONFIRMASI YA / TIDAK ================= */
-    .confirm-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.52);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .confirm-card {
-      width: 100%;
-      max-width: 320px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
-      text-align: center;
-      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .confirm-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
-    .confirm-msg { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 15px; }
-    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 
     .hidden {
       display: none !important;
@@ -1107,333 +457,173 @@
 <body>
   <div class="app-container">
     <header class="topbar">
-      <div class="topbar-user">
-        <div class="avatar" id="adminAvatar">A</div>
-        <div class="topbar-info">
-          <div class="user-name-row">
-            <div class="user-name" id="adminName">Memverifikasi...</div>
-            <span class="me-tag">saya</span>
-          </div>
-          <div class="user-sub" id="adminRoleSub">Admin Absensi • saya</div>
+      <div class="topbar-brand">
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Administrator Sitenexs</div>
+          <div class="brand-sub">Bisnis, chat &amp; langganan admin</div>
         </div>
       </div>
-      <a href="index.html" class="btn-back-link">Kembali</a>
+      <div class="topbar-actions">
+        <a href="adminAbsen.html" class="btn-link-sm">Admin Absen</a>
+        <a href="chat/" class="btn-link-sm">Chat</a>
+      </div>
     </header>
 
-    <!-- Pesan jika belum ditunjuk sebagai admin -->
-    <main class="content-area hidden" id="deniedPanel">
-      <section class="card denied-card">
-        <div class="denied-title">Akses Admin Belum Aktif</div>
-        <div class="denied-msg" id="deniedReason">
-          Akun Anda belum ditunjuk oleh Administrator Sitenexs sebagai Admin Absensi.
-        </div>
-        <a href="index.html" class="btn btn-primary" style="max-width:200px; text-decoration:none; margin-top:4px;">
-          Ke Halaman Presensi
-        </a>
-      </section>
-    </main>
-
-    <!-- Panel Utama Admin yang Ditunjuk -->
-    <main class="content-area hidden" id="adminPanel">
-      <!-- Notifikasi Paket Langganan Akan Habis dari Admin Sitenexs -->
-      <section class="sub-alert-banner hidden" id="subExpiryBanner">
-        <div class="sub-alert-title" id="subExpiryTitle">Paket langganan kamu akan habis</div>
-        <div class="sub-alert-desc" id="subExpiryDesc">-</div>
-      </section>
-
+    <main class="content-area">
       <div class="sub-segment">
-        <button type="button" class="sub-seg-btn active" data-tab="tabPantau">
-          <span>Pantau</span>
-          <span class="seg-count" id="countPantau">0</span>
+        <button type="button" class="sub-seg-btn active" data-tab="tabBisnis">
+          <span>Bisnis</span>
+          <span class="seg-count" id="countBisnis">0</span>
         </button>
-        <button type="button" class="sub-seg-btn" data-tab="tabTambah">
-          <span>Karyawan</span>
-          <span class="seg-count" id="countKaryawan">0</span>
-        </button>
-        <button type="button" class="sub-seg-btn" data-tab="tabTargetPengingat">
-          <span>Target</span>
-          <span class="seg-count" id="countTarget">0</span>
-        </button>
-        <button type="button" class="sub-seg-btn" data-tab="tabAnggotaGrup">
-          <span>Grup</span>
+        <button type="button" class="sub-seg-btn" data-tab="tabGrup">
+          <span>Chat Bisnis</span>
           <span class="seg-count" id="countGrup">0</span>
+        </button>
+        <button type="button" class="sub-seg-btn" data-tab="tabUser">
+          <span>Karyawan</span>
+          <span class="seg-count" id="countUser">0</span>
         </button>
       </div>
 
-      <!-- TAB 1: GRAFIK KARYAWAN (HALAMAN PERTAMA) & CATATAN/FOTO TERFILTER -->
-      <div id="tabPantau" style="display:flex; flex-direction:column; gap:12px;">
+      <!-- TAB 1: BUAT & DAFTAR BISNIS -->
+      <div id="tabBisnis" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
-            <span>Grafik Performa Karyawan</span>
-            <span class="badge badge-success" id="monitorDaysLabel">0 Hari</span>
+            <span>Buat Bisnis Baru</span>
+            <span class="badge badge-ok">absen_bisnis</span>
+          </div>
+          <form id="bisnisForm">
+            <div class="form-group">
+              <label class="form-label" for="bisnisCodeInput">Kode Bisnis (Unik)</label>
+              <input type="text" id="bisnisCodeInput" class="form-input" placeholder="Contoh: KOPI_SENJA atau SITENEXS" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bisnisNameInput">Nama Bisnis</label>
+              <input type="text" id="bisnisNameInput" class="form-input" placeholder="Contoh: Kopi Senja Nusantara" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bisnisDescInput">Keterangan (Opsional)</label>
+              <input type="text" id="bisnisDescInput" class="form-input" placeholder="Unit usaha, cabang, atau divisi utama">
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveBisnisBtn">Simpan Bisnis</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Daftar Bisnis</span>
+            <span class="badge badge-success" id="badgeTotalBisnis">0 Bisnis</span>
+          </div>
+          <div id="bisnisList" class="item-list">
+            <div class="empty-state">Memuat daftar bisnis...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 2: AKSES CHAT BISNIS ADMIN (TANPA BUAT GRUP) -->
+      <div id="tabGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Chat Bisnis Admin</span>
+            <span class="badge badge-success">Admin Read-Only</span>
+          </div>
+          <div class="list-card-sub" style="margin-bottom:10px;">
+            Semua admin pada bisnis dapat masuk ke dalam chat bisnis untuk memantau diskusi (tidak dapat mengirim pesan).
+          </div>
+          <div id="grupList" class="item-list">
+            <div class="empty-state">Memuat daftar chat bisnis...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 3: TAMBAH ADMIN, ATUR LANGGANAN & LIHAT PER BISNIS -->
+      <div id="tabUser" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Tambah Admin Baru</span>
+            <span class="badge badge-success">Otomatis Admin</span>
+          </div>
+          <form id="addAdminForm">
+            <div class="form-group">
+              <label class="form-label" for="newAdminUsernameInput">Username Admin</label>
+              <input type="text" id="newAdminUsernameInput" class="form-input" placeholder="Masukkan username admin" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newAdminIdInput">ID Admin</label>
+              <input type="text" id="newAdminIdInput" class="form-input" placeholder="Contoh: ADM001 atau 123456" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newAdminBisnisSelect">Bisnis Admin</label>
+              <select id="newAdminBisnisSelect" class="form-select" required>
+                <option value="">-- Pilih Bisnis --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newAdminSubDaysInput">Durasi Langganan Admin (Hari)</label>
+              <input type="number" id="newAdminSubDaysInput" class="form-input" min="1" value="30" required>
+            </div>
+            <button type="submit" class="btn btn-masuk" id="saveNewAdminBtn">Tambah Admin</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Atur Langganan Admin Absen</span>
+            <span class="badge badge-warn">Langganan</span>
+          </div>
+          <form id="assignUserForm">
+            <div class="form-group">
+              <label class="form-label" for="userTargetSelect">Pilih Akun Admin</label>
+              <select id="userTargetSelect" class="form-select" required>
+                <option value="">-- Pilih Akun Admin --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="userBisnisSelect">Bisnis</label>
+              <select id="userBisnisSelect" class="form-select" required>
+                <option value="">-- Pilih Bisnis --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subActionSelect">Status Langganan</label>
+              <select id="subActionSelect" class="form-select">
+                <option value="extend_30">Perpanjang +30 Hari</option>
+                <option value="extend_7">Perpanjang +7 Hari</option>
+                <option value="active">Aktifkan Langganan</option>
+                <option value="inactive">Nonaktifkan Langganan</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveAssignBtn">Simpan Langganan Admin</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Admin &amp; Karyawan per Bisnis</span>
+            <span class="badge badge-ok" id="badgeTotalUser">0 Akun</span>
           </div>
 
           <div class="form-group">
-            <div class="custom-select-wrap" id="monitorFilterPicker">
-              <button type="button" class="custom-select-trigger" id="monitorFilterTrigger">
-                <span class="custom-select-val" id="monitorFilterLabel">Semua Karyawan Bisnis Ini</span>
-                <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div class="custom-select-menu hidden" id="monitorFilterMenu"></div>
-            </div>
+            <label class="form-label" for="filterBizMembersSelect">Filter Bisnis</label>
+            <select id="filterBizMembersSelect" class="form-select">
+              <option value="ALL">Semua Bisnis</option>
+            </select>
           </div>
 
-          <div class="chart-layout">
-            <div class="donut-wrap">
-              <svg class="donut-svg" viewBox="0 0 78 78">
-                <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
-                <circle class="donut-progress" id="admActiveRing" cx="39" cy="39" r="34"></circle>
-              </svg>
-              <div class="donut-center">
-                <span class="donut-pct" id="admActivePct">0%</span>
-                <span class="donut-sub">Aktif</span>
-              </div>
-            </div>
-            <div class="chart-metrics">
-              <div class="metric-row">
-                <div class="metric-head">
-                  <span class="metric-name">Kehadiran</span>
-                  <span class="metric-val" id="admHadirPct">0%</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-fill bar-hadir" id="admHadirBar" style="width:0%;"></div>
-                </div>
-              </div>
-              <div class="metric-row">
-                <div class="metric-head">
-                  <span class="metric-name">Catatan Kerja</span>
-                  <span class="metric-val" id="admNotePct">0%</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-fill bar-catatan" id="admNoteBar" style="width:0%;"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" id="monitorDetailCard">
-          <div class="card-title">
-            <span>Catatan &amp; Foto Karyawan</span>
-            <span class="badge badge-ok" id="monitorRecCount">Pilih Karyawan</span>
-          </div>
-          <div id="monitorList" class="item-list">
-            <div class="empty-state">Pilih nama karyawan pada filter di atas untuk menampilkan catatan dan foto.</div>
-          </div>
-        </section>
-      </div>
-
-      <!-- TAB 2: TAMBAH, ATUR ADMIN & HAPUS KARYAWAN -->
-      <div id="tabTambah" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Manajemen Karyawan</span>
-            <span class="badge badge-ok" id="todayDateBadge">-</span>
-          </div>
-
-          <button type="button" class="btn btn-primary" id="toggleAddEmpFormBtn">
-            <span>Tambah Karyawan</span>
-          </button>
-
-          <div id="addEmpFormBox" class="add-emp-form-box hidden">
-            <form id="addEmpForm">
-              <div class="form-group">
-                <label class="form-label" for="newEmpNameInput">Username Karyawan</label>
-                <input type="text" id="newEmpNameInput" class="form-input" placeholder="Masukkan username karyawan" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="newEmpIdInput">ID Karyawan (6 Angka)</label>
-                <input type="text" id="newEmpIdInput" class="form-input" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="Contoh: 102938" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="newEmpBizInput">Bisnis</label>
-                <input type="text" id="newEmpBizInput" class="form-input" disabled>
-              </div>
-              <button type="submit" class="btn btn-masuk" id="addEmpBtn">Simpan Karyawan</button>
-            </form>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Kelola Daftar Karyawan</span>
-            <span class="badge badge-ok" id="empManageBadge">0 Orang</span>
-          </div>
-          <div id="empManageList" class="item-list">
-            <div class="empty-state">Memuat daftar karyawan...</div>
-          </div>
-        </section>
-      </div>
-
-      <!-- TAB 3: BUAT TARGET & PENGINGAT KARYAWAN -->
-      <div id="tabTargetPengingat" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Buat Target / Pengingat Karyawan</span>
-            <span class="badge badge-success">absen_pengingat</span>
-          </div>
-          <form id="adminAssignReminderForm">
-            <div class="form-group">
-              <label class="form-label">Karyawan Penerima</label>
-              <div class="custom-select-wrap" id="remEmpPicker">
-                <button type="button" class="custom-select-trigger" id="remEmpPickerTrigger">
-                  <span class="custom-select-val" id="remEmpPickerLabel">Semua Karyawan Bisnis Ini</span>
-                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </button>
-                <div class="custom-select-menu hidden" id="remEmpPickerMenu"></div>
-              </div>
-            </div>
-
-            <div class="cat-pills" id="admRemCatPills">
-              <button type="button" class="cat-pill-btn active" data-rem-cat="Target">Target</button>
-              <button type="button" class="cat-pill-btn" data-rem-cat="Pengingat">Pengingat</button>
-              <button type="button" class="cat-pill-btn" data-rem-cat="Penting">Penting</button>
-            </div>
-
-            <div class="form-group">
-              <input type="text" id="admRemTitleInput" class="form-input" placeholder="Judul target atau pengingat karyawan..." required>
-            </div>
-
-            <div class="picker-row" id="admTargetMetricRow">
-              <div>
-                <input type="number" id="admRemGoalInput" class="form-input" min="1" placeholder="Angka target (opsional)">
-              </div>
-              <div>
-                <input type="text" id="admRemUnitInput" class="form-input" placeholder="Satuan (Klien / Tugas)">
-              </div>
-            </div>
-
-            <div class="picker-row">
-              <label class="custom-picker-box">
-                <span class="custom-picker-text" id="admRemDateDisplay">Hari ini</span>
-                <input type="date" id="admRemDateInput" class="native-overlay-input" required>
-              </label>
-
-              <label class="custom-picker-box">
-                <span class="custom-picker-text placeholder" id="admRemTimeDisplay">Jam (opsional)</span>
-                <input type="time" id="admRemTimeInput" class="native-overlay-input">
-              </label>
-            </div>
-
-            <div class="note-box">
-              <textarea id="admRemNoteInput" class="note-textarea" placeholder="Catatan instruksi atau detail pengingat..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="saveAdmRemBtn">Kirim Target / Pengingat</button>
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Daftar Target &amp; Pengingat Karyawan</span>
-            <span class="badge badge-ok" id="admRemListBadge">0 Item</span>
-          </div>
-          <div id="admRemList" class="item-list">
-            <div class="empty-state">Memuat target dan pengingat...</div>
-          </div>
-        </section>
-      </div>
-
-      <!-- TAB 4: BUAT GRUP, TAMBAH & HAPUS ANGGOTA GRUP -->
-      <div id="tabAnggotaGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Buat Grup Baru</span>
-            <span class="badge badge-success">absen_grup</span>
-          </div>
-          <form id="createGroupForm">
-            <div class="form-group">
-              <label class="form-label" for="newGroupNameInput">Nama Grup</label>
-              <input type="text" id="newGroupNameInput" class="form-input" placeholder="Contoh: Tim Lapangan, Sales, Kasir" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="newGroupDescInput">Deskripsi Grup (Opsional)</label>
-              <input type="text" id="newGroupDescInput" class="form-input" placeholder="Keterangan singkat grup">
-            </div>
-            <button type="submit" class="btn btn-masuk" id="createGroupBtn">Buat Grup</button>
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Tambah Anggota ke Grup</span>
-            <span class="badge badge-ok">Anggota</span>
-          </div>
-          <form id="addMemberForm">
-            <div class="form-group">
-              <label class="form-label">Pilih Grup Bisnis</label>
-              <div class="custom-select-wrap" id="groupPicker">
-                <button type="button" class="custom-select-trigger" id="groupPickerTrigger">
-                  <span class="custom-select-val placeholder" id="groupPickerLabel">-- Pilih Grup --</span>
-                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </button>
-                <div class="custom-select-menu hidden" id="groupPickerMenu"></div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Pilih Karyawan</label>
-              <div class="custom-select-wrap" id="memberPicker">
-                <button type="button" class="custom-select-trigger" id="memberPickerTrigger">
-                  <span class="custom-select-val placeholder" id="memberPickerLabel">-- Pilih Karyawan --</span>
-                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </button>
-                <div class="custom-select-menu hidden" id="memberPickerMenu"></div>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="addMemberBtn">Masukkan ke Grup</button>
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Anggota Per Grup</span>
-            <span class="badge badge-success" id="groupMemberBadge">0 Grup</span>
-          </div>
-          <div id="groupMembersList" class="item-list">
-            <div class="empty-state">Memuat daftar grup...</div>
+          <div id="userList" class="item-list">
+            <div class="empty-state">Memuat daftar admin &amp; karyawan per bisnis...</div>
           </div>
         </section>
       </div>
     </main>
-  </div>
-
-  <!-- PHOTO GALLERY LIGHTBOX MODAL -->
-  <div id="lightboxModal" class="lightbox-modal hidden">
-    <div class="lb-topbar">
-      <div class="lb-info">
-        <div class="lb-title" id="lbTitle">Galeri Foto</div>
-        <div class="lb-counter" id="lbCounter">1 / 1</div>
-      </div>
-      <button type="button" class="cam-close-btn" id="lbCloseBtn">Tutup</button>
-    </div>
-    <div class="lb-stage" id="lbStage">
-      <button type="button" class="lb-nav-btn prev" id="lbPrevBtn" aria-label="Sebelumnya">&lsaquo;</button>
-      <img id="lbMainImg" class="lb-main-img" alt="Pratinjau Foto">
-      <button type="button" class="lb-nav-btn next" id="lbNextBtn" aria-label="Berikutnya">&rsaquo;</button>
-    </div>
-    <div class="lb-thumbs-bar" id="lbThumbsBar"></div>
-  </div>
-
-  <!-- KONFIRMASI YA / TIDAK -->
-  <div id="confirmOverlay" class="confirm-overlay hidden">
-    <div class="confirm-card">
-      <div class="confirm-title" id="confirmTitle">Konfirmasi</div>
-      <div class="confirm-msg" id="confirmMsg">-</div>
-      <div class="confirm-actions">
-        <button type="button" class="btn-outline-sm" id="confirmNoBtn">Tidak</button>
-        <button type="button" class="btn-keluar" style="padding:8px;" id="confirmYesBtn">Ya</button>
-      </div>
-    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -1447,8 +637,6 @@
       setDoc,
       updateDoc,
       deleteDoc,
-      query,
-      where,
       onSnapshot
     } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
@@ -1465,79 +653,17 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const SESSION_KEY = "absen_firebase_user_permanent";
-    let currentUser = null;
-    let adminBusinessId = "";
-    let employees = [];
-    let businessRecords = [];
+    let businesses = [];
     let groups = [];
-    let businessReminders = [];
+    let users = [];
     let toastTimer = null;
-    let notifiedSubWarning = false;
-
-    let selectedMonitorEmp = "ALL";
-    let showMonitorDetails = false;
-    let selectedGroupId = "";
-    let selectedMemberEmpId = "";
-    let selectedRemTargetEmp = "ALL";
-    let selectedAdmRemCategory = "Target";
-
-    let unsubEmp = null;
-    let unsubRec = null;
-    let unsubGrp = null;
-    let unsubRem = null;
-
-    let lightboxPhotos = [];
-    let lightboxIndex = 0;
 
     function showToast(msg) {
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
-    }
-
-    async function copyTextValue(text, label) {
-      if (!text) return;
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(text);
-        } else {
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          document.body.removeChild(ta);
-        }
-        showToast(`${label} disalin: ${text}`);
-      } catch {
-        showToast(`Gagal menyalin ${label}.`);
-      }
-    }
-
-    function showYesNoConfirm(title, message, yesText = "Ya", noText = "Tidak") {
-      return new Promise((resolve) => {
-        const overlay = document.getElementById("confirmOverlay");
-        document.getElementById("confirmTitle").textContent = title;
-        document.getElementById("confirmMsg").textContent = message;
-        const yesBtn = document.getElementById("confirmYesBtn");
-        const noBtn = document.getElementById("confirmNoBtn");
-        yesBtn.textContent = yesText;
-        noBtn.textContent = noText;
-        overlay.classList.remove("hidden");
-
-        const cleanup = (res) => {
-          overlay.classList.add("hidden");
-          yesBtn.onclick = null;
-          noBtn.onclick = null;
-          resolve(res);
-        };
-
-        yesBtn.onclick = () => cleanup(true);
-        noBtn.onclick = () => cleanup(false);
-      });
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
     }
 
     function escapeHtml(str) {
@@ -1549,1047 +675,485 @@
         .replace(/'/g, "&#39;");
     }
 
-    function cleanNoteLines(rawNote) {
-      return String(rawNote || "")
-        .split("\n")
-        .map(line => line.trim())
-        .filter(Boolean)
-        .join("\n");
+    function slugifyBusinessId(raw) {
+      return String(raw || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
     }
 
-    function getTodayKey() {
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    function getBusinessName(businessId) {
+      const found = businesses.find(b => b.id === businessId);
+      return found ? `${found.name} (${found.id})` : (businessId || "Belum diatur");
     }
 
-    function formatShortDateKey(dateKey) {
-      if (!dateKey) return "-";
-      const [y, m, d] = dateKey.split("-").map(Number);
-      const dt = new Date(y, m - 1, d);
-      return dt.toLocaleDateString("id-ID", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
+    function isEmployeeAdmin(u) {
+      return Boolean(u.isAbsenAdmin) || u.role === "admin_absen";
     }
 
-    function hasAdminAuthority(docData) {
-      if (!docData) return false;
-      return Boolean(docData.isAbsenAdmin) || docData.role === "admin_absen";
-    }
-
-    // ================= NOTIFIKASI PAKET LANGGANAN MAU HABIS =================
-    function checkSubscriptionExpiring(userData) {
-      const banner = document.getElementById("subExpiryBanner");
-      const titleEl = document.getElementById("subExpiryTitle");
-      const descEl = document.getElementById("subExpiryDesc");
-      if (!banner || !userData) return;
-
-      if (userData.subscriptionActive === false) {
-        banner.classList.remove("hidden");
-        banner.classList.add("expired");
-        titleEl.textContent = "Paket langganan admin tidak aktif";
-        descEl.textContent = "Hubungi Admin Sitenexs untuk mengaktifkan kembali paket langganan Anda.";
-        if (!notifiedSubWarning) {
-          notifiedSubWarning = true;
-          showToast("Paket langganan admin kamu tidak aktif!");
-        }
-        return;
+    function isSubscriptionValid(u) {
+      if (!isEmployeeAdmin(u)) return true;
+      if (u.subscriptionActive === false) return false;
+      if (u.subscriptionExpiresAt) {
+        const expMs = new Date(u.subscriptionExpiresAt).getTime();
+        if (!isNaN(expMs) && expMs < Date.now()) return false;
       }
+      return true;
+    }
 
-      if (userData.subscriptionExpiresAt) {
-        const expMs = new Date(userData.subscriptionExpiresAt).getTime();
-        if (!isNaN(expMs)) {
-          const diffMs = expMs - Date.now();
-          const daysLeft = Math.ceil(diffMs / (24 * 60 * 60 * 1000));
-          const expDateStr = new Date(expMs).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "short",
-            year: "numeric"
+    function formatSubStatusLabel(u) {
+      if (!isEmployeeAdmin(u)) return "";
+      if (!isSubscriptionValid(u)) return "Langganan Habis";
+      if (u.subscriptionExpiresAt) {
+        const dt = new Date(u.subscriptionExpiresAt);
+        if (!isNaN(dt.getTime())) {
+          return `Aktif s/d ${dt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}`;
+        }
+      }
+      return "Langganan Aktif";
+    }
+
+    function getBusinessAdminIds(businessId) {
+      const bizUpper = String(businessId || "").trim().toUpperCase();
+      if (!bizUpper) return [];
+      return users
+        .filter(u => (u.businessId || "").trim().toUpperCase() === bizUpper && isEmployeeAdmin(u))
+        .map(u => u.id || u.docId)
+        .filter(Boolean);
+    }
+
+    async function syncAdminsIntoBusinessGroups(businessId) {
+      const bizUpper = String(businessId || "").trim().toUpperCase();
+      if (!bizUpper) return;
+      const adminIds = getBusinessAdminIds(bizUpper);
+      const targetGroups = groups.filter(g => (g.businessId || "").trim().toUpperCase() === bizUpper);
+
+      for (const grp of targetGroups) {
+        const currentMembers = Array.isArray(grp.memberIds) ? grp.memberIds : [];
+        const merged = Array.from(new Set([...currentMembers, ...adminIds]));
+        const changed = merged.length !== currentMembers.length || grp.allowAllAdmins !== true || grp.adminReadOnly !== true;
+        if (changed) {
+          await updateDoc(doc(db, "absen_grup", grp.id), {
+            memberIds: merged,
+            allowAllAdmins: true,
+            adminReadOnly: true,
+            updatedAt: new Date().toISOString()
           });
-
-          if (diffMs <= 0) {
-            banner.classList.remove("hidden");
-            banner.classList.add("expired");
-            titleEl.textContent = "Paket langganan kamu sudah habis";
-            descEl.textContent = `Berakhir pada ${expDateStr}. Silakan hubungi Admin Sitenexs untuk perpanjangan.`;
-            if (!notifiedSubWarning) {
-              notifiedSubWarning = true;
-              showToast("Paket langganan kamu sudah habis!");
-            }
-            return;
-          }
-
-          if (daysLeft <= 7) {
-            banner.classList.remove("hidden");
-            banner.classList.remove("expired");
-            titleEl.textContent = `Paket langganan kamu akan habis (${daysLeft} hari lagi)`;
-            descEl.textContent = `Masa aktif berakhir pada ${expDateStr}. Segera perpanjang melalui Admin Sitenexs.`;
-            if (!notifiedSubWarning) {
-              notifiedSubWarning = true;
-              showToast(`Paket langganan kamu akan habis (${daysLeft} hari lagi)!`);
-            }
-            return;
-          }
         }
       }
-
-      banner.classList.add("hidden");
-      banner.classList.remove("expired");
     }
-
-    // Input ID karyawan 6 angka saja
-    const newEmpIdInputEl = document.getElementById("newEmpIdInput");
-    newEmpIdInputEl.addEventListener("input", () => {
-      newEmpIdInputEl.value = newEmpIdInputEl.value.replace(/\D/g, "").slice(0, 6);
-    });
-
-    // Toggle form tambah karyawan saat tombol diklik
-    document.getElementById("toggleAddEmpFormBtn").addEventListener("click", () => {
-      const box = document.getElementById("addEmpFormBox");
-      const willShow = box.classList.contains("hidden");
-      box.classList.toggle("hidden", !willShow);
-      if (willShow) {
-        document.getElementById("newEmpNameInput").focus();
-      }
-    });
-
-    // Picker Target & Pengingat
-    const admRemDateInput = document.getElementById("admRemDateInput");
-    const admRemDateDisplay = document.getElementById("admRemDateDisplay");
-    const admRemTimeInput = document.getElementById("admRemTimeInput");
-    const admRemTimeDisplay = document.getElementById("admRemTimeDisplay");
-    const admTargetMetricRow = document.getElementById("admTargetMetricRow");
-
-    function initAdmReminderPickers() {
-      const todayKey = getTodayKey();
-      admRemDateInput.value = todayKey;
-      admRemDateDisplay.textContent = formatShortDateKey(todayKey);
-      admRemTimeInput.value = "";
-      admRemTimeDisplay.textContent = "Jam (opsional)";
-      admRemTimeDisplay.classList.add("placeholder");
-    }
-
-    admRemDateInput.addEventListener("change", () => {
-      admRemDateDisplay.textContent = admRemDateInput.value ? formatShortDateKey(admRemDateInput.value) : "Pilih tanggal";
-    });
-
-    admRemTimeInput.addEventListener("change", () => {
-      if (admRemTimeInput.value) {
-        admRemTimeDisplay.textContent = admRemTimeInput.value;
-        admRemTimeDisplay.classList.remove("placeholder");
-      } else {
-        admRemTimeDisplay.textContent = "Jam (opsional)";
-        admRemTimeDisplay.classList.add("placeholder");
-      }
-    });
-
-    document.querySelectorAll("#admRemCatPills .cat-pill-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("#admRemCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedAdmRemCategory = btn.dataset.remCat;
-        admTargetMetricRow.classList.toggle("hidden", selectedAdmRemCategory !== "Target");
-      });
-    });
-
-    // ================= CUSTOM DROPDOWN PICKERS =================
-    function setupCustomDropdown({ triggerId, menuId, labelId, options, currentValue, placeholderText, onSelect }) {
-      const trigger = document.getElementById(triggerId);
-      const menu = document.getElementById(menuId);
-      const labelEl = document.getElementById(labelId);
-
-      const activeOpt = options.find(o => o.value === currentValue);
-      if (activeOpt) {
-        labelEl.textContent = activeOpt.label;
-        labelEl.classList.remove("placeholder");
-      } else {
-        labelEl.textContent = placeholderText;
-        labelEl.classList.add("placeholder");
-      }
-
-      if (options.length === 0) {
-        menu.innerHTML = `<div class="empty-state" style="padding:10px;">Tidak ada pilihan tersedia</div>`;
-      } else {
-        menu.innerHTML = options.map(opt => `
-          <button type="button" class="custom-select-option ${opt.value === currentValue ? "selected" : ""}" data-opt-val="${escapeHtml(opt.value)}">
-            <span>${escapeHtml(opt.label)}</span>
-            ${opt.sub ? `<span class="badge badge-ok">${escapeHtml(opt.sub)}</span>` : ""}
-          </button>
-        `).join("");
-      }
-
-      trigger.onclick = (e) => {
-        e.stopPropagation();
-        const willOpen = menu.classList.contains("hidden");
-        document.querySelectorAll(".custom-select-menu").forEach(m => m.classList.add("hidden"));
-        document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("open"));
-        if (willOpen) {
-          menu.classList.remove("hidden");
-          trigger.classList.add("open");
-        }
-      };
-
-      menu.querySelectorAll("[data-opt-val]").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const val = btn.dataset.optVal;
-          menu.classList.add("hidden");
-          trigger.classList.remove("open");
-          onSelect(val);
-        });
-      });
-    }
-
-    document.addEventListener("click", () => {
-      document.querySelectorAll(".custom-select-menu").forEach(m => m.classList.add("hidden"));
-      document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("open"));
-    });
-
-    function refreshAllCustomPickers() {
-      const monOpts = [
-        { value: "ALL", label: "Semua Karyawan (Grafik)", sub: `${employees.length}` },
-        ...employees.map(emp => {
-          const idVal = emp.id || emp.docId;
-          return { value: idVal, label: emp.username || idVal, sub: idVal };
-        })
-      ];
-      if (!monOpts.some(o => o.value === selectedMonitorEmp)) {
-        selectedMonitorEmp = "ALL";
-        showMonitorDetails = false;
-      }
-      setupCustomDropdown({
-        triggerId: "monitorFilterTrigger",
-        menuId: "monitorFilterMenu",
-        labelId: "monitorFilterLabel",
-        options: monOpts,
-        currentValue: selectedMonitorEmp,
-        placeholderText: "Pilih Karyawan",
-        onSelect: (val) => {
-          selectedMonitorEmp = val;
-          showMonitorDetails = (val !== "ALL");
-          refreshAllCustomPickers();
-          renderMonitorChartAndList();
-        }
-      });
-
-      const remEmpOpts = [
-        { value: "ALL", label: "Semua Karyawan Bisnis Ini", sub: `${employees.length}` },
-        ...employees.map(emp => {
-          const idVal = emp.id || emp.docId;
-          return { value: idVal, label: emp.username || idVal, sub: idVal };
-        })
-      ];
-      if (!remEmpOpts.some(o => o.value === selectedRemTargetEmp)) {
-        selectedRemTargetEmp = "ALL";
-      }
-      setupCustomDropdown({
-        triggerId: "remEmpPickerTrigger",
-        menuId: "remEmpPickerMenu",
-        labelId: "remEmpPickerLabel",
-        options: remEmpOpts,
-        currentValue: selectedRemTargetEmp,
-        placeholderText: "Semua Karyawan Bisnis Ini",
-        onSelect: (val) => {
-          selectedRemTargetEmp = val;
-          refreshAllCustomPickers();
-        }
-      });
-
-      const grpOpts = groups.map(g => ({
-        value: g.id,
-        label: g.name,
-        sub: `${Array.isArray(g.memberIds) ? g.memberIds.length : 0} anggota`
-      }));
-      if (selectedGroupId && !grpOpts.some(o => o.value === selectedGroupId)) {
-        selectedGroupId = "";
-      }
-      setupCustomDropdown({
-        triggerId: "groupPickerTrigger",
-        menuId: "groupPickerMenu",
-        labelId: "groupPickerLabel",
-        options: grpOpts,
-        currentValue: selectedGroupId,
-        placeholderText: "-- Pilih Grup --",
-        onSelect: (val) => {
-          selectedGroupId = val;
-          refreshAllCustomPickers();
-        }
-      });
-
-      const empOpts = employees.map(emp => {
-        const idVal = emp.id || emp.docId;
-        return { value: idVal, label: emp.username || idVal, sub: idVal };
-      });
-      if (selectedMemberEmpId && !empOpts.some(o => o.value === selectedMemberEmpId)) {
-        selectedMemberEmpId = "";
-      }
-      setupCustomDropdown({
-        triggerId: "memberPickerTrigger",
-        menuId: "memberPickerMenu",
-        labelId: "memberPickerLabel",
-        options: empOpts,
-        currentValue: selectedMemberEmpId,
-        placeholderText: "-- Pilih Karyawan --",
-        onSelect: (val) => {
-          selectedMemberEmpId = val;
-          refreshAllCustomPickers();
-        }
-      });
-    }
-
-    // ================= PISAH FOTO PRESENSI & FOTO CATATAN =================
-    function getAttendancePhotos(rec) {
-      const list = [];
-      if (rec.checkInPhoto) {
-        list.push({
-          url: rec.checkInPhoto,
-          label: `Presensi Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"})`
-        });
-      }
-      if (rec.checkOutPhoto) {
-        list.push({
-          url: rec.checkOutPhoto,
-          label: `Presensi Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"})`
-        });
-      }
-      return list;
-    }
-
-    function getNotePhotos(rec) {
-      const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
-      return notePhotos.map((u, i) => ({
-        url: u,
-        label: `Catatan #${i + 1}`
-      }));
-    }
-
-    // Lightbox
-    function openPhotoGallery(photosList, startIndex = 0, title = "Galeri Foto") {
-      if (!Array.isArray(photosList) || photosList.length === 0) return;
-      lightboxPhotos = photosList;
-      lightboxIndex = Math.max(0, Math.min(startIndex, photosList.length - 1));
-      document.getElementById("lbTitle").textContent = title;
-      renderLightboxSlide();
-      document.getElementById("lightboxModal").classList.remove("hidden");
-    }
-
-    function renderLightboxSlide() {
-      const total = lightboxPhotos.length;
-      const item = lightboxPhotos[lightboxIndex];
-      const mainImg = document.getElementById("lbMainImg");
-      mainImg.style.animation = "none";
-      void mainImg.offsetWidth;
-      mainImg.style.animation = "";
-      mainImg.src = item.url;
-      document.getElementById("lbCounter").textContent = `${lightboxIndex + 1} / ${total} • ${item.label || "Foto"}`;
-
-      document.getElementById("lbPrevBtn").classList.toggle("hidden", total <= 1);
-      document.getElementById("lbNextBtn").classList.toggle("hidden", total <= 1);
-
-      const thumbsBar = document.getElementById("lbThumbsBar");
-      thumbsBar.innerHTML = lightboxPhotos.map((p, idx) => `
-        <button type="button" class="lb-thumb ${idx === lightboxIndex ? "active" : ""}" data-lb-idx="${idx}">
-          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label || "Foto")}">
-        </button>
-      `).join("");
-
-      thumbsBar.querySelectorAll("[data-lb-idx]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          lightboxIndex = Number(btn.dataset.lbIdx);
-          renderLightboxSlide();
-        });
-      });
-    }
-
-    document.getElementById("lbCloseBtn").addEventListener("click", () => {
-      document.getElementById("lightboxModal").classList.add("hidden");
-      lightboxPhotos = [];
-    });
-
-    document.getElementById("lbPrevBtn").addEventListener("click", () => {
-      if (lightboxPhotos.length <= 1) return;
-      lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
-      renderLightboxSlide();
-    });
-
-    document.getElementById("lbNextBtn").addEventListener("click", () => {
-      if (lightboxPhotos.length <= 1) return;
-      lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
-      renderLightboxSlide();
-    });
 
     document.querySelectorAll(".sub-seg-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".sub-seg-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         const tabId = btn.dataset.tab;
-        ["tabPantau", "tabTambah", "tabTargetPengingat", "tabAnggotaGrup"].forEach(id => {
+        ["tabBisnis", "tabGrup", "tabUser"].forEach(id => {
           document.getElementById(id).classList.toggle("hidden", id !== tabId);
         });
       });
     });
 
-    function renderMonitorChartAndList() {
-      document.getElementById("countPantau").textContent = employees.length;
-
-      const empIdSet = new Set(employees.map(e => e.id || e.docId));
-      const empNameMap = {};
-      employees.forEach(e => {
-        const idVal = e.id || e.docId;
-        empNameMap[idVal] = e.username || idVal;
-      });
-
-      const scopedRecords = businessRecords.filter(r => {
-        if (!r.empId || !empIdSet.has(r.empId)) return false;
-        if (selectedMonitorEmp !== "ALL" && r.empId !== selectedMonitorEmp) return false;
-        return true;
-      });
-
-      const totalDays = scopedRecords.length;
-      const circumference = 2 * Math.PI * 34;
-      const ring = document.getElementById("admActiveRing");
-
-      document.getElementById("monitorDaysLabel").textContent = `${totalDays} Hari`;
-
-      if (totalDays === 0) {
-        document.getElementById("admActivePct").textContent = "0%";
-        document.getElementById("admHadirPct").textContent = "0%";
-        document.getElementById("admNotePct").textContent = "0%";
-        document.getElementById("admHadirBar").style.width = "0%";
-        document.getElementById("admNoteBar").style.width = "0%";
-        ring.style.strokeDashoffset = circumference;
-      } else {
-        let hadirScore = 0;
-        let noteCount = 0;
-        let activeScore = 0;
-
-        scopedRecords.forEach(rec => {
-          const hasIn = Boolean(rec.checkIn);
-          const hasOut = Boolean(rec.checkOut);
-          const hasNote = Boolean(rec.note && rec.note.trim().length > 0);
-
-          hadirScore += (hasIn ? 50 : 0) + (hasOut ? 50 : 0);
-          if (hasNote) noteCount += 1;
-          activeScore += (hasIn ? 35 : 0) + (hasOut ? 35 : 0) + (hasNote ? 30 : 0);
-        });
-
-        const hadirPct = Math.round(hadirScore / totalDays);
-        const notePct = Math.round((noteCount / totalDays) * 100);
-        const activePct = Math.round(activeScore / totalDays);
-
-        document.getElementById("admActivePct").textContent = `${activePct}%`;
-        document.getElementById("admHadirPct").textContent = `${hadirPct}%`;
-        document.getElementById("admNotePct").textContent = `${notePct}%`;
-        document.getElementById("admHadirBar").style.width = `${hadirPct}%`;
-        document.getElementById("admNoteBar").style.width = `${notePct}%`;
-        ring.style.strokeDashoffset = circumference - (activePct / 100) * circumference;
-        ring.style.stroke = activePct >= 80 ? "var(--success)" : (activePct >= 50 ? "var(--warning)" : "var(--danger)");
+    function syncFormWithSelectedUser() {
+      const empId = document.getElementById("userTargetSelect").value;
+      const u = users.find(item => (item.id || item.docId) === empId);
+      if (!u) return;
+      if (u.businessId) {
+        document.getElementById("userBisnisSelect").value = u.businessId;
       }
-
-      const container = document.getElementById("monitorList");
-      const recCountBadge = document.getElementById("monitorRecCount");
-
-      if (!showMonitorDetails || selectedMonitorEmp === "ALL") {
-        recCountBadge.textContent = "Grafik Utama";
-        container.innerHTML = `<div class="empty-state">Pilih nama karyawan pada filter di atas untuk menampilkan catatan dan foto.</div>`;
-        return;
-      }
-
-      const sorted = [...scopedRecords].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
-      recCountBadge.textContent = `${sorted.length} Riwayat`;
-
-      if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada catatan atau foto untuk karyawan ini.</div>`;
-        return;
-      }
-
-      container.innerHTML = sorted.map((rec, idx) => {
-        const absenPhotos = getAttendancePhotos(rec);
-        const notePhotos = getNotePhotos(rec);
-        const cleanNote = cleanNoteLines(rec.note);
-        const empLabel = empNameMap[rec.empId] || rec.username || rec.empId;
-
-        const absenSectionHtml = `
-          <div class="photo-section-box">
-            <div class="photo-section-head">
-              <span>Foto Presensi (${absenPhotos.length})</span>
-              ${absenPhotos.length > 0 ? `<button type="button" class="btn-detail-sm" data-open-absen-rec="${idx}" data-photo-idx="0">Lihat Galeri</button>` : ""}
-            </div>
-            ${absenPhotos.length > 0
-              ? `<div class="photo-thumbs">${absenPhotos.map((p, pIdx) => `
-                  <button type="button" class="photo-thumb-btn" data-open-absen-rec="${idx}" data-photo-idx="${pIdx}" title="${escapeHtml(p.label)}">
-                    <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label)}">
-                  </button>
-                `).join("")}</div>`
-              : `<div class="list-card-sub" style="margin-top:0;">Belum ada foto presensi.</div>`
-            }
-          </div>
-        `;
-
-        const noteSectionHtml = `
-          <div class="photo-section-box">
-            <div class="photo-section-head">
-              <span>Foto Catatan (${notePhotos.length})</span>
-              ${notePhotos.length > 0 ? `<button type="button" class="btn-detail-sm" data-open-note-rec="${idx}" data-photo-idx="0">Lihat Galeri</button>` : ""}
-            </div>
-            ${notePhotos.length > 0
-              ? `<div class="photo-thumbs">${notePhotos.map((p, pIdx) => `
-                  <button type="button" class="photo-thumb-btn" data-open-note-rec="${idx}" data-photo-idx="${pIdx}" title="${escapeHtml(p.label)}">
-                    <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label)}">
-                  </button>
-                `).join("")}</div>`
-              : `<div class="list-card-sub" style="margin-top:0;">Belum ada foto catatan.</div>`
-            }
-          </div>
-        `;
-
-        return `
-          <div class="list-card">
-            <div class="list-card-row">
-              <div class="list-card-body">
-                <div class="list-card-title">
-                  <span>${escapeHtml(empLabel)}</span>
-                  <span class="badge badge-ok">${escapeHtml(rec.empId)}</span>
-                  <span class="badge badge-success">${escapeHtml(rec.date || "-")}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="monitor-chips">
-              <span class="mini-chip ${rec.checkIn ? "in" : ""}">Masuk: ${rec.checkIn ? rec.checkIn.slice(0, 5) : "--:--"}${rec.checkInLate ? " (Telat)" : ""}</span>
-              <span class="mini-chip ${rec.checkOut ? "in" : ""}">Keluar: ${rec.checkOut ? rec.checkOut.slice(0, 5) : "--:--"}</span>
-            </div>
-
-            <div class="note-box-preview">${cleanNote ? escapeHtml(cleanNote) : "Belum ada catatan kerja."}</div>
-            ${absenSectionHtml}
-            ${noteSectionHtml}
-          </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll("[data-open-absen-rec]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const rec = sorted[Number(btn.dataset.openAbsenRec)];
-          const pIdx = Number(btn.dataset.photoIdx) || 0;
-          if (!rec) return;
-          const nama = empNameMap[rec.empId] || rec.username || rec.empId;
-          openPhotoGallery(getAttendancePhotos(rec), pIdx, `Foto Presensi • ${nama} (${rec.date || ""})`);
-        });
-      });
-
-      container.querySelectorAll("[data-open-note-rec]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const rec = sorted[Number(btn.dataset.openNoteRec)];
-          const pIdx = Number(btn.dataset.photoIdx) || 0;
-          if (!rec) return;
-          const nama = empNameMap[rec.empId] || rec.username || rec.empId;
-          openPhotoGallery(getNotePhotos(rec), pIdx, `Foto Catatan • ${nama} (${rec.date || ""})`);
-        });
-      });
     }
 
-    function renderEmployeesManage() {
-      document.getElementById("todayDateBadge").textContent = getTodayKey();
-      document.getElementById("countKaryawan").textContent = employees.length;
-      document.getElementById("empManageBadge").textContent = `${employees.length} Orang`;
+    document.getElementById("userTargetSelect").addEventListener("change", syncFormWithSelectedUser);
+    document.getElementById("filterBizMembersSelect").addEventListener("change", renderUsers);
 
-      const container = document.getElementById("empManageList");
-      if (employees.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada karyawan terdaftar.</div>`;
-        return;
+    function refreshSelectOptions() {
+      const userBisnisSelect = document.getElementById("userBisnisSelect");
+      const newAdminBisnisSelect = document.getElementById("newAdminBisnisSelect");
+      const filterBizMembersSelect = document.getElementById("filterBizMembersSelect");
+      const userTargetSelect = document.getElementById("userTargetSelect");
+
+      const prevUserBiz = userBisnisSelect.value;
+      const prevNewAdminBiz = newAdminBisnisSelect.value;
+      const prevFilterBiz = filterBizMembersSelect.value || "ALL";
+      const prevUserTarget = userTargetSelect.value;
+
+      const bizOpts = [`<option value="">-- Pilih Bisnis --</option>`].concat(
+        businesses.map(b => `<option value="${escapeHtml(b.id)}">${escapeHtml(b.name)} [${escapeHtml(b.id)}]</option>`)
+      );
+      userBisnisSelect.innerHTML = bizOpts.join("");
+      newAdminBisnisSelect.innerHTML = bizOpts.join("");
+
+      if (prevUserBiz) userBisnisSelect.value = prevUserBiz;
+      if (prevNewAdminBiz) newAdminBisnisSelect.value = prevNewAdminBiz;
+
+      const filterOpts = [
+        `<option value="ALL">Semua Bisnis</option>`,
+        ...businesses.map(b => `<option value="${escapeHtml(b.id)}">${escapeHtml(b.name)} (${escapeHtml(b.id)})</option>`),
+        `<option value="__NONE__">Belum Ada Bisnis</option>`
+      ];
+      filterBizMembersSelect.innerHTML = filterOpts.join("");
+      if (Array.from(filterBizMembersSelect.options).some(o => o.value === prevFilterBiz)) {
+        filterBizMembersSelect.value = prevFilterBiz;
       }
 
-      container.innerHTML = employees.map(emp => {
-        const empId = String(emp.id || emp.docId || "");
-        const empUsername = String(emp.username || empId);
-        const isSelf = currentUser && empId === currentUser.id;
-        const isPeerAdmin = hasAdminAuthority(emp);
-
-        return `
-          <div class="list-card">
-            <div class="list-card-row">
-              <div class="list-card-body">
-                <div class="list-card-title">
-                  <span>${escapeHtml(empUsername)}</span>
-                  ${isSelf ? `<span class="me-tag">saya</span>` : ""}
-                  ${isPeerAdmin ? `<span class="badge badge-success">Admin</span>` : `<span class="badge badge-ok">Karyawan</span>`}
-                  <span class="badge badge-ok">${escapeHtml(empId)}</span>
-                </div>
-                <div class="list-card-sub">Bisnis: ${escapeHtml(emp.businessId || adminBusinessId || "-")}</div>
-                <div class="copy-actions-row">
-                  <button type="button" class="copy-chip-btn" data-copy-val="${escapeHtml(empUsername)}" data-copy-label="Username">Salin Username</button>
-                  <button type="button" class="copy-chip-btn" data-copy-val="${escapeHtml(empId)}" data-copy-label="ID Karyawan">Salin ID</button>
-                </div>
-              </div>
-              ${!isSelf
-                ? `<div class="emp-row-actions">
-                    <button type="button" class="btn-role-sm ${isPeerAdmin ? "revoke" : ""}" data-toggle-peer-admin="${escapeHtml(empId)}" data-next-admin="${!isPeerAdmin}">
-                      ${isPeerAdmin ? "Cabut Admin" : "Jadikan Admin"}
-                    </button>
-                    <button type="button" class="btn-danger-sm" data-del-emp="${escapeHtml(empId)}" data-del-name="${escapeHtml(empUsername)}">Hapus</button>
-                  </div>`
-                : `<span class="badge badge-success">saya</span>`
-              }
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll("[data-copy-val]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          copyTextValue(btn.dataset.copyVal, btn.dataset.copyLabel);
-        });
-      });
-
-      container.querySelectorAll("[data-toggle-peer-admin]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const empId = btn.dataset.togglePeerAdmin;
-          const nextAdmin = btn.dataset.nextAdmin === "true";
-          try {
-            await updateDoc(doc(db, "absen_karyawan", empId), {
-              isAbsenAdmin: nextAdmin,
-              role: nextAdmin ? "admin_absen" : "karyawan",
-              updatedAt: new Date().toISOString()
-            });
-            showToast(nextAdmin ? `${empId} dijadikan Admin Absensi.` : `Status Admin ${empId} dicabut.`);
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal mengubah status admin karyawan.");
-          }
-        });
-      });
-
-      container.querySelectorAll("[data-del-emp]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const empId = btn.dataset.delEmp;
-          const empName = btn.dataset.delName;
-          const confirmed = await showYesNoConfirm(
-            "Hapus Karyawan",
-            `Yakin ingin menghapus karyawan ${empName} (${empId})?`,
-            "Ya, Hapus",
-            "Tidak"
-          );
-          if (!confirmed) return;
-
-          try {
-            await deleteDoc(doc(db, "absen_karyawan", empId));
-            showToast(`Karyawan ${empName} (${empId}) dihapus.`);
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal menghapus karyawan.");
-          }
-        });
-      });
+      const adminAccounts = users.filter(u => isEmployeeAdmin(u));
+      const userOpts = [`<option value="">-- Pilih Akun Admin --</option>`].concat(
+        adminAccounts.map(u => {
+          const idVal = u.id || u.docId;
+          return `<option value="${escapeHtml(idVal)}">${escapeHtml(u.username || idVal)} (${escapeHtml(idVal)})</option>`;
+        })
+      );
+      userTargetSelect.innerHTML = userOpts.join("");
+      if (prevUserTarget && adminAccounts.some(u => (u.id || u.docId) === prevUserTarget)) {
+        userTargetSelect.value = prevUserTarget;
+        syncFormWithSelectedUser();
+      }
     }
 
-    function renderAdminRemindersList() {
-      document.getElementById("countTarget").textContent = businessReminders.length;
-      document.getElementById("admRemListBadge").textContent = `${businessReminders.length} Item`;
+    function renderBusinesses() {
+      document.getElementById("countBisnis").textContent = businesses.length;
+      document.getElementById("badgeTotalBisnis").textContent = `${businesses.length} Bisnis`;
 
-      const empNameMap = {};
-      employees.forEach(e => {
-        const idVal = e.id || e.docId;
-        empNameMap[idVal] = e.username || idVal;
-      });
-
-      const container = document.getElementById("admRemList");
-      if (businessReminders.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat karyawan.</div>`;
+      const container = document.getElementById("bisnisList");
+      if (businesses.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada bisnis dibuat.</div>`;
         return;
       }
 
-      const sorted = [...businessReminders].sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-
-      container.innerHTML = sorted.map(rem => {
-        const targetLabel = empNameMap[rem.empId] || rem.username || rem.empId || "-";
-        const goalNum = Number(rem.targetGoal) || 0;
-        const curNum = Number(rem.targetCurrent) || 0;
-        const goalHtml = goalNum > 0
-          ? `<span class="badge badge-success">Target: ${curNum}/${goalNum} ${escapeHtml(rem.targetUnit || "")}</span>`
-          : "";
-
+      container.innerHTML = businesses.map(b => {
+        const grpCount = groups.filter(g => g.businessId === b.id).length;
+        const bizUsers = users.filter(u => (u.businessId || "").toUpperCase() === b.id);
+        const bizAdmins = bizUsers.filter(u => isEmployeeAdmin(u)).length;
         return `
           <div class="list-card">
-            <div class="list-card-row">
-              <div class="list-card-body">
-                <div class="list-card-title">
-                  <span>${escapeHtml(rem.title || "-")}</span>
-                  <span class="badge badge-ok">${escapeHtml(rem.category || "Target")}</span>
-                  ${goalHtml}
-                </div>
-                <div class="list-card-sub">Karyawan: ${escapeHtml(targetLabel)} (${escapeHtml(rem.empId || "-")}) • ${escapeHtml(formatShortDateKey(rem.date))}${rem.time ? ` ${escapeHtml(rem.time)}` : ""}</div>
-                ${rem.note ? `<div class="note-box-preview" style="margin-top:5px;">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
+            <div class="list-card-body">
+              <div class="list-card-title">
+                <span>${escapeHtml(b.name)}</span>
+                <span class="badge badge-ok">${escapeHtml(b.id)}</span>
+                <span class="badge badge-success">${bizAdmins} Admin • ${bizUsers.length} Karyawan</span>
+                <span class="badge badge-warn">${grpCount} Grup</span>
               </div>
-              <button type="button" class="btn-danger-sm" data-del-adm-rem="${escapeHtml(rem.docId)}">Hapus</button>
+              ${b.description ? `<div class="list-card-sub">${escapeHtml(b.description)}</div>` : ""}
             </div>
+            <button type="button" class="btn-danger-sm" data-del-biz="${escapeHtml(b.id)}">Hapus</button>
           </div>
         `;
       }).join("");
 
-      container.querySelectorAll("[data-del-adm-rem]").forEach(btn => {
+      container.querySelectorAll("[data-del-biz]").forEach(btn => {
         btn.addEventListener("click", async () => {
-          const id = btn.dataset.delAdmRem;
+          const id = btn.dataset.delBiz;
           try {
-            await deleteDoc(doc(db, "absen_pengingat", id));
-            showToast("Target / pengingat dihapus.");
+            await deleteDoc(doc(db, "absen_bisnis", id));
+            showToast("Bisnis dihapus.");
           } catch {
-            showToast("Gagal menghapus item.");
+            showToast("Gagal menghapus bisnis.");
           }
         });
       });
     }
 
-    function renderGroupMembers() {
-      document.getElementById("countGrup").textContent = groups.length;
-      document.getElementById("groupMemberBadge").textContent = `${groups.length} Grup`;
+    function renderBusinessChats() {
+      const chatBizList = businesses.length > 0
+        ? businesses.map(b => ({
+            businessId: b.id,
+            title: b.name || b.id,
+            desc: b.description || "Ruang chat bisnis admin",
+            groupCount: groups.filter(g => (g.businessId || "").toUpperCase() === b.id).length
+          }))
+        : Array.from(new Set(groups.map(g => (g.businessId || "").toUpperCase()).filter(Boolean))).map(bizId => ({
+            businessId: bizId,
+            title: bizId,
+            desc: "Ruang chat bisnis admin",
+            groupCount: groups.filter(g => (g.businessId || "").toUpperCase() === bizId).length
+          }));
 
-      const container = document.getElementById("groupMembersList");
-      if (groups.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada grup untuk bisnis ini. Buat grup di atas.</div>`;
+      document.getElementById("countGrup").textContent = chatBizList.length;
+
+      const container = document.getElementById("grupList");
+      if (chatBizList.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada chat bisnis yang tersedia.</div>`;
         return;
       }
 
-      const empMap = {};
-      employees.forEach(e => {
-        const idVal = e.id || e.docId;
-        empMap[idVal] = e.username || idVal;
-      });
-
-      container.innerHTML = groups.map(g => {
-        const members = Array.isArray(g.memberIds) ? g.memberIds : [];
-        const memberRowsHtml = members.length === 0
-          ? `<div class="list-card-sub">Belum ada anggota di grup ini.</div>`
-          : `<div class="item-list">${members.map(mId => `
-              <div class="list-card" style="padding:7px 9px; background:#ffffff;">
-                <div class="list-card-row">
-                  <div class="list-card-body">
-                    <div class="list-card-title" style="font-size:12px;">
-                      <span>${escapeHtml(empMap[mId] || mId)}</span>
-                      <span class="badge badge-ok">${escapeHtml(mId)}</span>
-                    </div>
-                  </div>
-                  <button type="button" class="btn-danger-sm" data-remove-member-grp="${escapeHtml(g.id)}" data-member-id="${escapeHtml(mId)}">Keluarkan</button>
-                </div>
-              </div>
-            `).join("")}</div>`;
-
+      container.innerHTML = chatBizList.map(item => {
+        const adminCount = getBusinessAdminIds(item.businessId).length;
+        const chatUrl = `chat/?biz=${encodeURIComponent(item.businessId)}`;
         return `
           <div class="list-card">
-            <div class="list-card-title">
-              <span>${escapeHtml(g.name)}</span>
-              <span class="badge badge-success">${members.length} Anggota</span>
+            <div class="list-card-body">
+              <div class="list-card-title">
+                <span>${escapeHtml(item.title)}</span>
+                <span class="badge badge-ok">${escapeHtml(item.businessId)}</span>
+                <span class="badge badge-success">${adminCount} Admin</span>
+                <span class="badge badge-warn">Read-Only</span>
+              </div>
+              <div class="list-card-sub">${escapeHtml(item.desc)}</div>
             </div>
-            ${g.description ? `<div class="list-card-sub">${escapeHtml(g.description)}</div>` : ""}
-            ${memberRowsHtml}
+            <a href="${escapeHtml(chatUrl)}" class="btn-enter-chat">Masuk Chat</a>
           </div>
         `;
       }).join("");
-
-      container.querySelectorAll("[data-remove-member-grp]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const grpId = btn.dataset.removeMemberGrp;
-          const memberId = btn.dataset.memberId;
-          const grp = groups.find(item => item.id === grpId);
-          if (!grp) return;
-
-          const nextMembers = (Array.isArray(grp.memberIds) ? grp.memberIds : []).filter(id => id !== memberId);
-          try {
-            await updateDoc(doc(db, "absen_grup", grpId), {
-              memberIds: nextMembers,
-              updatedAt: new Date().toISOString()
-            });
-            showToast(`${memberId} dihapus dari grup.`);
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal menghapus anggota grup.");
-          }
-        });
-      });
     }
 
-    // Submit Target / Pengingat Karyawan
-    document.getElementById("adminAssignReminderForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!adminBusinessId) {
-        showToast("Bisnis admin belum diatur.");
+    function renderUsers() {
+      document.getElementById("countUser").textContent = users.length;
+      document.getElementById("badgeTotalUser").textContent = `${users.length} Akun`;
+
+      const container = document.getElementById("userList");
+      if (users.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada data karyawan.</div>`;
         return;
       }
 
-      const title = document.getElementById("admRemTitleInput").value.trim();
-      const date = admRemDateInput.value;
-      const time = admRemTimeInput.value;
-      const note = document.getElementById("admRemNoteInput").value.trim();
-      const goalRaw = document.getElementById("admRemGoalInput").value.trim();
-      const unit = document.getElementById("admRemUnitInput").value.trim();
-      const btn = document.getElementById("saveAdmRemBtn");
+      const selectedFilter = document.getElementById("filterBizMembersSelect").value || "ALL";
 
-      if (!title || !date) {
-        showToast("Isi judul dan tanggal.");
-        return;
-      }
-
-      const targetGoal = (selectedAdmRemCategory === "Target" && goalRaw) ? Math.max(0, Number(goalRaw)) : 0;
-      const targetEmps = selectedRemTargetEmp === "ALL"
-        ? employees.map(emp => ({ id: emp.id || emp.docId, username: emp.username || (emp.id || emp.docId) }))
-        : employees
-            .filter(emp => (emp.id || emp.docId) === selectedRemTargetEmp)
-            .map(emp => ({ id: emp.id || emp.docId, username: emp.username || (emp.id || emp.docId) }));
-
-      if (targetEmps.length === 0) {
-        showToast("Belum ada karyawan pada bisnis ini.");
-        return;
-      }
-
-      btn.disabled = true;
-      try {
-        const nowIso = new Date().toISOString();
-        for (let i = 0; i < targetEmps.length; i++) {
-          const targetEmp = targetEmps[i];
-          const docId = `${targetEmp.id}_${Date.now()}_${i}`;
-          await setDoc(doc(db, "absen_pengingat", docId), {
-            empId: targetEmp.id,
-            username: targetEmp.username,
-            businessId: adminBusinessId,
-            assignedBy: currentUser?.id || "",
-            category: selectedAdmRemCategory,
-            title,
-            targetGoal,
-            targetCurrent: 0,
-            targetUnit: targetGoal > 0 ? unit : "",
-            date,
-            time: time || "",
-            note,
-            completed: false,
-            createdAt: nowIso
+      const sections = [];
+      if (selectedFilter === "ALL" || selectedFilter === "__NONE__") {
+        const unassigned = users.filter(u => !(u.businessId || "").trim());
+        if (unassigned.length > 0) {
+          sections.push({
+            title: "Belum Ada Bisnis",
+            code: "UNASSIGNED",
+            members: unassigned
           });
         }
-
-        document.getElementById("admRemTitleInput").value = "";
-        document.getElementById("admRemGoalInput").value = "";
-        document.getElementById("admRemUnitInput").value = "";
-        document.getElementById("admRemNoteInput").value = "";
-        initAdmReminderPickers();
-        showToast(`Target/pengingat dikirim ke ${targetEmps.length} karyawan.`);
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal menyimpan target/pengingat.");
-      } finally {
-        btn.disabled = false;
       }
-    });
 
-    // Buat Grup Baru
-    document.getElementById("createGroupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!adminBusinessId) {
-        showToast("Bisnis admin belum diatur.");
+      businesses.forEach(b => {
+        if (selectedFilter !== "ALL" && selectedFilter !== b.id) return;
+        const list = users.filter(u => (u.businessId || "").trim().toUpperCase() === b.id);
+        sections.push({
+          title: b.name,
+          code: b.id,
+          members: list
+        });
+      });
+
+      if (sections.length === 0) {
+        container.innerHTML = `<div class="empty-state">Tidak ada data pada bisnis yang dipilih.</div>`;
         return;
       }
 
-      const name = document.getElementById("newGroupNameInput").value.trim();
-      const description = document.getElementById("newGroupDescInput").value.trim();
-      const btn = document.getElementById("createGroupBtn");
+      container.innerHTML = sections.map(sec => {
+        const adminCount = sec.members.filter(m => isEmployeeAdmin(m)).length;
+        const empCount = sec.members.length - adminCount;
 
-      if (!name) return;
+        const membersHtml = sec.members.length === 0
+          ? `<div class="empty-state" style="padding:12px;">Belum ada admin atau karyawan di bisnis ini.</div>`
+          : `<div class="item-list">${sec.members.map(u => {
+              const empId = u.id || u.docId;
+              const isAdmin = isEmployeeAdmin(u);
+              const subValid = isSubscriptionValid(u);
+              const subLabel = formatSubStatusLabel(u);
+
+              return `
+                <div class="biz-member-row">
+                  <div class="list-card-body">
+                    <div class="list-card-title">
+                      <span>${escapeHtml(u.username || empId)}</span>
+                      ${isAdmin ? `<span class="badge badge-success">Admin</span>` : `<span class="badge badge-ok">Karyawan</span>`}
+                      ${isAdmin ? `<span class="badge ${subValid ? "badge-ok" : "badge-danger"}">${escapeHtml(subLabel)}</span>` : ""}
+                    </div>
+                    <div class="list-card-sub">ID: ${escapeHtml(empId)}</div>
+                  </div>
+                  ${isAdmin
+                    ? `<div class="card-actions">
+                        <button type="button" class="btn-sub-sm" data-quick-extend="${escapeHtml(empId)}">+30 Hari</button>
+                      </div>`
+                    : ""
+                  }
+                </div>
+              `;
+            }).join("")}</div>`;
+
+        return `
+          <div class="biz-group-section">
+            <div class="biz-group-head">
+              <span class="biz-group-name">${escapeHtml(sec.title)} <span class="badge badge-ok">${escapeHtml(sec.code)}</span></span>
+              <span class="badge badge-success">${adminCount} Admin • ${empCount} Karyawan</span>
+            </div>
+            ${membersHtml}
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll("[data-quick-extend]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const empId = btn.dataset.quickExtend;
+          const targetUser = users.find(u => (u.id || u.docId) === empId);
+          const baseDate = (targetUser && targetUser.subscriptionExpiresAt && new Date(targetUser.subscriptionExpiresAt).getTime() > Date.now())
+            ? new Date(targetUser.subscriptionExpiresAt)
+            : new Date();
+          const nextExp = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+          try {
+            await updateDoc(doc(db, "absen_karyawan", empId), {
+              subscriptionActive: true,
+              subscriptionExpiresAt: nextExp,
+              updatedAt: new Date().toISOString()
+            });
+            showToast(`Langganan admin ${empId} diperpanjang +30 hari.`);
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal memperpanjang langganan.");
+          }
+        });
+      });
+    }
+
+    document.getElementById("bisnisForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bizId = slugifyBusinessId(document.getElementById("bisnisCodeInput").value);
+      const name = document.getElementById("bisnisNameInput").value.trim();
+      const description = document.getElementById("bisnisDescInput").value.trim();
+      const btn = document.getElementById("saveBisnisBtn");
+
+      if (!bizId || !name) {
+        showToast("Kode bisnis dan nama bisnis wajib diisi.");
+        return;
+      }
 
       btn.disabled = true;
       try {
-        const grpId = `${adminBusinessId}_GRP_${Date.now()}`;
-        await setDoc(doc(db, "absen_grup", grpId), {
-          id: grpId,
-          businessId: adminBusinessId,
+        await setDoc(doc(db, "absen_bisnis", bizId), {
+          id: bizId,
           name,
           description,
-          memberIds: [],
-          createdAt: new Date().toISOString()
-        });
-
-        selectedGroupId = grpId;
-        document.getElementById("newGroupNameInput").value = "";
-        document.getElementById("newGroupDescInput").value = "";
-        showToast(`Grup "${name}" berhasil dibuat.`);
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal membuat grup.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    document.getElementById("addEmpForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("newEmpNameInput").value.trim();
-      const empId = document.getElementById("newEmpIdInput").value.replace(/\D/g, "").trim();
-      const btn = document.getElementById("addEmpBtn");
-
-      if (!username || !/^\d{6}$/.test(empId)) {
-        showToast("Isi username dan ID Karyawan tepat 6 angka.");
-        return;
-      }
-
-      btn.disabled = true;
-      try {
-        await setDoc(doc(db, "absen_karyawan", empId), {
-          id: empId,
-          username,
-          businessId: adminBusinessId,
-          isAbsenAdmin: false,
-          role: "karyawan",
           createdAt: new Date().toISOString()
         }, { merge: true });
 
-        document.getElementById("newEmpIdInput").value = "";
-        document.getElementById("newEmpNameInput").value = "";
-        document.getElementById("addEmpFormBox").classList.add("hidden");
-        showToast(`Karyawan ${username} (${empId}) ditambahkan.`);
+        document.getElementById("bisnisCodeInput").value = "";
+        document.getElementById("bisnisNameInput").value = "";
+        document.getElementById("bisnisDescInput").value = "";
+        showToast(`Bisnis ${name} tersimpan.`);
       } catch (err) {
         console.error(err);
-        showToast("Gagal menambah karyawan.");
+        showToast("Gagal menyimpan bisnis.");
       } finally {
         btn.disabled = false;
       }
     });
 
-    document.getElementById("addMemberForm").addEventListener("submit", async (e) => {
+    // Tambah Admin Baru dengan Username, ID & Langganan (Otomatis Admin)
+    document.getElementById("addAdminForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const grpId = selectedGroupId;
-      const memberId = selectedMemberEmpId;
-      const btn = document.getElementById("addMemberBtn");
+      const username = document.getElementById("newAdminUsernameInput").value.trim();
+      const adminId = document.getElementById("newAdminIdInput").value.trim().toUpperCase();
+      const businessId = document.getElementById("newAdminBisnisSelect").value;
+      const days = Math.max(1, Number(document.getElementById("newAdminSubDaysInput").value) || 30);
+      const btn = document.getElementById("saveNewAdminBtn");
 
-      if (!grpId || !memberId) {
-        showToast("Pilih grup dan karyawan terlebih dahulu.");
-        return;
-      }
-
-      const grp = groups.find(item => item.id === grpId);
-      if (!grp) return;
-
-      const currentMembers = Array.isArray(grp.memberIds) ? grp.memberIds : [];
-      if (currentMembers.includes(memberId)) {
-        showToast("Karyawan sudah menjadi anggota grup ini.");
+      if (!username || !adminId || !businessId) {
+        showToast("Isi username, ID admin, dan pilih bisnis.");
         return;
       }
 
       btn.disabled = true;
       try {
-        await updateDoc(doc(db, "absen_grup", grpId), {
-          memberIds: [...currentMembers, memberId],
+        const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+        await setDoc(doc(db, "absen_karyawan", adminId), {
+          id: adminId,
+          username,
+          businessId,
+          isAbsenAdmin: true,
+          role: "admin_absen",
+          subscriptionActive: true,
+          subscriptionExpiresAt: expiresAt,
           updatedAt: new Date().toISOString()
-        });
-        showToast(`${memberId} ditambahkan ke ${grp.name}.`);
+        }, { merge: true });
+
+        await syncAdminsIntoBusinessGroups(businessId);
+
+        document.getElementById("newAdminUsernameInput").value = "";
+        document.getElementById("newAdminIdInput").value = "";
+        showToast(`Admin ${username} (${adminId}) aktif (${days} hari).`);
       } catch (err) {
         console.error(err);
-        showToast("Gagal menambahkan anggota grup.");
+        showToast("Gagal menambah admin baru.");
       } finally {
         btn.disabled = false;
       }
     });
 
-    function startBusinessListeners(bizId) {
-      if (unsubEmp) { unsubEmp(); unsubEmp = null; }
-      if (unsubRec) { unsubRec(); unsubRec = null; }
-      if (unsubGrp) { unsubGrp(); unsubGrp = null; }
-      if (unsubRem) { unsubRem(); unsubRem = null; }
+    // Atur Langganan Admin Absen
+    document.getElementById("assignUserForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const empId = document.getElementById("userTargetSelect").value;
+      const businessId = document.getElementById("userBisnisSelect").value;
+      const subAction = document.getElementById("subActionSelect").value;
+      const btn = document.getElementById("saveAssignBtn");
 
-      adminBusinessId = bizId;
-      document.getElementById("newEmpBizInput").value = bizId || "-";
-
-      if (!bizId) {
-        employees = [];
-        businessRecords = [];
-        groups = [];
-        businessReminders = [];
-        refreshAllCustomPickers();
-        renderMonitorChartAndList();
-        renderEmployeesManage();
-        renderAdminRemindersList();
-        renderGroupMembers();
+      if (!empId || !businessId) {
+        showToast("Pilih akun admin dan bisnis.");
         return;
       }
 
-      const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", bizId));
-      unsubEmp = onSnapshot(qEmp, (snap) => {
-        employees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
-        refreshAllCustomPickers();
-        renderMonitorChartAndList();
-        renderEmployeesManage();
-        renderAdminRemindersList();
-        renderGroupMembers();
-      });
+      const targetUser = users.find(u => (u.id || u.docId) === empId);
+      const nowMs = Date.now();
+      const existingExpMs = targetUser && targetUser.subscriptionExpiresAt ? new Date(targetUser.subscriptionExpiresAt).getTime() : 0;
+      const baseMs = (!isNaN(existingExpMs) && existingExpMs > nowMs) ? existingExpMs : nowMs;
 
-      unsubRec = onSnapshot(collection(db, "absen_riwayat"), (snap) => {
-        businessRecords = snap.docs.map(d => d.data());
-        renderMonitorChartAndList();
-      });
+      let subscriptionActive = true;
+      let subscriptionExpiresAt = targetUser?.subscriptionExpiresAt || new Date(nowMs + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", bizId));
-      unsubGrp = onSnapshot(qGrp, (snap) => {
-        groups = snap.docs
-          .map(d => ({ id: d.id, ...d.data() }))
-          .filter(g => g.businessId === bizId);
-        refreshAllCustomPickers();
-        renderGroupMembers();
-      });
+      if (subAction === "extend_30") {
+        subscriptionActive = true;
+        subscriptionExpiresAt = new Date(baseMs + 30 * 24 * 60 * 60 * 1000).toISOString();
+      } else if (subAction === "extend_7") {
+        subscriptionActive = true;
+        subscriptionExpiresAt = new Date(baseMs + 7 * 24 * 60 * 60 * 1000).toISOString();
+      } else if (subAction === "active") {
+        subscriptionActive = true;
+        if (!isSubscriptionValid({ ...targetUser, subscriptionActive: true })) {
+          subscriptionExpiresAt = new Date(nowMs + 30 * 24 * 60 * 60 * 1000).toISOString();
+        }
+      } else if (subAction === "inactive") {
+        subscriptionActive = false;
+      }
 
-      const qRem = query(collection(db, "absen_pengingat"), where("businessId", "==", bizId));
-      unsubRem = onSnapshot(qRem, (snap) => {
-        businessReminders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
-        renderAdminRemindersList();
-      });
-    }
-
-    (function init() {
-      initAdmReminderPickers();
-      refreshAllCustomPickers();
-
+      btn.disabled = true;
       try {
-        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
-        if (!saved || !saved.id) {
-          window.location.href = "index.html";
-          return;
-        }
-        currentUser = saved;
-      } catch {
-        window.location.href = "index.html";
-        return;
+        await updateDoc(doc(db, "absen_karyawan", empId), {
+          businessId,
+          isAbsenAdmin: true,
+          role: "admin_absen",
+          subscriptionActive,
+          subscriptionExpiresAt,
+          updatedAt: new Date().toISOString()
+        });
+
+        await syncAdminsIntoBusinessGroups(businessId);
+        showToast(`Langganan admin ${empId} diperbarui.`);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal memperbarui langganan admin.");
+      } finally {
+        btn.disabled = false;
       }
+    });
 
-      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
-        if (!snap.exists()) {
-          localStorage.removeItem(SESSION_KEY);
-          window.location.href = "index.html";
-          return;
-        }
+    onSnapshot(collection(db, "absen_bisnis"), (snap) => {
+      businesses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      refreshSelectOptions();
+      renderBusinesses();
+      renderBusinessChats();
+      renderUsers();
+    });
 
-        const data = snap.data();
-        currentUser = { ...currentUser, ...data };
-        const displayName = currentUser.username || currentUser.id;
-        document.getElementById("adminName").textContent = displayName;
-        document.getElementById("adminAvatar").textContent = displayName.charAt(0);
+    onSnapshot(collection(db, "absen_grup"), (snap) => {
+      groups = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderBusinesses();
+      renderBusinessChats();
+    });
 
-        checkSubscriptionExpiring(data);
-
-        if (!hasAdminAuthority(data)) {
-          document.getElementById("adminRoleSub").textContent = "Bukan Admin • saya";
-          document.getElementById("adminPanel").classList.add("hidden");
-          document.getElementById("deniedPanel").classList.remove("hidden");
-          return;
-        }
-
-        const bizId = (data.businessId || "").trim().toUpperCase();
-        document.getElementById("adminRoleSub").textContent = bizId
-          ? `Admin (saya) • Bisnis: ${bizId}`
-          : "Admin (saya) • Bisnis belum diatur";
-        document.getElementById("deniedPanel").classList.add("hidden");
-        document.getElementById("adminPanel").classList.remove("hidden");
-
-        if (bizId !== adminBusinessId) {
-          startBusinessListeners(bizId);
-        }
-      });
-    })();
+    onSnapshot(collection(db, "absen_karyawan"), (snap) => {
+      users = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+      refreshSelectOptions();
+      renderUsers();
+      renderBusinessChats();
+    });
   </script>
 </body>
 </html>
