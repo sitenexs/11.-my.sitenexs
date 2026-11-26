@@ -1971,6 +1971,7 @@
     };
 
     const SESSION_KEY = "absen_firebase_user_permanent";
+    const VIEW_MODE_KEY = "absen_active_view_mode";
     const CAMERA_RESULT_KEY = "absen_camera_result_payload";
     const CHAT_LAST_SEEN_PREFIX = "absen_chat_last_seen_";
     let currentUser = null;
@@ -2059,6 +2060,7 @@
       } else {
         activeViewMode = (targetMode === "admin") ? "admin" : "user";
       }
+      localStorage.setItem(VIEW_MODE_KEY, activeViewMode);
 
       const mainAppEl = document.getElementById("mainApp");
       const switcherBar = document.getElementById("modeSwitcherBar");
@@ -2483,7 +2485,6 @@
         cameraPopupWin = popup;
         popup.focus();
       } else {
-        // Fallback jika pop-up browser diblokir oleh perangkat
         cameraPopupFrame.src = url;
         cameraPopupModal.classList.remove("hidden");
       }
@@ -2570,7 +2571,6 @@
       }
     }
 
-    // Menerima hasil dari pop-up kamera/
     window.addEventListener("message", (event) => {
       const msg = event.data;
       if (!msg || typeof msg !== "object") return;
@@ -2582,7 +2582,6 @@
       }
     });
 
-    // Cadangan sinkronisasi via localStorage jika pop-up kehilangan window.opener
     window.addEventListener("storage", (e) => {
       if (e.key === CAMERA_RESULT_KEY && e.newValue) {
         try {
@@ -2670,6 +2669,7 @@
       pendingDocPhotos = [];
       docFileInput.value = "";
       localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(VIEW_MODE_KEY);
       document.getElementById("loginForm").reset();
       noteInputEl.value = "";
       noteCharEl.textContent = "0 karakter";
@@ -3008,6 +3008,7 @@
     function openDashboard(user, isFirstLogin = false) {
       currentUser = user;
       activeViewMode = isUserAdmin(user) ? "admin" : "user";
+      localStorage.setItem(VIEW_MODE_KEY, activeViewMode);
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
