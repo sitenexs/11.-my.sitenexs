@@ -212,9 +212,10 @@
     }
 
     .avatar {
-      width: 35px;
-      height: 35px;
+      width: 36px;
+      height: 36px;
       border-radius: 12px;
+      border: 2px solid rgba(15, 118, 110, 0.35);
       background: linear-gradient(135deg, #ccfbf1, #99f6e4);
       color: var(--primary-dark);
       font-size: 14px;
@@ -235,6 +236,7 @@
     }
 
     .main-app.is-admin-mode .avatar {
+      border-color: rgba(37, 99, 235, 0.45);
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #ffffff;
     }
@@ -243,11 +245,11 @@
       position: absolute;
       bottom: -1px;
       right: -1px;
-      width: 9px;
-      height: 9px;
+      width: 6.5px;
+      height: 6.5px;
       border-radius: 999px;
-      background: var(--success);
-      border: 2px solid #ffffff;
+      background: #10b981;
+      box-shadow: 0 0 0 1.5px #ffffff, 0 0 5px rgba(16, 185, 129, 0.45);
     }
 
     .topbar-info {
@@ -326,7 +328,7 @@
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= MODE SWITCHER (ADMIN <-> BIASA) ================= */
+    /* ================= MODE SWITCHER (OPERATOR <-> BIASA) ================= */
     .mode-switcher-bar {
       width: 100%;
       background: #e2e8f0;
@@ -374,7 +376,7 @@
       animation: tabFadeSlide 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ================= ADMIN CONSOLE ================= */
+    /* ================= OPERATOR CONSOLE ================= */
     .admin-console-card {
       width: 100%;
       background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
@@ -527,44 +529,13 @@
       transform: scale(0.96);
     }
 
-    .admin-sub-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      padding: 4px;
-      border-radius: 12px;
-      margin-bottom: 11px;
-    }
-
-    .admin-sub-tab-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      padding: 7px 8px;
-      border-radius: 9px;
-      font-size: 11.5px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .admin-sub-tab-btn.active {
-      background: var(--admin-bg);
-      color: var(--admin-dark);
-      box-shadow: 0 1px 4px rgba(30, 58, 138, 0.12);
-    }
-
     .admin-emp-list {
-      margin-top: 12px;
-      padding-top: 11px;
-      border-top: 1px dashed var(--border);
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: 220px;
+      max-height: 210px;
       overflow-y: auto;
+      padding-right: 2px;
     }
 
     .admin-emp-row {
@@ -1103,6 +1074,13 @@
       border-color: var(--primary);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .time-pair-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 10px;
     }
 
     .btn {
@@ -1668,7 +1646,7 @@
       display: block;
     }
 
-    /* ================= CUSTOM CONFIRM DIALOG ================= */
+    /* ================= CUSTOM CONFIRM & POPUP DIALOG ================= */
     .confirm-overlay {
       position: fixed;
       inset: 0;
@@ -1684,12 +1662,11 @@
 
     .confirm-card {
       width: 100%;
-      max-width: 320px;
+      max-width: 340px;
       background: #ffffff;
       border-radius: 18px;
       padding: 18px;
       box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
-      text-align: center;
       animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -1698,12 +1675,14 @@
       font-weight: 800;
       color: var(--text);
       margin-bottom: 5px;
+      text-align: center;
     }
 
     .confirm-msg {
       font-size: 12.5px;
       color: var(--text-secondary);
       margin-bottom: 15px;
+      text-align: center;
     }
 
     .confirm-actions {
@@ -1826,7 +1805,7 @@
           <div class="topbar-info">
             <div class="user-name-row">
               <div class="user-name" id="displayUserName">-</div>
-              <span class="admin-role-pill hidden" id="adminRoleBadge">Admin</span>
+              <span class="admin-role-pill hidden" id="adminRoleBadge">Operator</span>
             </div>
             <div class="user-id" id="displayUserId">-</div>
           </div>
@@ -1835,17 +1814,17 @@
       </header>
 
       <main class="content-area">
-        <!-- Sakelar Mode: Mode Admin vs Mode Biasa/User (Hanya Muncul Untuk Akun Admin) -->
+        <!-- Sakelar Mode: Mode Operator vs Mode Biasa -->
         <div class="mode-switcher-bar hidden" id="modeSwitcherBar">
           <button type="button" class="mode-switch-btn admin-tab active" id="btnSwitchAdminMode">
-            <span>Mode Admin</span>
+            <span>Mode Operator</span>
           </button>
           <button type="button" class="mode-switch-btn user-tab" id="btnSwitchUserMode">
             <span>Mode Biasa</span>
           </button>
         </div>
 
-        <!-- ==================== TAMPILAN MODE ADMIN ==================== -->
+        <!-- ==================== TAMPILAN MODE OPERATOR ==================== -->
         <div id="adminModeView" class="mode-view-stack hidden">
           <section class="admin-console-card" id="adminConsoleCard">
             <div class="admin-console-top">
@@ -1856,7 +1835,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="admin-console-title">Mode Admin Absensi</div>
+                  <div class="admin-console-title">Mode Operator Absensi</div>
                   <div class="admin-console-sub" id="adminBizSubtitle">Unit Bisnis: -</div>
                 </div>
               </div>
@@ -1891,45 +1870,25 @@
             <button type="button" class="btn-to-user-mode" id="quickToUserModeBtn">Mode Biasa</button>
           </section>
 
-          <!-- Kelola Karyawan: Tambah & Hapus Berdasarkan Username dan ID -->
-          <section class="card" id="adminEmployeeCard">
+          <!-- Tombol Atur Waktu Masuk & Waktu Keluar + Tombol Tambah Karyawan -->
+          <section class="card" id="operatorActionsCard">
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <button type="button" class="btn btn-admin-action" id="openScheduleModalBtn">Atur Waktu Masuk &amp; Waktu Keluar</button>
+              <button type="button" class="btn btn-masuk" id="openAddEmpModalBtn">Tambah Karyawan</button>
+            </div>
+          </section>
+
+          <!-- Card Nama Karyawan Terpisah dengan Pencarian & Scroll Internal -->
+          <section class="card" id="operatorEmployeeDirectoryCard">
             <div class="card-title">
-              <span>Kelola Karyawan</span>
+              <span>Nama Karyawan</span>
               <span class="badge badge-admin" id="adminEmpListCount">0 Karyawan</span>
             </div>
 
-            <div class="admin-sub-tabs">
-              <button type="button" class="admin-sub-tab-btn active" data-emp-action="add">Tambah Karyawan</button>
-              <button type="button" class="admin-sub-tab-btn" data-emp-action="delete">Hapus Karyawan</button>
+            <div class="form-group">
+              <input type="text" id="empSearchInput" class="form-input" placeholder="Cari nama atau ID karyawan..." autocomplete="off">
             </div>
 
-            <!-- Form Tambah Karyawan -->
-            <form id="adminAddEmpForm">
-              <div class="form-group">
-                <label class="form-label" for="admAddEmpUsername">Username Karyawan</label>
-                <input type="text" id="admAddEmpUsername" class="form-input" placeholder="Masukkan username karyawan" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="admAddEmpId">ID Karyawan</label>
-                <input type="text" id="admAddEmpId" class="form-input" placeholder="Contoh: EMP002 atau 102938" required>
-              </div>
-              <button type="submit" class="btn btn-admin-action" id="admAddEmpSubmitBtn">Tambah Karyawan</button>
-            </form>
-
-            <!-- Form Hapus Karyawan Berdasarkan Username dan ID -->
-            <form id="adminDelEmpForm" class="hidden">
-              <div class="form-group">
-                <label class="form-label" for="admDelEmpUsername">Username Karyawan</label>
-                <input type="text" id="admDelEmpUsername" class="form-input" placeholder="Masukkan username karyawan yang akan dihapus" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="admDelEmpId">ID Karyawan</label>
-                <input type="text" id="admDelEmpId" class="form-input" placeholder="Masukkan ID karyawan yang akan dihapus" required>
-              </div>
-              <button type="submit" class="btn btn-keluar" id="admDelEmpSubmitBtn">Hapus Karyawan</button>
-            </form>
-
-            <!-- Daftar Singkat Karyawan pada Unit Bisnis -->
             <div class="admin-emp-list" id="adminEmpDirectory">
               <div class="admin-emp-meta" style="text-align:center; padding:6px;">Memuat data karyawan...</div>
             </div>
@@ -2120,6 +2079,62 @@
     </div>
   </div>
 
+  <!-- POP-UP ATUR WAKTU MASUK & WAKTU KELUAR -->
+  <div id="scheduleModal" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title">Atur Waktu Masuk &amp; Keluar</div>
+      <div class="confirm-msg">Tetapkan rentang waktu presensi masuk dan keluar.</div>
+      <form id="scheduleForm">
+        <div class="time-pair-grid">
+          <div>
+            <label class="form-label" for="schedMasukMulai">Masuk Mulai</label>
+            <input type="time" id="schedMasukMulai" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label" for="schedMasukSelesai">Masuk Batas</label>
+            <input type="time" id="schedMasukSelesai" class="form-input" required>
+          </div>
+        </div>
+        <div class="time-pair-grid">
+          <div>
+            <label class="form-label" for="schedKeluarMulai">Keluar Mulai</label>
+            <input type="time" id="schedKeluarMulai" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label" for="schedKeluarSelesai">Keluar Batas</label>
+            <input type="time" id="schedKeluarSelesai" class="form-input" required>
+          </div>
+        </div>
+        <div class="confirm-actions">
+          <button type="button" class="btn-outline-sm" id="closeScheduleModalBtn">Batal</button>
+          <button type="submit" class="btn btn-admin-action" style="padding:8px;" id="saveScheduleBtn">Simpan Waktu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- POP-UP INPUT USERNAME & ID KARYAWAN -->
+  <div id="addEmpModal" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title">Tambah Karyawan</div>
+      <div class="confirm-msg">Masukkan username dan ID karyawan baru.</div>
+      <form id="addEmpModalForm">
+        <div class="form-group">
+          <label class="form-label" for="modalAddEmpUsername">Username</label>
+          <input type="text" id="modalAddEmpUsername" class="form-input" placeholder="Masukkan username karyawan" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modalAddEmpId">ID Karyawan</label>
+          <input type="text" id="modalAddEmpId" class="form-input" placeholder="Contoh: EMP002" required>
+        </div>
+        <div class="confirm-actions">
+          <button type="button" class="btn-outline-sm" id="closeAddEmpModalBtn">Batal</button>
+          <button type="submit" class="btn btn-masuk" style="padding:8px;" id="nextAddEmpConfirmBtn">Lanjutkan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- POP-UP FOTO PROFIL & PENYESUAIAN -->
   <div id="profileModal" class="profile-modal-overlay hidden">
     <div class="profile-modal-card">
@@ -2259,7 +2274,7 @@
     const VIEW_MODE_KEY = "absen_active_view_mode";
     const CAMERA_RESULT_KEY = "absen_camera_result_payload";
     const CHAT_LAST_SEEN_PREFIX = "absen_chat_last_seen_";
-    const ADMIN_MESSENGE_URL = "https://my.sitenexs.com/absen/messenge/";
+    const OPERATOR_MESSENGE_URL = "https://my.sitenexs.com/absen/messenge/";
     let currentUser = null;
     let activeViewMode = "user"; // "admin" | "user"
     let myRecords = [];
@@ -2572,7 +2587,7 @@
     function syncChatBubbleTarget() {
       const fabBtn = document.getElementById("fabChatBtn");
       if (!fabBtn) return;
-      fabBtn.href = isUserAdmin(currentUser) ? ADMIN_MESSENGE_URL : "messenge/chat/";
+      fabBtn.href = isUserAdmin(currentUser) ? OPERATOR_MESSENGE_URL : "messenge/chat/";
     }
 
     function getSavedModeForSession(userObj) {
@@ -2584,82 +2599,93 @@
       return "admin";
     }
 
-    // ================= KELOLA KARYAWAN (TAMBAH & HAPUS BY USERNAME & ID) =================
-    const addEmpFormEl = document.getElementById("adminAddEmpForm");
-    const delEmpFormEl = document.getElementById("adminDelEmpForm");
+    // ================= POP-UP ATUR WAKTU MASUK & KELUAR =================
+    const scheduleModalEl = document.getElementById("scheduleModal");
 
-    document.querySelectorAll("[data-emp-action]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const mode = btn.dataset.empAction;
-        document.querySelectorAll("[data-emp-action]").forEach(b => {
-          b.classList.toggle("active", b.dataset.empAction === mode);
-        });
-        addEmpFormEl.classList.toggle("hidden", mode !== "add");
-        delEmpFormEl.classList.toggle("hidden", mode !== "delete");
-      });
+    document.getElementById("openScheduleModalBtn").addEventListener("click", () => {
+      document.getElementById("schedMasukMulai").value = jadwal.masukMulai || "07:00";
+      document.getElementById("schedMasukSelesai").value = jadwal.masukSelesai || "09:00";
+      document.getElementById("schedKeluarMulai").value = jadwal.keluarMulai || "16:00";
+      document.getElementById("schedKeluarSelesai").value = jadwal.keluarSelesai || "18:00";
+      scheduleModalEl.classList.remove("hidden");
     });
 
-    function renderAdminEmployeeDirectory() {
-      const countBadge = document.getElementById("adminEmpListCount");
-      const listEl = document.getElementById("adminEmpDirectory");
-      countBadge.textContent = `${adminBusinessEmployees.length} Karyawan`;
+    document.getElementById("closeScheduleModalBtn").addEventListener("click", () => {
+      scheduleModalEl.classList.add("hidden");
+    });
 
-      if (adminBusinessEmployees.length === 0) {
-        listEl.innerHTML = `<div class="admin-emp-meta" style="text-align:center; padding:6px;">Belum ada data karyawan pada unit bisnis ini.</div>`;
-        return;
+    document.getElementById("scheduleForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isUserAdmin(currentUser)) return;
+
+      const masukMulai = document.getElementById("schedMasukMulai").value;
+      const masukSelesai = document.getElementById("schedMasukSelesai").value;
+      const keluarMulai = document.getElementById("schedKeluarMulai").value;
+      const keluarSelesai = document.getElementById("schedKeluarSelesai").value;
+      const saveBtn = document.getElementById("saveScheduleBtn");
+
+      saveBtn.disabled = true;
+      try {
+        await setDoc(doc(db, "absen_pengaturan", "jadwal"), {
+          masukMulai,
+          masukSelesai,
+          keluarMulai,
+          keluarSelesai,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        jadwal = { masukMulai, masukSelesai, keluarMulai, keluarSelesai };
+        scheduleModalEl.classList.add("hidden");
+        updateClockAndButtons();
+        showToast("Waktu masuk dan keluar berhasil diperbarui.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal memperbarui waktu presensi.", "error");
+      } finally {
+        saveBtn.disabled = false;
       }
+    });
 
-      listEl.innerHTML = adminBusinessEmployees.map(emp => {
-        const empId = String(emp.id || emp.docId || "");
-        const empUsername = String(emp.username || empId);
-        const isSelf = currentUser && empId === currentUser.id;
-        return `
-          <div class="admin-emp-row">
-            <div>
-              <div class="admin-emp-name">${escapeHtml(empUsername)}</div>
-              <div class="admin-emp-meta">ID: ${escapeHtml(empId)}</div>
-            </div>
-            ${!isSelf
-              ? `<button type="button" class="btn-del-emp-row" data-quick-del-user="${escapeHtml(empUsername)}" data-quick-del-id="${escapeHtml(empId)}">Hapus</button>`
-              : `<span class="badge badge-admin">Akun Anda</span>`
-            }
-          </div>
-        `;
-      }).join("");
+    // ================= POP-UP TAMBAH KARYAWAN & KONFIRMASI =================
+    const addEmpModalEl = document.getElementById("addEmpModal");
 
-      listEl.querySelectorAll("[data-quick-del-id]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.getElementById("admDelEmpUsername").value = btn.dataset.quickDelUser || "";
-          document.getElementById("admDelEmpId").value = btn.dataset.quickDelId || "";
-          document.querySelectorAll("[data-emp-action]").forEach(b => {
-            b.classList.toggle("active", b.dataset.empAction === "delete");
-          });
-          addEmpFormEl.classList.add("hidden");
-          delEmpFormEl.classList.remove("hidden");
-          document.getElementById("admDelEmpId").focus();
-        });
-      });
-    }
+    document.getElementById("openAddEmpModalBtn").addEventListener("click", () => {
+      document.getElementById("modalAddEmpUsername").value = "";
+      document.getElementById("modalAddEmpId").value = "";
+      addEmpModalEl.classList.remove("hidden");
+      document.getElementById("modalAddEmpUsername").focus();
+    });
 
-    addEmpFormEl.addEventListener("submit", async (e) => {
+    document.getElementById("closeAddEmpModalBtn").addEventListener("click", () => {
+      addEmpModalEl.classList.add("hidden");
+    });
+
+    document.getElementById("addEmpModalForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!isUserAdmin(currentUser)) return;
       const bizId = (currentUser.businessId || "").trim().toUpperCase();
       if (!bizId) {
-        showToast("Unit bisnis admin belum diatur.", "warn");
+        showToast("Unit bisnis operator belum diatur.", "warn");
         return;
       }
 
-      const username = document.getElementById("admAddEmpUsername").value.trim();
-      const empId = document.getElementById("admAddEmpId").value.trim().toUpperCase();
-      const submitBtn = document.getElementById("admAddEmpSubmitBtn");
+      const username = document.getElementById("modalAddEmpUsername").value.trim();
+      const empId = document.getElementById("modalAddEmpId").value.trim().toUpperCase();
+      const nextBtn = document.getElementById("nextAddEmpConfirmBtn");
 
       if (!username || !empId) {
         showToast("Mohon lengkapi username dan ID karyawan.", "warn");
         return;
       }
 
-      submitBtn.disabled = true;
+      const confirmed = await showCustomConfirm(
+        "Tambahkan karyawan baru?",
+        `Username: ${username}\nID Karyawan: ${empId}`,
+        "Ya, Tambahkan"
+      );
+      if (!confirmed) return;
+
+      nextBtn.disabled = true;
       try {
         await setDoc(doc(db, "absen_karyawan", empId), {
           id: empId,
@@ -2670,73 +2696,81 @@
           createdAt: new Date().toISOString()
         }, { merge: true });
 
-        document.getElementById("admAddEmpUsername").value = "";
-        document.getElementById("admAddEmpId").value = "";
+        addEmpModalEl.classList.add("hidden");
         showToast(`Karyawan ${username} (${empId}) berhasil ditambahkan.`, "success");
       } catch (err) {
         console.error(err);
         showToast("Gagal menambahkan data karyawan.", "error");
       } finally {
-        submitBtn.disabled = false;
+        nextBtn.disabled = false;
       }
     });
 
-    delEmpFormEl.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!isUserAdmin(currentUser)) return;
-      const bizId = (currentUser.businessId || "").trim().toUpperCase();
-      if (!bizId) {
-        showToast("Unit bisnis admin belum diatur.", "warn");
-        return;
-      }
+    // ================= CARD NAMA KARYAWAN (FILTER PENCARIAN & HAPUS) =================
+    const empSearchInputEl = document.getElementById("empSearchInput");
+    empSearchInputEl.addEventListener("input", renderAdminEmployeeDirectory);
 
-      const inputUsername = document.getElementById("admDelEmpUsername").value.trim();
-      const inputId = document.getElementById("admDelEmpId").value.trim().toUpperCase();
-      const submitBtn = document.getElementById("admDelEmpSubmitBtn");
+    function renderAdminEmployeeDirectory() {
+      const countBadge = document.getElementById("adminEmpListCount");
+      const listEl = document.getElementById("adminEmpDirectory");
+      const keyword = (empSearchInputEl.value || "").trim().toLowerCase();
 
-      if (!inputUsername || !inputId) {
-        showToast("Mohon masukkan username dan ID karyawan.", "warn");
-        return;
-      }
-
-      if (currentUser && inputId === currentUser.id) {
-        showToast("Akun admin yang sedang aktif tidak dapat dihapus.", "warn");
-        return;
-      }
-
-      const matched = adminBusinessEmployees.find(emp => {
-        const empId = String(emp.id || emp.docId || "").toUpperCase();
-        const empName = String(emp.username || "").trim().toLowerCase();
-        return empId === inputId && empName === inputUsername.toLowerCase();
+      const filtered = adminBusinessEmployees.filter(emp => {
+        if (!keyword) return true;
+        const empId = String(emp.id || emp.docId || "").toLowerCase();
+        const empName = String(emp.username || "").toLowerCase();
+        return empName.includes(keyword) || empId.includes(keyword);
       });
 
-      if (!matched) {
-        showToast("Kombinasi username dan ID karyawan tidak ditemukan pada unit bisnis ini.", "error");
+      countBadge.textContent = `${filtered.length} / ${adminBusinessEmployees.length}`;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="admin-emp-meta" style="text-align:center; padding:8px;">${keyword ? "Karyawan tidak ditemukan." : "Belum ada data karyawan pada unit bisnis ini."}</div>`;
         return;
       }
 
-      const confirmed = await showCustomConfirm(
-        "Konfirmasi Penghapusan Karyawan",
-        `Apakah Anda yakin ingin menghapus karyawan ${matched.username} (${matched.id})?`,
-        "Ya, Hapus"
-      );
-      if (!confirmed) return;
+      listEl.innerHTML = filtered.map(emp => {
+        const empId = String(emp.id || emp.docId || "");
+        const empUsername = String(emp.username || empId);
+        const isSelf = currentUser && empId === currentUser.id;
+        return `
+          <div class="admin-emp-row">
+            <div>
+              <div class="admin-emp-name">${escapeHtml(empUsername)}</div>
+              <div class="admin-emp-meta">ID: ${escapeHtml(empId)}</div>
+            </div>
+            ${!isSelf
+              ? `<button type="button" class="btn-del-emp-row" data-del-emp-id="${escapeHtml(empId)}" data-del-emp-name="${escapeHtml(empUsername)}">Hapus</button>`
+              : `<span class="badge badge-admin">Operator</span>`
+            }
+          </div>
+        `;
+      }).join("");
 
-      submitBtn.disabled = true;
-      try {
-        await deleteDoc(doc(db, "absen_karyawan", matched.id));
-        document.getElementById("admDelEmpUsername").value = "";
-        document.getElementById("admDelEmpId").value = "";
-        showToast(`Karyawan ${matched.username} (${matched.id}) berhasil dihapus.`, "success");
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal menghapus data karyawan.", "error");
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
+      listEl.querySelectorAll("[data-del-emp-id]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const targetId = btn.dataset.delEmpId;
+          const targetName = btn.dataset.delEmpName || targetId;
+          const ok = await showCustomConfirm(
+            "Hapus Karyawan",
+            `Hapus karyawan ${targetName} (${targetId})?`,
+            "Ya, Hapus"
+          );
+          if (!ok) return;
+          btn.disabled = true;
+          try {
+            await deleteDoc(doc(db, "absen_karyawan", targetId));
+            showToast(`Karyawan ${targetName} (${targetId}) berhasil dihapus.`, "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus data karyawan.", "error");
+            btn.disabled = false;
+          }
+        });
+      });
+    }
 
-    // ================= PENGATURAN MODE ADMIN VS MODE BIASA =================
+    // ================= PENGATURAN MODE OPERATOR VS MODE BIASA =================
     function switchAppMode(targetMode) {
       const isAdminAccount = isUserAdmin(currentUser);
       if (!isAdminAccount) {
@@ -2809,7 +2843,7 @@
       markChatAsReadNow();
       if (isUserAdmin(currentUser)) {
         e.preventDefault();
-        window.location.href = ADMIN_MESSENGE_URL;
+        window.location.href = OPERATOR_MESSENGE_URL;
       }
     });
 
@@ -3360,6 +3394,8 @@
       }
       closeCameraFallbackModal();
       profileModalEl.classList.add("hidden");
+      scheduleModalEl.classList.add("hidden");
+      addEmpModalEl.classList.add("hidden");
       currentUser = null;
       activeViewMode = "user";
       myRecords = [];
@@ -3394,7 +3430,7 @@
       let firstSnapHandled = false;
       unsubscribeUserWatch = onSnapshot(userRef, (snap) => {
         if (!snap.exists()) {
-          forceLogout("Akun telah dinonaktifkan atau dihapus oleh administrator.", "error");
+          forceLogout("Akun telah dinonaktifkan atau dihapus oleh operator.", "error");
           return;
         }
         const wasAdmin = isUserAdmin(currentUser);
@@ -3755,7 +3791,7 @@
 
         localStorage.setItem(SESSION_KEY, JSON.stringify(empData));
         const welcomeLabel = isUserAdmin(empData)
-          ? `Selamat datang, Administrator ${empData.username}`
+          ? `Selamat datang, Operator ${empData.username}`
           : `Selamat datang, ${empData.username}`;
         showToast(welcomeLabel, "success");
         openDashboard(empData, true);
