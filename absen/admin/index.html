@@ -6,17 +6,17 @@
   <title>Panel Admin Absensi - Absensi Karyawan</title>
   <style>
     :root {
-      --bg: #f3f6f8;
+      --bg: #f1f5f9;
       --surface: #ffffff;
       --surface-soft: #f8fafc;
       --text: #0f172a;
       --text-secondary: #475569;
       --muted: #64748b;
-      --border: rgba(203, 213, 225, 0.72);
-      --primary: #0f766e;
-      --primary-dark: #115e59;
-      --primary-light: #14b8a6;
-      --primary-bg: #f0fdfa;
+      --border: rgba(203, 213, 225, 0.78);
+      --primary: #1d4ed8;
+      --primary-dark: #1e3a8a;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
       --success: #059669;
       --success-bg: #d1fae5;
       --danger: #e11d48;
@@ -25,7 +25,7 @@
       --warning-bg: #fef3c7;
       --radius: 18px;
       --radius-sm: 12px;
-      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
     }
 
     * {
@@ -81,10 +81,10 @@
       width: 100%;
       max-width: 440px;
       z-index: 50;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(147, 197, 253, 0.65);
       padding: 9px 14px;
       display: flex;
       align-items: center;
@@ -104,7 +104,7 @@
       width: 35px;
       height: 35px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #115e59, #14b8a6);
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #ffffff;
       font-size: 14px;
       font-weight: 800;
@@ -113,6 +113,7 @@
       justify-content: center;
       text-transform: uppercase;
       flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(29, 78, 216, 0.24);
     }
 
     .topbar-info {
@@ -144,7 +145,7 @@
       border-radius: 999px;
       background: var(--primary-bg);
       color: var(--primary);
-      border: 1px solid rgba(15, 118, 110, 0.22);
+      border: 1px solid rgba(29, 78, 216, 0.24);
       flex-shrink: 0;
     }
 
@@ -206,7 +207,7 @@
     .sub-seg-btn.active {
       background: #ffffff;
       color: var(--primary);
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 2px 6px rgba(29, 78, 216, 0.12);
     }
 
     .seg-count {
@@ -269,7 +270,20 @@
     .form-input:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    .form-input:disabled {
+      background: #e2e8f0;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    .add-emp-form-box {
+      margin-top: 11px;
+      padding-top: 11px;
+      border-top: 1px dashed var(--border);
+      animation: itemEnter 0.2s ease;
     }
 
     /* ================= CUSTOM DROPDOWN PICKER ================= */
@@ -300,7 +314,7 @@
     .custom-select-trigger:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
       outline: none;
     }
 
@@ -399,9 +413,9 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #ffffff;
-      box-shadow: 0 5px 14px rgba(15, 118, 110, 0.24);
+      box-shadow: 0 5px 14px rgba(29, 78, 216, 0.25);
     }
 
     .btn-masuk {
@@ -439,8 +453,26 @@
       flex-shrink: 0;
     }
 
+    .btn-role-sm {
+      border: 1px solid rgba(29, 78, 216, 0.24);
+      background: var(--primary-bg);
+      color: var(--primary);
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .btn-role-sm.revoke {
+      border-color: #fde68a;
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
     .btn-detail-sm {
-      border: 1px solid rgba(15, 118, 110, 0.24);
+      border: 1px solid rgba(29, 78, 216, 0.24);
       background: var(--primary-bg);
       color: var(--primary);
       padding: 4px 8px;
@@ -448,6 +480,41 @@
       font-size: 10.5px;
       font-weight: 800;
       cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .copy-chip-btn {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+    }
+
+    .copy-chip-btn:active {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .copy-actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .emp-row-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
       flex-shrink: 0;
     }
 
@@ -572,7 +639,7 @@
     }
 
     .bar-hadir { background: linear-gradient(90deg, #059669, #10b981); }
-    .bar-catatan { background: linear-gradient(90deg, #0f766e, #14b8a6); }
+    .bar-catatan { background: linear-gradient(90deg, #1e3a8a, #2563eb); }
 
     .item-list {
       display: flex;
@@ -641,12 +708,6 @@
       background: var(--success-bg);
       border-color: transparent;
       color: var(--success);
-    }
-
-    .mini-chip.warn {
-      background: var(--warning-bg);
-      border-color: transparent;
-      color: var(--warning);
     }
 
     .note-box-preview {
@@ -952,29 +1013,26 @@
         </button>
       </div>
 
-      <!-- TAB 1: PANTAU GRAFIK, CATATAN & FOTO KARYAWAN -->
+      <!-- TAB 1: GRAFIK KARYAWAN (HALAMAN PERTAMA) & CATATAN/FOTO TERFILTER -->
       <div id="tabPantau" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Filter Karyawan &amp; Grafik</span>
-            <span class="badge badge-ok" id="todayDateBadge">-</span>
-          </div>
-          <div class="custom-select-wrap" id="monitorFilterPicker">
-            <button type="button" class="custom-select-trigger" id="monitorFilterTrigger">
-              <span class="custom-select-val" id="monitorFilterLabel">Semua Karyawan Bisnis Ini</span>
-              <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-            <div class="custom-select-menu hidden" id="monitorFilterMenu"></div>
-          </div>
-        </section>
-
         <section class="card">
           <div class="card-title">
             <span>Grafik Performa Karyawan</span>
             <span class="badge badge-success" id="monitorDaysLabel">0 Hari</span>
           </div>
+
+          <div class="form-group">
+            <div class="custom-select-wrap" id="monitorFilterPicker">
+              <button type="button" class="custom-select-trigger" id="monitorFilterTrigger">
+                <span class="custom-select-val" id="monitorFilterLabel">Semua Karyawan Bisnis Ini</span>
+                <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="custom-select-menu hidden" id="monitorFilterMenu"></div>
+            </div>
+          </div>
+
           <div class="chart-layout">
             <div class="donut-wrap">
               <svg class="donut-svg" viewBox="0 0 78 78">
@@ -1009,39 +1067,46 @@
           </div>
         </section>
 
-        <section class="card">
+        <section class="card" id="monitorDetailCard">
           <div class="card-title">
             <span>Catatan &amp; Foto Karyawan</span>
-            <span class="badge badge-ok" id="monitorRecCount">0 Riwayat</span>
+            <span class="badge badge-ok" id="monitorRecCount">Pilih Karyawan</span>
           </div>
           <div id="monitorList" class="item-list">
-            <div class="empty-state">Memuat data pemantauan...</div>
+            <div class="empty-state">Pilih karyawan pada grafik di atas untuk melihat catatan dan foto.</div>
           </div>
         </section>
       </div>
 
-      <!-- TAB 2: TAMBAH & HAPUS KARYAWAN -->
+      <!-- TAB 2: TAMBAH, ATUR ADMIN & HAPUS KARYAWAN -->
       <div id="tabTambah" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
-            <span>Tambah Karyawan Baru</span>
-            <span class="badge badge-success">absen_karyawan</span>
+            <span>Manajemen Karyawan</span>
+            <span class="badge badge-ok" id="todayDateBadge">-</span>
           </div>
-          <form id="addEmpForm">
-            <div class="form-group">
-              <label class="form-label" for="newEmpIdInput">ID Karyawan</label>
-              <input type="text" id="newEmpIdInput" class="form-input" placeholder="Contoh: EMP002" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="newEmpNameInput">Nama / Username Karyawan</label>
-              <input type="text" id="newEmpNameInput" class="form-input" placeholder="Nama lengkap atau username login" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="newEmpBizInput">Bisnis</label>
-              <input type="text" id="newEmpBizInput" class="form-input" readonly>
-            </div>
-            <button type="submit" class="btn btn-masuk" id="addEmpBtn">Tambah Karyawan</button>
-          </form>
+
+          <button type="button" class="btn btn-primary" id="toggleAddEmpFormBtn">
+            <span>Tambah Karyawan</span>
+          </button>
+
+          <div id="addEmpFormBox" class="add-emp-form-box hidden">
+            <form id="addEmpForm">
+              <div class="form-group">
+                <label class="form-label" for="newEmpNameInput">Username Karyawan</label>
+                <input type="text" id="newEmpNameInput" class="form-input" placeholder="Masukkan username karyawan" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newEmpIdInput">ID Karyawan (6 Angka)</label>
+                <input type="text" id="newEmpIdInput" class="form-input" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="Contoh: 102938" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newEmpBizInput">Bisnis</label>
+                <input type="text" id="newEmpBizInput" class="form-input" disabled>
+              </div>
+              <button type="submit" class="btn btn-masuk" id="addEmpBtn">Simpan Karyawan</button>
+            </form>
+          </div>
         </section>
 
         <section class="card">
@@ -1173,6 +1238,7 @@
     let toastTimer = null;
 
     let selectedMonitorEmp = "ALL";
+    let showMonitorDetails = false;
     let selectedGroupId = "";
     let selectedMemberEmpId = "";
 
@@ -1189,6 +1255,25 @@
       el.classList.add("show");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    async function copyTextValue(text, label) {
+      if (!text) return;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        showToast(`${label} disalin: ${text}`);
+      } catch {
+        showToast(`Gagal menyalin ${label}.`);
+      }
     }
 
     function showYesNoConfirm(title, message, yesText = "Ya", noText = "Tidak") {
@@ -1240,6 +1325,22 @@
       if (!docData) return false;
       return Boolean(docData.isAbsenAdmin) || docData.role === "admin_absen";
     }
+
+    // Input ID karyawan 6 angka saja
+    const newEmpIdInputEl = document.getElementById("newEmpIdInput");
+    newEmpIdInputEl.addEventListener("input", () => {
+      newEmpIdInputEl.value = newEmpIdInputEl.value.replace(/\D/g, "").slice(0, 6);
+    });
+
+    // Toggle form tambah karyawan saat tombol diklik
+    document.getElementById("toggleAddEmpFormBtn").addEventListener("click", () => {
+      const box = document.getElementById("addEmpFormBox");
+      const willShow = box.classList.contains("hidden");
+      box.classList.toggle("hidden", !willShow);
+      if (willShow) {
+        document.getElementById("newEmpNameInput").focus();
+      }
+    });
 
     // ================= CUSTOM DROPDOWN PICKERS =================
     function setupCustomDropdown({ triggerId, menuId, labelId, options, currentValue, placeholderText, onSelect }) {
@@ -1295,9 +1396,8 @@
     });
 
     function refreshAllCustomPickers() {
-      // 1. Filter Karyawan Pantau
       const monOpts = [
-        { value: "ALL", label: "Semua Karyawan Bisnis Ini", sub: `${employees.length}` },
+        { value: "ALL", label: "Semua Karyawan (Grafik)", sub: `${employees.length}` },
         ...employees.map(emp => {
           const idVal = emp.id || emp.docId;
           return { value: idVal, label: emp.username || idVal, sub: idVal };
@@ -1305,6 +1405,7 @@
       ];
       if (!monOpts.some(o => o.value === selectedMonitorEmp)) {
         selectedMonitorEmp = "ALL";
+        showMonitorDetails = false;
       }
       setupCustomDropdown({
         triggerId: "monitorFilterTrigger",
@@ -1312,15 +1413,15 @@
         labelId: "monitorFilterLabel",
         options: monOpts,
         currentValue: selectedMonitorEmp,
-        placeholderText: "Semua Karyawan Bisnis Ini",
+        placeholderText: "Pilih Karyawan",
         onSelect: (val) => {
           selectedMonitorEmp = val;
+          showMonitorDetails = (val !== "ALL");
           refreshAllCustomPickers();
           renderMonitorChartAndList();
         }
       });
 
-      // 2. Pilih Grup
       const grpOpts = groups.map(g => ({
         value: g.id,
         label: g.name,
@@ -1342,7 +1443,6 @@
         }
       });
 
-      // 3. Pilih Karyawan untuk Grup
       const empOpts = employees.map(emp => {
         const idVal = emp.id || emp.docId;
         return { value: idVal, label: emp.username || idVal, sub: idVal };
@@ -1457,8 +1557,6 @@
     });
 
     function renderMonitorChartAndList() {
-      const todayKey = getTodayKey();
-      document.getElementById("todayDateBadge").textContent = todayKey;
       document.getElementById("countPantau").textContent = employees.length;
 
       const empIdSet = new Set(employees.map(e => e.id || e.docId));
@@ -1474,7 +1572,6 @@
         return true;
       });
 
-      // Grafik performa
       const totalDays = scopedRecords.length;
       const circumference = 2 * Math.PI * 34;
       const ring = document.getElementById("admActiveRing");
@@ -1516,12 +1613,21 @@
         ring.style.stroke = activePct >= 80 ? "var(--success)" : (activePct >= 50 ? "var(--warning)" : "var(--danger)");
       }
 
-      const sorted = [...scopedRecords].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
-      document.getElementById("monitorRecCount").textContent = `${sorted.length} Riwayat`;
-
       const container = document.getElementById("monitorList");
+      const recCountBadge = document.getElementById("monitorRecCount");
+
+      // Halaman pertama tidak langsung menampilkan semua catatan & foto karyawan
+      if (!showMonitorDetails || selectedMonitorEmp === "ALL") {
+        recCountBadge.textContent = "Grafik Utama";
+        container.innerHTML = `<div class="empty-state">Pilih nama karyawan pada filter di atas untuk menampilkan catatan dan foto.</div>`;
+        return;
+      }
+
+      const sorted = [...scopedRecords].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+      recCountBadge.textContent = `${sorted.length} Riwayat`;
+
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada riwayat catatan atau foto karyawan.</div>`;
+        container.innerHTML = `<div class="empty-state">Belum ada catatan atau foto untuk karyawan ini.</div>`;
         return;
       }
 
@@ -1611,6 +1717,7 @@
     }
 
     function renderEmployeesManage() {
+      document.getElementById("todayDateBadge").textContent = getTodayKey();
       document.getElementById("countKaryawan").textContent = employees.length;
       document.getElementById("empManageBadge").textContent = `${employees.length} Orang`;
 
@@ -1621,27 +1728,64 @@
       }
 
       container.innerHTML = employees.map(emp => {
-        const empId = emp.id || emp.docId;
+        const empId = String(emp.id || emp.docId || "");
+        const empUsername = String(emp.username || empId);
         const isSelf = currentUser && empId === currentUser.id;
+        const isPeerAdmin = hasAdminAuthority(emp);
+
         return `
           <div class="list-card">
             <div class="list-card-row">
               <div class="list-card-body">
                 <div class="list-card-title">
-                  <span>${escapeHtml(emp.username || empId)}</span>
+                  <span>${escapeHtml(empUsername)}</span>
                   ${isSelf ? `<span class="me-tag">saya</span>` : ""}
+                  ${isPeerAdmin ? `<span class="badge badge-success">Admin</span>` : `<span class="badge badge-ok">Karyawan</span>`}
                   <span class="badge badge-ok">${escapeHtml(empId)}</span>
                 </div>
                 <div class="list-card-sub">Bisnis: ${escapeHtml(emp.businessId || adminBusinessId || "-")}</div>
+                <div class="copy-actions-row">
+                  <button type="button" class="copy-chip-btn" data-copy-val="${escapeHtml(empUsername)}" data-copy-label="Username">Salin Username</button>
+                  <button type="button" class="copy-chip-btn" data-copy-val="${escapeHtml(empId)}" data-copy-label="ID Karyawan">Salin ID</button>
+                </div>
               </div>
               ${!isSelf
-                ? `<button type="button" class="btn-danger-sm" data-del-emp="${escapeHtml(empId)}" data-del-name="${escapeHtml(emp.username || empId)}">Hapus</button>`
+                ? `<div class="emp-row-actions">
+                    <button type="button" class="btn-role-sm ${isPeerAdmin ? "revoke" : ""}" data-toggle-peer-admin="${escapeHtml(empId)}" data-next-admin="${!isPeerAdmin}">
+                      ${isPeerAdmin ? "Cabut Admin" : "Jadikan Admin"}
+                    </button>
+                    <button type="button" class="btn-danger-sm" data-del-emp="${escapeHtml(empId)}" data-del-name="${escapeHtml(empUsername)}">Hapus</button>
+                  </div>`
                 : `<span class="badge badge-success">saya</span>`
               }
             </div>
           </div>
         `;
       }).join("");
+
+      container.querySelectorAll("[data-copy-val]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          copyTextValue(btn.dataset.copyVal, btn.dataset.copyLabel);
+        });
+      });
+
+      container.querySelectorAll("[data-toggle-peer-admin]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const empId = btn.dataset.togglePeerAdmin;
+          const nextAdmin = btn.dataset.nextAdmin === "true";
+          try {
+            await updateDoc(doc(db, "absen_karyawan", empId), {
+              isAbsenAdmin: nextAdmin,
+              role: nextAdmin ? "admin_absen" : "karyawan",
+              updatedAt: new Date().toISOString()
+            });
+            showToast(nextAdmin ? `${empId} dijadikan Admin Absensi.` : `Status Admin ${empId} dicabut.`);
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal mengubah status admin karyawan.");
+          }
+        });
+      });
 
       container.querySelectorAll("[data-del-emp]").forEach(btn => {
         btn.addEventListener("click", async () => {
@@ -1735,11 +1879,14 @@
 
     document.getElementById("addEmpForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const empId = document.getElementById("newEmpIdInput").value.trim().toUpperCase();
       const username = document.getElementById("newEmpNameInput").value.trim();
+      const empId = document.getElementById("newEmpIdInput").value.replace(/\D/g, "").trim();
       const btn = document.getElementById("addEmpBtn");
 
-      if (!empId || !username) return;
+      if (!username || !/^\d{6}$/.test(empId)) {
+        showToast("Isi username dan ID Karyawan tepat 6 angka.");
+        return;
+      }
 
       btn.disabled = true;
       try {
@@ -1754,6 +1901,7 @@
 
         document.getElementById("newEmpIdInput").value = "";
         document.getElementById("newEmpNameInput").value = "";
+        document.getElementById("addEmpFormBox").classList.add("hidden");
         showToast(`Karyawan ${username} (${empId}) ditambahkan.`);
       } catch (err) {
         console.error(err);
