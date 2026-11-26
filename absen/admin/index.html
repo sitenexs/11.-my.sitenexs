@@ -473,7 +473,7 @@
       </div>
       <div class="topbar-actions">
         <a href="adminAbsen.html" class="btn-link-sm">Admin Absen</a>
-        <a href="chat/" class="btn-link-sm">Chat</a>
+        <a href="chat/?operatorAccess=1" class="btn-link-sm">Chat</a>
       </div>
     </header>
 
@@ -528,18 +528,18 @@
         </section>
       </div>
 
-      <!-- TAB 2: AKSES CHAT BISNIS ADMIN (TANPA BUAT GRUP) -->
+      <!-- TAB 2: AKSES KE SETIAP GRUP CHAT PRESENSI -->
       <div id="tabGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
-            <span>Chat Bisnis Admin</span>
-            <span class="badge badge-success">Admin Read-Only</span>
+            <span>Semua Grup Chat Presensi</span>
+            <span class="badge badge-success" id="badgeTotalGroupsChat">0 Grup</span>
           </div>
           <div class="list-card-sub" style="margin-bottom:10px;">
-            Semua admin pada bisnis dapat masuk ke dalam chat bisnis untuk memantau diskusi (tidak dapat mengirim pesan).
+            Pemegang halaman ini dapat masuk ke setiap grup chat presensi yang tersedia.
           </div>
           <div id="grupList" class="item-list">
-            <div class="empty-state">Memuat daftar chat bisnis...</div>
+            <div class="empty-state">Memuat daftar grup chat presensi...</div>
           </div>
         </section>
       </div>
@@ -681,11 +681,6 @@
         .toUpperCase()
         .replace(/[^A-Z0-9]+/g, "_")
         .replace(/^_+|_+$/g, "");
-    }
-
-    function getBusinessName(businessId) {
-      const found = businesses.find(b => b.id === businessId);
-      return found ? `${found.name} (${found.id})` : (businessId || "Belum diatur");
     }
 
     function isEmployeeAdmin(u) {
@@ -855,41 +850,41 @@
     }
 
     function renderBusinessChats() {
-      const chatBizList = businesses.length > 0
-        ? businesses.map(b => ({
-            businessId: b.id,
-            title: b.name || b.id,
-            desc: b.description || "Ruang chat bisnis admin",
-            groupCount: groups.filter(g => (g.businessId || "").toUpperCase() === b.id).length
-          }))
-        : Array.from(new Set(groups.map(g => (g.businessId || "").toUpperCase()).filter(Boolean))).map(bizId => ({
-            businessId: bizId,
-            title: bizId,
-            desc: "Ruang chat bisnis admin",
-            groupCount: groups.filter(g => (g.businessId || "").toUpperCase() === bizId).length
-          }));
-
-      document.getElementById("countGrup").textContent = chatBizList.length;
+      document.getElementById("countGrup").textContent = groups.length;
+      document.getElementById("badgeTotalGroupsChat").textContent = `${groups.length} Grup`;
 
       const container = document.getElementById("grupList");
-      if (chatBizList.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada chat bisnis yang tersedia.</div>`;
+      if (groups.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada grup chat presensi yang tersedia.</div>`;
         return;
       }
 
-      container.innerHTML = chatBizList.map(item => {
-        const adminCount = getBusinessAdminIds(item.businessId).length;
-        const chatUrl = `chat/?biz=${encodeURIComponent(item.businessId)}`;
+      const bizNameMap = {};
+      businesses.forEach(b => {
+        bizNameMap[b.id] = b.name || b.id;
+      });
+
+      const sortedGroups = [...groups].sort((a, b) => {
+        const bizCmp = String(a.businessId || "").localeCompare(String(b.businessId || ""));
+        if (bizCmp !== 0) return bizCmp;
+        return String(a.name || "").localeCompare(String(b.name || ""));
+      });
+
+      container.innerHTML = sortedGroups.map(g => {
+        const bizId = String(g.businessId || "").trim().toUpperCase();
+        const bizTitle = bizNameMap[bizId] || bizId || "Bisnis";
+        const memberCount = Array.isArray(g.memberIds) ? g.memberIds.length : 0;
+        const chatUrl = `chat/?biz=${encodeURIComponent(bizId)}&groupId=${encodeURIComponent(g.id)}&operatorAccess=1`;
+
         return `
           <div class="list-card">
             <div class="list-card-body">
               <div class="list-card-title">
-                <span>${escapeHtml(item.title)}</span>
-                <span class="badge badge-ok">${escapeHtml(item.businessId)}</span>
-                <span class="badge badge-success">${adminCount} Admin</span>
-                <span class="badge badge-warn">Read-Only</span>
+                <span>${escapeHtml(g.name || g.id)}</span>
+                <span class="badge badge-ok">${escapeHtml(bizTitle)}</span>
+                <span class="badge badge-success">${memberCount} Anggota</span>
               </div>
-              <div class="list-card-sub">${escapeHtml(item.desc)}</div>
+              <div class="list-card-sub">${escapeHtml(g.description || `Grup chat presensi • ${bizId}`)}</div>
             </div>
             <a href="${escapeHtml(chatUrl)}" class="btn-enter-chat">Masuk Chat</a>
           </div>
@@ -952,8 +947,7 @@
                 <div class="biz-member-row">
                   <div class="list-card-body">
                     <div class="list-card-title">
-                      <span>${escapeHtml(u.username || empId)}</span>
-                      ${isAdmin ? `<span class="badge badge-success">Admin</span>` : `<span class="badge badge-ok">Karyawan</span>`}
+                      <span>${escapeHtml(u.username || empId)}</span>${isAdmin ? `<span class="badge badge-success">Admin</span>` : `<span class="badge badge-ok">Karyawan</span>`}
                       ${isAdmin ? `<span class="badge ${subValid ? "badge-ok" : "badge-danger"}">${escapeHtml(subLabel)}</span>` : ""}
                     </div>
                     <div class="list-card-sub">ID: ${escapeHtml(empId)}</div>
@@ -1157,3 +1151,6 @@
   </script>
 </body>
 </html>
+<ElicitationsGroup message="Bicarakan hal ini dengan Gemini Live">
+<Elicitation label="Coba percakapan suara real-time" query="Coba percakapan suara real-time" query_intent="OPEN_LIVE_MODE" />
+</ElicitationsGroup>
