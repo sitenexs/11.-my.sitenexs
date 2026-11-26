@@ -313,11 +313,6 @@
       text-overflow: ellipsis;
     }
 
-    .custom-picker-text.placeholder {
-      color: var(--muted);
-      font-weight: 500;
-    }
-
     .native-overlay-input {
       position: absolute;
       inset: 0;
@@ -326,44 +321,6 @@
       opacity: 0;
       cursor: pointer;
       border: none;
-    }
-
-    .cat-pills {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .cat-pill-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-secondary);
-      padding: 7px 6px;
-      border-radius: 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-    }
-
-    .cat-pill-btn.active[data-cat="Target"] {
-      background: var(--primary-bg);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .cat-pill-btn.active[data-cat="Jadwal"] {
-      background: var(--purple-bg);
-      border-color: var(--purple);
-      color: var(--purple);
-    }
-
-    .cat-pill-btn.active[data-cat="Penting"] {
-      background: var(--warning-bg);
-      border-color: var(--warning);
-      color: var(--warning);
     }
 
     .note-box {
@@ -421,12 +378,6 @@
       color: #64748b !important;
       box-shadow: none !important;
       cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
-      color: #ffffff;
-      box-shadow: 0 5px 14px rgba(15, 118, 110, 0.24);
     }
 
     .btn-masuk {
@@ -985,63 +936,8 @@
         </button>
       </div>
 
-      <!-- BAGIAN A: TARGET & PENGINGAT JADWAL -->
+      <!-- BAGIAN A: DAFTAR TARGET & PENGINGAT DARI ADMIN -->
       <div id="subTargetSection" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Tambah Target &amp; Pengingat</span>
-          </div>
-
-          <form id="reminderForm">
-            <div class="cat-pills" id="remCatPills">
-              <button type="button" class="cat-pill-btn active" data-cat="Target">Target</button>
-              <button type="button" class="cat-pill-btn" data-cat="Jadwal">Jadwal</button>
-              <button type="button" class="cat-pill-btn" data-cat="Penting">Penting</button>
-            </div>
-
-            <div class="form-group">
-              <input type="text" id="remTitleInput" class="form-input" placeholder="Judul target (misal: Closing 10 Klien)..." required>
-            </div>
-
-            <div class="picker-row" id="targetMetricRow">
-              <div>
-                <input type="number" id="remTargetNumInput" class="form-input" min="1" placeholder="Angka target (opsional)">
-              </div>
-              <div>
-                <input type="text" id="remTargetUnitInput" class="form-input" placeholder="Satuan (Klien / Paket)">
-              </div>
-            </div>
-
-            <div class="picker-row">
-              <label class="custom-picker-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span class="custom-picker-text" id="remDateDisplay">Hari ini</span>
-                <input type="date" id="remDateInput" class="native-overlay-input" required>
-              </label>
-
-              <label class="custom-picker-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                <span class="custom-picker-text placeholder" id="remTimeDisplay">Jam (opsional)</span>
-                <input type="time" id="remTimeInput" class="native-overlay-input">
-              </label>
-            </div>
-
-            <div class="note-box">
-              <textarea id="remNoteInput" class="note-textarea" placeholder="Catatan detail target, strategi, atau keterangan..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="saveRemBtn">Simpan Target</button>
-          </form>
-        </section>
-
         <section class="card">
           <div class="card-title">
             <span>Daftar Target &amp; Jadwal</span>
@@ -1208,7 +1104,6 @@
     let currentUser = null;
     let myReminders = [];
     let myClients = [];
-    let selectedRemCategory = "Target";
     let toastTimer = null;
 
     const TOAST_ICONS = {
@@ -1284,6 +1179,10 @@
         .join("\n");
     }
 
+    function isAssignedByAdmin(rem) {
+      return Boolean(rem.assignedBy) || Boolean(rem.businessId);
+    }
+
     // Sub-segment switcher
     document.querySelectorAll(".sub-seg-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -1309,44 +1208,6 @@
     });
 
     // ================= TARGET & PENGINGAT =================
-    const remDateInput = document.getElementById("remDateInput");
-    const remDateDisplay = document.getElementById("remDateDisplay");
-    const remTimeInput = document.getElementById("remTimeInput");
-    const remTimeDisplay = document.getElementById("remTimeDisplay");
-    const targetMetricRow = document.getElementById("targetMetricRow");
-
-    function initReminderPickers() {
-      const todayKey = getTodayKey();
-      remDateInput.value = todayKey;
-      remDateDisplay.textContent = formatShortDateKey(todayKey);
-      remTimeInput.value = "";
-      remTimeDisplay.textContent = "Jam (opsional)";
-      remTimeDisplay.classList.add("placeholder");
-    }
-
-    remDateInput.addEventListener("change", () => {
-      remDateDisplay.textContent = remDateInput.value ? formatShortDateKey(remDateInput.value) : "Pilih tanggal";
-    });
-
-    remTimeInput.addEventListener("change", () => {
-      if (remTimeInput.value) {
-        remTimeDisplay.textContent = remTimeInput.value;
-        remTimeDisplay.classList.remove("placeholder");
-      } else {
-        remTimeDisplay.textContent = "Jam (opsional)";
-        remTimeDisplay.classList.add("placeholder");
-      }
-    });
-
-    document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedRemCategory = btn.dataset.cat;
-        targetMetricRow.classList.toggle("hidden", selectedRemCategory !== "Target");
-      });
-    });
-
     function renderRemindersUI() {
       const container = document.getElementById("reminderListContainer");
       const pendingBadge = document.getElementById("remPendingCount");
@@ -1374,7 +1235,7 @@
       }
 
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat jadwal.</div>`;
+        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat dari admin.</div>`;
         return;
       }
 
@@ -1383,6 +1244,7 @@
         const isOverdue = !rem.completed && rem.date && rem.date < todayKey;
         const whenLabel = `${formatShortDateKey(rem.date)}${rem.time ? ` • ${rem.time}` : ""}`;
         const cat = rem.category || "Target";
+        const fromAdmin = isAssignedByAdmin(rem);
 
         const targetGoal = Number(rem.targetGoal) || 0;
         const targetCurrent = Number(rem.targetCurrent) || 0;
@@ -1404,6 +1266,17 @@
           </div>
         ` : "";
 
+        const deleteBtnHtml = !fromAdmin ? `
+          <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+              <path d="M10 11v6"></path>
+              <path d="M14 11v6"></path>
+            </svg>
+          </button>
+        ` : "";
+
         return `
           <div class="reminder-item ${rem.completed ? "done" : ""}">
             <button type="button" class="reminder-check" data-toggle-rem="${escapeHtml(rem.docId)}" aria-label="Tandai selesai">
@@ -1418,14 +1291,7 @@
               ${progressHtml}
               ${rem.note ? `<div class="reminder-note">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
             </div>
-            <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
-            </button>
+            ${deleteBtnHtml}
           </div>
         `;
       }).join("")}</div>`;
@@ -1478,6 +1344,11 @@
       container.querySelectorAll("[data-del-rem]").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.delRem;
+          const target = myReminders.find(r => r.docId === id);
+          if (!target || isAssignedByAdmin(target)) {
+            showToast("Target dari admin tidak bisa dihapus.", "warn");
+            return;
+          }
           const ok = await showCustomConfirm("Hapus Pengingat", "Hapus target atau jadwal ini?", "Hapus");
           if (!ok) return;
           try {
@@ -1490,60 +1361,6 @@
         });
       });
     }
-
-    document.getElementById("reminderForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!currentUser) return;
-
-      const title = document.getElementById("remTitleInput").value.trim();
-      const date = remDateInput.value;
-      const time = remTimeInput.value;
-      const note = document.getElementById("remNoteInput").value.trim();
-      const targetGoalRaw = document.getElementById("remTargetNumInput").value.trim();
-      const targetUnit = document.getElementById("remTargetUnitInput").value.trim();
-      const saveBtn = document.getElementById("saveRemBtn");
-
-      if (!title || !date) {
-        showToast("Isi judul dan tanggal.", "warn");
-        return;
-      }
-
-      const targetGoal = (selectedRemCategory === "Target" && targetGoalRaw) ? Math.max(0, Number(targetGoalRaw)) : 0;
-
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Menyimpan...";
-
-      try {
-        const docId = `${currentUser.id}_${Date.now()}`;
-        await setDoc(doc(db, "absen_pengingat", docId), {
-          empId: currentUser.id,
-          username: currentUser.username,
-          category: selectedRemCategory,
-          title,
-          targetGoal,
-          targetCurrent: 0,
-          targetUnit: targetGoal > 0 ? targetUnit : "",
-          date,
-          time: time || "",
-          note,
-          completed: false,
-          createdAt: new Date().toISOString()
-        });
-
-        document.getElementById("remTitleInput").value = "";
-        document.getElementById("remTargetNumInput").value = "";
-        document.getElementById("remTargetUnitInput").value = "";
-        document.getElementById("remNoteInput").value = "";
-        initReminderPickers();
-        showToast("Target & pengingat disimpan.", "success");
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal menyimpan target.", "error");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Simpan Target";
-      }
-    });
 
     // ================= CATATAN KLIEN BERGABUNG =================
     const clientDateInput = document.getElementById("clientDateInput");
@@ -1694,7 +1511,6 @@
         return;
       }
 
-      initReminderPickers();
       initClientPicker();
 
       // Pantau status akun
