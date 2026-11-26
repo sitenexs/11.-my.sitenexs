@@ -154,10 +154,13 @@
       border-radius: 999px;
       font-size: 10.5px;
       font-weight: 800;
-      max-width: 105px;
+      max-width: 115px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     /* Bar daftar grup khusus bisnis pengguna */
@@ -276,15 +279,18 @@
       font-weight: 800;
       color: var(--primary);
       margin-bottom: 2px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
-    .msg-sender-id {
-      font-size: 9.5px;
-      font-weight: 600;
-      color: var(--muted);
+    .verified-badge {
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
     }
 
     .reply-quote {
@@ -305,6 +311,9 @@
       font-weight: 800;
       font-size: 10px;
       margin-bottom: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
 
     .reply-quote-text {
@@ -711,6 +720,7 @@
     const SUPABASE_BUCKET = "absensi-foto";
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    const VERIFIED_ICON_URL = "https://sitenexs.com/assets/logo/verified.png";
     const SESSION_KEY = "absen_firebase_user_permanent";
     let currentUser = null;
     let currentBusinessId = "";
@@ -718,10 +728,12 @@
     let businessGroups = [];
     let activeGroupId = "";
     let allMessages = [];
+    let adminEmpIds = new Set();
     let replyData = null;
     let pendingPhoto = null;
     let toastTimer = null;
     let unsubscribeMessages = null;
+    let unsubscribeBizMembers = null;
 
     const chatMessagesEl = document.getElementById("chatMessages");
     const chatInputEl = document.getElementById("chatInput");
@@ -745,6 +757,25 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+    }
+
+    function isAdminUser(empId, msgData = null) {
+      if (empId && adminEmpIds.has(empId)) return true;
+      if (msgData && (Boolean(msgData.isAbsenAdmin) || msgData.role === "admin_absen")) return true;
+      if (currentUser && empId === currentUser.id && (Boolean(currentUser.isAbsenAdmin) || currentUser.role === "admin_absen")) return true;
+      return false;
+    }
+
+    function getVerifiedBadgeHtml(empId, msgData = null) {
+      if (!isAdminUser(empId, msgData)) return "";
+      return `<img src="${VERIFIED_ICON_URL}" class="verified-badge" alt="Admin Terverifikasi" title="Admin">`;
+    }
+
+    function renderCurrentUserBadge() {
+      const badgeEl = document.getElementById("currentUserBadge");
+      const name = currentUser?.username || currentUser?.id || "-";
+      const vBadge = currentUser ? getVerifiedBadgeHtml(currentUser.id, currentUser) : "";
+      badgeEl.innerHTML = `<span>${escapeHtml(name)}</span>${vBadge}`;
     }
 
     function getTodayKey() {
@@ -872,10 +903,11 @@
     function setReply(msg) {
       replyData = {
         id: msg.id,
+        empId: msg.empId || "",
         username: msg.username,
         text: msg.text || (msg.photoUrl ? "[Foto]" : "")
       };
-      document.getElementById("replyTargetName").textContent = `Membalas ${replyData.username}`;
+      document.getElementById("replyTargetName").innerHTML = `<span>Membalas ${escapeHtml(replyData.username)}</span>${getVerifiedBadgeHtml(replyData.empId)}`;
       document.getElementById("replyTargetText").textContent = replyData.text;
       document.getElementById("replyStrip").classList.remove("hidden");
       chatInputEl.focus();
@@ -946,7 +978,6 @@
       allMessages = [];
       chatMessagesEl.innerHTML = `<div class="empty-chat">Memuat pesan grup...</div>`;
 
-      // Filter ketat hanya untuk businessId dan groupId yang sama
       const q = query(
         collection(db, "absen_chat"),
         where("businessId", "==", businessId),
@@ -957,7 +988,6 @@
       unsubscribeMessages = onSnapshot(q, (snapshot) => {
         const list = snapshot.docs
           .map(d => ({ id: d.id, ...d.data() }))
-          // Pengaman ganda agar lintas bisnis tidak pernah bocor
           .filter(m => m.businessId === businessId && m.groupId === groupId)
           .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
 
@@ -991,10 +1021,11 @@
         const isMine = currentUser && msg.empId === currentUser.id;
         const initial = (msg.username || "K").charAt(0);
         const timeStr = formatTimeHHMM(msg.createdAt);
+        const senderVerified = getVerifiedBadgeHtml(msg.empId, msg);
 
         const replyHtml = msg.replyTo ? `
           <div class="reply-quote">
-            <div class="reply-quote-name">${escapeHtml(msg.replyTo.username)}</div>
+            <div class="reply-quote-name"><span>${escapeHtml(msg.replyTo.username)}</span>${getVerifiedBadgeHtml(msg.replyTo.empId)}</div>
             <div class="reply-quote-text">${escapeHtml(msg.replyTo.text)}</div>
           </div>
         ` : "";
@@ -1015,7 +1046,7 @@
           <div class="msg-row ${isMine ? "mine" : "other"}">
             ${!isMine ? `<div class="msg-avatar">${escapeHtml(initial)}</div>` : ""}
             <div class="msg-bubble">
-              ${!isMine ? `<div class="msg-sender">${escapeHtml(msg.username)} <span class="msg-sender-id">(${escapeHtml(msg.empId)})</span></div>` : ""}
+              ${!isMine ? `<div class="msg-sender"><span>${escapeHtml(msg.username)}</span>${senderVerified}</div>` : ""}
               ${replyHtml}
               ${photoHtml}
               ${textHtml}
@@ -1094,6 +1125,7 @@
           groupId: activeGroupId,
           empId: currentUser.id,
           username: currentUser.username,
+          isAbsenAdmin: isAdminUser(currentUser.id, currentUser),
           text,
           photoUrl,
           replyTo: replyData ? { ...replyData } : null,
@@ -1117,34 +1149,12 @@
 
     sendMsgBtn.addEventListener("click", sendMessage);
 
-    function subscribeBusinessGroups(bizId) {
-      if (!bizId) {
-        businessGroups = [];
-        renderGroupBar();
-        return;
-      }
-
-      const qGrp = query(
-        collection(db, "absen_grup"),
-        where("businessId", "==", bizId)
-      );
-
-      onSnapshot(qGrp, (snap) => {
-        businessGroups = snap.docs
-          .map(d => ({ id: d.id, ...d.data() }))
-          .filter(g => g.businessId === bizId)
-          .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
-
-        renderGroupBar();
-      });
-    }
-
     (function init() {
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
         if (saved && saved.id && saved.username) {
           currentUser = saved;
-          document.getElementById("currentUserBadge").textContent = saved.username;
+          renderCurrentUserBadge();
         } else {
           showToast("Sesi tidak ditemukan. Login di halaman utama.");
           setTimeout(() => {
@@ -1159,7 +1169,6 @@
 
       let activeGroupSub = null;
 
-      // Pantau businessId karyawan secara real-time dari Firestore
       onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
         if (!snap.exists()) {
           localStorage.removeItem(SESSION_KEY);
@@ -1169,22 +1178,43 @@
 
         const userDoc = snap.data();
         currentUser = { ...currentUser, ...userDoc };
-        document.getElementById("currentUserBadge").textContent = currentUser.username || currentUser.id;
+        renderCurrentUserBadge();
 
         const nextBizId = (userDoc.businessId || "").trim().toUpperCase();
         if (nextBizId !== currentBusinessId) {
           currentBusinessId = nextBizId;
           currentBusinessName = "";
           activeGroupId = "";
+          adminEmpIds = new Set();
+
           if (unsubscribeMessages) {
             unsubscribeMessages();
             unsubscribeMessages = null;
+          }
+          if (unsubscribeBizMembers) {
+            unsubscribeBizMembers();
+            unsubscribeBizMembers = null;
           }
 
           if (currentBusinessId) {
             onSnapshot(doc(db, "absen_bisnis", currentBusinessId), (bizSnap) => {
               currentBusinessName = bizSnap.exists() ? (bizSnap.data().name || "") : "";
               renderGroupBar();
+            });
+
+            // Deteksi admin pada bisnis yang sama untuk lencana centang biru
+            const qMembers = query(collection(db, "absen_karyawan"), where("businessId", "==", currentBusinessId));
+            unsubscribeBizMembers = onSnapshot(qMembers, (mSnap) => {
+              const nextAdmins = new Set();
+              mSnap.docs.forEach(d => {
+                const u = d.data();
+                if (Boolean(u.isAbsenAdmin) || u.role === "admin_absen") {
+                  nextAdmins.add(u.id || d.id);
+                }
+              });
+              adminEmpIds = nextAdmins;
+              renderCurrentUserBadge();
+              renderMessages();
             });
 
             if (activeGroupSub) activeGroupSub();
@@ -1204,6 +1234,8 @@
             businessGroups = [];
             renderGroupBar();
           }
+        } else {
+          renderMessages();
         }
       });
     })();
