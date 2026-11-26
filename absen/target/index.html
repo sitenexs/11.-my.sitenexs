@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Target &amp; Klien - Absensi Karyawan</title>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #64748b;
+      --border: rgba(203, 213, 225, 0.72);
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #14b8a6;
+      --primary-bg: #f0fdfa;
+      --success: #059669;
+      --success-bg: #d1fae5;
+      --danger: #e11d48;
+      --danger-bg: #ffe4e6;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --purple: #6d28d9;
+      --purple-bg: #ede9fe;
+      --blue: #0284c7;
+      --blue-bg: #e0f2fe;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 13px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    @keyframes tabFadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes itemEnter {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding-top: 54px;
+      padding-bottom: 76px;
+    }
+
+    /* Fixed Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .avatar-dot {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--success);
+      border: 2px solid #ffffff;
+    }
+
+    .topbar-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .user-id {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-logout {
+      flex-shrink: 0;
+      border: 1px solid #fecdd3;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .content-area {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ================= SUB-SEGMENT SWITCHER ================= */
+    .sub-segment {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 14px;
+    }
+
+    .sub-seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .sub-seg-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .seg-count {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--clay-shadow);
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+      margin-bottom: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface-soft);
+      outline: none;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .picker-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .custom-picker-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      min-height: 38px;
+      cursor: pointer;
+    }
+
+    .custom-picker-box svg {
+      width: 15px;
+      height: 15px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .custom-picker-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-picker-text.placeholder {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .native-overlay-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cat-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .cat-pill-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 7px 6px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .cat-pill-btn.active[data-cat="Target"] {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .cat-pill-btn.active[data-cat="Jadwal"] {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .cat-pill-btn.active[data-cat="Penting"] {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .note-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      overflow: hidden;
+      margin-bottom: 9px;
+    }
+
+    .note-box:focus-within {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .note-textarea {
+      width: 100%;
+      min-height: 56px;
+      padding: 10px 11px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      line-height: 1.45;
+      display: block;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      text-align: center;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      background: #e2e8f0 !important;
+      color: #64748b !important;
+      box-shadow: none !important;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(15, 118, 110, 0.24);
+    }
+
+    .btn-masuk {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(5, 150, 105, 0.24);
+    }
+
+    .btn-keluar {
+      background: linear-gradient(135deg, #e11d48, #f43f5e);
+      color: #ffffff;
+    }
+
+    .btn-outline-sm {
+      flex-shrink: 0;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 13px;
+      border-radius: 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3.5px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge-ok { background: var(--primary-bg); color: var(--primary); }
+    .badge-warn { background: var(--warning-bg); color: var(--warning); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+
+    /* ================= LIST TARGET & PENGINGAT ================= */
+    .reminder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reminder-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 11px;
+      animation: itemEnter 0.22s ease;
+    }
+
+    .reminder-item.done {
+      opacity: 0.65;
+      background: #f8fafc;
+    }
+
+    .reminder-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 7px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      cursor: pointer;
+    }
+
+    .reminder-item.done .reminder-check {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .reminder-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .reminder-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+
+    .cat-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    .cat-tag.Target { background: var(--primary-bg); color: var(--primary); }
+    .cat-tag.Jadwal { background: var(--purple-bg); color: var(--purple); }
+    .cat-tag.Penting { background: var(--warning-bg); color: var(--warning); }
+
+    .reminder-when {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reminder-when.overdue {
+      color: var(--danger);
+    }
+
+    .reminder-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      word-wrap: break-word;
+    }
+
+    .reminder-item.done .reminder-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .reminder-note {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      white-space: pre-line;
+      word-wrap: break-word;
+    }
+
+    .target-progress-box {
+      margin-top: 7px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 9px;
+    }
+
+    .target-prog-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .target-prog-nums {
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .target-step-btns {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .target-step-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 7px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #059669, #10b981);
+      transition: width 0.3s ease;
+    }
+
+    .reminder-del-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 4px;
+      border-radius: 7px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ================= CATATAN KLIEN BERGABUNG ================= */
+    .client-summary-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .client-stat-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .client-stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .client-stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .client-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-left: 3.5px solid var(--success);
+      border-radius: 13px;
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      animation: itemEnter 0.22s ease;
+    }
+
+    .client-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .client-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .client-biz {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .client-meta-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .client-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2.5px 8px;
+      border-radius: 7px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .client-pill.pkg {
+      background: var(--blue-bg);
+      border-color: rgba(2, 132, 199, 0.2);
+      color: var(--blue);
+    }
+
+    .client-pill.date {
+      background: var(--success-bg);
+      border-color: rgba(5, 150, 105, 0.2);
+      color: var(--success);
+    }
+
+    .client-note-text {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 9px;
+      margin-top: 2px;
+      white-space: pre-line;
+      word-wrap: break-word;
+    }
+
+    .empty-state {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 20px 10px;
+      background: var(--surface-soft);
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    /* ================= FIXED BOTTOM NAVIGATION ================= */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 6px 10px calc(7px + env(safe-area-inset-bottom, 0px));
+      z-index: 60;
+      touch-action: none;
+    }
+
+    .nav-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-icon-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 26px;
+      border-radius: 999px;
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-btn.active .nav-icon-pill {
+      background: #ccfbf1;
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 2px;
+      right: 25%;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--warning);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #ffffff;
+    }
+
+    /* ================= FLOATING CHAT BUTTON ================= */
+    .fab-chat-wrap {
+      position: fixed;
+      left: 50%;
+      bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      pointer-events: none;
+      z-index: 58;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 14px;
+    }
+
+    .fab-chat-btn {
+      pointer-events: auto;
+      width: 50px;
+      height: 50px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(15, 118, 110, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+    }
+
+    /* ================= CONFIRM & TOAST ================= */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-card {
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+      text-align: center;
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .confirm-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .confirm-msg {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+    }
+
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%) translateY(16px);
+      width: calc(100% - 24px);
+      max-width: 416px;
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      padding: 11px 14px;
+      border-radius: 13px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease, transform 0.24s ease;
+      z-index: 999;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.13);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast.warn { border-left-color: var(--warning); background: #fffbeb; color: #92400e; }
+    .toast.warn .toast-icon { color: var(--warning); }
+    .toast.error { border-left-color: var(--danger); background: #fff1f2; color: #9f1239; }
+    .toast.error .toast-icon { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Fixed Topbar -->
+    <header class="topbar">
+      <div class="topbar-user">
+        <div class="avatar-wrap">
+          <div class="avatar" id="userAvatar">K</div>
+          <span class="avatar-dot"></span>
+        </div>
+        <div class="topbar-info">
+          <div class="user-name" id="displayUserName">-</div>
+          <div class="user-id" id="displayUserId">-</div>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" id="logoutBtn">Keluar</button>
+    </header>
+
+    <main class="content-area">
+      <!-- Sub-Switch antara Target & Klien Bergabung -->
+      <div class="sub-segment">
+        <button type="button" class="sub-seg-btn active" data-subview="subTargetSection">
+          <span>Target &amp; Jadwal</span>
+          <span class="seg-count" id="segTargetCount">0</span>
+        </button>
+        <button type="button" class="sub-seg-btn" data-subview="subClientSection">
+          <span>Klien Bergabung</span>
+          <span class="seg-count" id="segClientCount">0</span>
+        </button>
+      </div>
+
+      <!-- BAGIAN A: TARGET & PENGINGAT JADWAL -->
+      <div id="subTargetSection" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Tambah Target &amp; Pengingat</span>
+          </div>
+
+          <form id="reminderForm">
+            <div class="cat-pills" id="remCatPills">
+              <button type="button" class="cat-pill-btn active" data-cat="Target">Target</button>
+              <button type="button" class="cat-pill-btn" data-cat="Jadwal">Jadwal</button>
+              <button type="button" class="cat-pill-btn" data-cat="Penting">Penting</button>
+            </div>
+
+            <div class="form-group">
+              <input type="text" id="remTitleInput" class="form-input" placeholder="Judul target (misal: Closing 10 Klien)..." required>
+            </div>
+
+            <div class="picker-row" id="targetMetricRow">
+              <div>
+                <input type="number" id="remTargetNumInput" class="form-input" min="1" placeholder="Angka target (opsional)">
+              </div>
+              <div>
+                <input type="text" id="remTargetUnitInput" class="form-input" placeholder="Satuan (Klien / Paket)">
+              </div>
+            </div>
+
+            <div class="picker-row">
+              <label class="custom-picker-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span class="custom-picker-text" id="remDateDisplay">Hari ini</span>
+                <input type="date" id="remDateInput" class="native-overlay-input" required>
+              </label>
+
+              <label class="custom-picker-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="custom-picker-text placeholder" id="remTimeDisplay">Jam (opsional)</span>
+                <input type="time" id="remTimeInput" class="native-overlay-input">
+              </label>
+            </div>
+
+            <div class="note-box">
+              <textarea id="remNoteInput" class="note-textarea" placeholder="Catatan detail target, strategi, atau keterangan..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="saveRemBtn">Simpan Target</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Daftar Target &amp; Jadwal</span>
+            <span class="badge badge-warn" id="remPendingCount">0 Aktif</span>
+          </div>
+          <div id="reminderListContainer">
+            <div class="empty-state">Memuat data target...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- BAGIAN B: CATATAN KLIEN YANG BERGABUNG -->
+      <div id="subClientSection" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Catat Klien Bergabung</span>
+            <span class="badge badge-success">Baru</span>
+          </div>
+
+          <form id="clientForm">
+            <div class="form-group">
+              <label class="form-label" for="clientNameInput">Nama Klien / PIC</label>
+              <input type="text" id="clientNameInput" class="form-input" placeholder="Nama lengkap klien..." required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="clientBizInput">Nama Usaha / Instansi</label>
+              <input type="text" id="clientBizInput" class="form-input" placeholder="Contoh: Kopi Senja / Toko Berkah">
+            </div>
+
+            <div class="picker-row">
+              <div>
+                <input type="tel" id="clientPhoneInput" class="form-input" placeholder="No. WhatsApp / HP">
+              </div>
+              <div>
+                <input type="text" id="clientPkgInput" class="form-input" placeholder="Paket / Layanan">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="custom-picker-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span class="custom-picker-text" id="clientDateDisplay">Tanggal bergabung</span>
+                <input type="date" id="clientDateInput" class="native-overlay-input" required>
+              </label>
+            </div>
+
+            <div class="note-box">
+              <textarea id="clientNoteInput" class="note-textarea" placeholder="Catatan tambahan klien (kebutuhan, deal, atau tindak lanjut)..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-masuk" id="saveClientBtn">Simpan Klien Bergabung</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Daftar Klien Bergabung</span>
+            <span class="badge badge-ok" id="clientTotalBadge">0 Klien</span>
+          </div>
+
+          <div class="client-summary-strip">
+            <div class="client-stat-box">
+              <span class="client-stat-label">Total Klien</span>
+              <span class="client-stat-val" id="clientTotalNum">0</span>
+            </div>
+            <div class="client-stat-box">
+              <span class="client-stat-label">Bulan Ini</span>
+              <span class="client-stat-val" id="clientMonthNum">0</span>
+            </div>
+          </div>
+
+          <div id="clientListContainer">
+            <div class="empty-state">Memuat data klien...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Floating Round Chat Button -->
+    <div class="fab-chat-wrap">
+      <a href="messange/chat/" class="fab-chat-btn" aria-label="Buka Chat Tim" title="Chat Tim">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Fixed Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-btn">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </span>
+        <span>Presensi</span>
+      </a>
+      <a href="target.html" class="nav-btn active">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+        </span>
+        <span>Target &amp; Klien</span>
+        <span class="nav-badge hidden" id="navTargetBadge">0</span>
+      </a>
+      <a href="kalender.html" class="nav-btn">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        <span>Kalender</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- CUSTOM CONFIRM DIALOG -->
+  <div id="confirmOverlay" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title" id="confirmTitle">Konfirmasi</div>
+      <div class="confirm-msg" id="confirmMsg">-</div>
+      <div class="confirm-actions">
+        <button type="button" class="btn-outline-sm" id="confirmCancelBtn">Batal</button>
+        <button type="button" class="btn btn-keluar" style="padding:8px;" id="confirmOkBtn">Ya, Lanjut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon" id="toastIcon"></span>
+    <span id="toastText"></span>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      collection,
+      query,
+      where,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
+      authDomain: "sitenexs-62919.firebaseapp.com",
+      projectId: "sitenexs-62919",
+      storageBucket: "sitenexs-62919.firebasestorage.app",
+      messagingSenderId: "1060348110644",
+      appId: "1:1060348110644:web:e45af14d5f26a9cf8e6761",
+      measurementId: "G-C7YL0Q7YRQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    let currentUser = null;
+    let myReminders = [];
+    let myClients = [];
+    let selectedRemCategory = "Target";
+    let toastTimer = null;
+
+    const TOAST_ICONS = {
+      success: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+      error: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+      warn: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>`,
+      info: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+    };
+
+    function showToast(msg, type = "info") {
+      const el = document.getElementById("toast");
+      el.className = `toast ${type}`;
+      document.getElementById("toastIcon").innerHTML = TOAST_ICONS[type] || TOAST_ICONS.info;
+      document.getElementById("toastText").textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 3000);
+    }
+
+    function showCustomConfirm(title, message, okLabel = "Ya, Lanjut") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("confirmOverlay");
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmMsg").textContent = message;
+        const okBtn = document.getElementById("confirmOkBtn");
+        const cancelBtn = document.getElementById("confirmCancelBtn");
+        okBtn.textContent = okLabel;
+        overlay.classList.remove("hidden");
+
+        const cleanup = (res) => {
+          overlay.classList.add("hidden");
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(res);
+        };
+
+        okBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+      });
+    }
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatShortDateKey(dateKey) {
+      if (!dateKey) return "-";
+      const [y, m, d] = dateKey.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function cleanNoteLines(rawNote) {
+      return String(rawNote || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join("\n");
+    }
+
+    // Sub-segment switcher
+    document.querySelectorAll(".sub-seg-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".sub-seg-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const targetSub = btn.dataset.subview;
+        document.getElementById("subTargetSection").classList.toggle("hidden", targetSub !== "subTargetSection");
+        document.getElementById("subClientSection").classList.toggle("hidden", targetSub !== "subClientSection");
+      });
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+      const ok = await showCustomConfirm(
+        "Keluar Akun",
+        `Keluar dari sesi ${currentUser.username} (${currentUser.id})?`,
+        "Keluar"
+      );
+      if (!ok) return;
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = "index.html";
+    });
+
+    // ================= TARGET & PENGINGAT =================
+    const remDateInput = document.getElementById("remDateInput");
+    const remDateDisplay = document.getElementById("remDateDisplay");
+    const remTimeInput = document.getElementById("remTimeInput");
+    const remTimeDisplay = document.getElementById("remTimeDisplay");
+    const targetMetricRow = document.getElementById("targetMetricRow");
+
+    function initReminderPickers() {
+      const todayKey = getTodayKey();
+      remDateInput.value = todayKey;
+      remDateDisplay.textContent = formatShortDateKey(todayKey);
+      remTimeInput.value = "";
+      remTimeDisplay.textContent = "Jam (opsional)";
+      remTimeDisplay.classList.add("placeholder");
+    }
+
+    remDateInput.addEventListener("change", () => {
+      remDateDisplay.textContent = remDateInput.value ? formatShortDateKey(remDateInput.value) : "Pilih tanggal";
+    });
+
+    remTimeInput.addEventListener("change", () => {
+      if (remTimeInput.value) {
+        remTimeDisplay.textContent = remTimeInput.value;
+        remTimeDisplay.classList.remove("placeholder");
+      } else {
+        remTimeDisplay.textContent = "Jam (opsional)";
+        remTimeDisplay.classList.add("placeholder");
+      }
+    });
+
+    document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedRemCategory = btn.dataset.cat;
+        targetMetricRow.classList.toggle("hidden", selectedRemCategory !== "Target");
+      });
+    });
+
+    function renderRemindersUI() {
+      const container = document.getElementById("reminderListContainer");
+      const pendingBadge = document.getElementById("remPendingCount");
+      const segTargetCount = document.getElementById("segTargetCount");
+      const navBadge = document.getElementById("navTargetBadge");
+
+      const sorted = [...myReminders].sort((a, b) => {
+        if (Boolean(a.completed) !== Boolean(b.completed)) {
+          return a.completed ? 1 : -1;
+        }
+        const keyA = `${a.date || "9999-99-99"} ${a.time || "23:59"}`;
+        const keyB = `${b.date || "9999-99-99"} ${b.time || "23:59"}`;
+        return keyA.localeCompare(keyB);
+      });
+
+      const activeList = sorted.filter(r => !r.completed);
+      pendingBadge.textContent = `${activeList.length} Aktif`;
+      segTargetCount.textContent = activeList.length;
+
+      if (activeList.length > 0) {
+        navBadge.textContent = activeList.length;
+        navBadge.classList.remove("hidden");
+      } else {
+        navBadge.classList.add("hidden");
+      }
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat jadwal.</div>`;
+        return;
+      }
+
+      const todayKey = getTodayKey();
+      container.innerHTML = `<div class="reminder-list">${sorted.map(rem => {
+        const isOverdue = !rem.completed && rem.date && rem.date < todayKey;
+        const whenLabel = `${formatShortDateKey(rem.date)}${rem.time ? ` • ${rem.time}` : ""}`;
+        const cat = rem.category || "Target";
+
+        const targetGoal = Number(rem.targetGoal) || 0;
+        const targetCurrent = Number(rem.targetCurrent) || 0;
+        const pct = targetGoal > 0 ? Math.min(100, Math.round((targetCurrent / targetGoal) * 100)) : 0;
+        const unitStr = rem.targetUnit ? ` ${escapeHtml(rem.targetUnit)}` : "";
+
+        const progressHtml = targetGoal > 0 ? `
+          <div class="target-progress-box">
+            <div class="target-prog-top">
+              <span class="target-prog-nums">${targetCurrent} / ${targetGoal}${unitStr} (${pct}%)</span>
+              <div class="target-step-btns">
+                <button type="button" class="target-step-btn" data-step-rem="${escapeHtml(rem.docId)}" data-delta="-1">-1</button>
+                <button type="button" class="target-step-btn" data-step-rem="${escapeHtml(rem.docId)}" data-delta="1">+1</button>
+              </div>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${pct}%;"></div>
+            </div>
+          </div>
+        ` : "";
+
+        return `
+          <div class="reminder-item ${rem.completed ? "done" : ""}">
+            <button type="button" class="reminder-check" data-toggle-rem="${escapeHtml(rem.docId)}" aria-label="Tandai selesai">
+              ${rem.completed ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ""}
+            </button>
+            <div class="reminder-body">
+              <div class="reminder-head">
+                <span class="cat-tag ${escapeHtml(cat)}">${escapeHtml(cat)}</span>
+                <span class="reminder-when ${isOverdue ? "overdue" : ""}">${whenLabel}</span>
+              </div>
+              <div class="reminder-title">${escapeHtml(rem.title)}</div>
+              ${progressHtml}
+              ${rem.note ? `<div class="reminder-note">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
+            </div>
+            <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+        `;
+      }).join("")}</div>`;
+
+      container.querySelectorAll("[data-step-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.stepRem;
+          const delta = Number(btn.dataset.delta);
+          const target = myReminders.find(r => r.docId === id);
+          if (!target) return;
+
+          const goal = Number(target.targetGoal) || 0;
+          const nextVal = Math.max(0, (Number(target.targetCurrent) || 0) + delta);
+          const isReached = goal > 0 && nextVal >= goal;
+
+          try {
+            await updateDoc(doc(db, "absen_pengingat", id), {
+              targetCurrent: nextVal,
+              completed: isReached ? true : Boolean(target.completed),
+              updatedAt: new Date().toISOString()
+            });
+            if (isReached && !target.completed) {
+              showToast("Selamat! Target angka tercapai.", "success");
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal memperbarui progres.", "error");
+          }
+        });
+      });
+
+      container.querySelectorAll("[data-toggle-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.toggleRem;
+          const target = myReminders.find(r => r.docId === id);
+          if (!target) return;
+          try {
+            await updateDoc(doc(db, "absen_pengingat", id), {
+              completed: !target.completed,
+              updatedAt: new Date().toISOString()
+            });
+            showToast(!target.completed ? "Target ditandai selesai" : "Status dikembalikan", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal memperbarui status.", "error");
+          }
+        });
+      });
+
+      container.querySelectorAll("[data-del-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.delRem;
+          const ok = await showCustomConfirm("Hapus Pengingat", "Hapus target atau jadwal ini?", "Hapus");
+          if (!ok) return;
+          try {
+            await deleteDoc(doc(db, "absen_pengingat", id));
+            showToast("Pengingat dihapus.", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus pengingat.", "error");
+          }
+        });
+      });
+    }
+
+    document.getElementById("reminderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const title = document.getElementById("remTitleInput").value.trim();
+      const date = remDateInput.value;
+      const time = remTimeInput.value;
+      const note = document.getElementById("remNoteInput").value.trim();
+      const targetGoalRaw = document.getElementById("remTargetNumInput").value.trim();
+      const targetUnit = document.getElementById("remTargetUnitInput").value.trim();
+      const saveBtn = document.getElementById("saveRemBtn");
+
+      if (!title || !date) {
+        showToast("Isi judul dan tanggal.", "warn");
+        return;
+      }
+
+      const targetGoal = (selectedRemCategory === "Target" && targetGoalRaw) ? Math.max(0, Number(targetGoalRaw)) : 0;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Menyimpan...";
+
+      try {
+        const docId = `${currentUser.id}_${Date.now()}`;
+        await setDoc(doc(db, "absen_pengingat", docId), {
+          empId: currentUser.id,
+          username: currentUser.username,
+          category: selectedRemCategory,
+          title,
+          targetGoal,
+          targetCurrent: 0,
+          targetUnit: targetGoal > 0 ? targetUnit : "",
+          date,
+          time: time || "",
+          note,
+          completed: false,
+          createdAt: new Date().toISOString()
+        });
+
+        document.getElementById("remTitleInput").value = "";
+        document.getElementById("remTargetNumInput").value = "";
+        document.getElementById("remTargetUnitInput").value = "";
+        document.getElementById("remNoteInput").value = "";
+        initReminderPickers();
+        showToast("Target & pengingat disimpan.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan target.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Target";
+      }
+    });
+
+    // ================= CATATAN KLIEN BERGABUNG =================
+    const clientDateInput = document.getElementById("clientDateInput");
+    const clientDateDisplay = document.getElementById("clientDateDisplay");
+
+    function initClientPicker() {
+      const todayKey = getTodayKey();
+      clientDateInput.value = todayKey;
+      clientDateDisplay.textContent = formatShortDateKey(todayKey);
+    }
+
+    clientDateInput.addEventListener("change", () => {
+      clientDateDisplay.textContent = clientDateInput.value ? formatShortDateKey(clientDateInput.value) : "Pilih tanggal";
+    });
+
+    function renderClientsUI() {
+      const container = document.getElementById("clientListContainer");
+      const totalBadge = document.getElementById("clientTotalBadge");
+      const totalNum = document.getElementById("clientTotalNum");
+      const monthNum = document.getElementById("clientMonthNum");
+      const segClientCount = document.getElementById("segClientCount");
+
+      const sorted = [...myClients].sort((a, b) => {
+        const dA = `${a.joinDate || "0000-00-00"} ${a.createdAt || ""}`;
+        const dB = `${b.joinDate || "0000-00-00"} ${b.createdAt || ""}`;
+        return dB.localeCompare(dA);
+      });
+
+      const currentMonthPrefix = getTodayKey().slice(0, 7);
+      const monthCount = sorted.filter(c => (c.joinDate || "").startsWith(currentMonthPrefix)).length;
+
+      totalBadge.textContent = `${sorted.length} Klien`;
+      totalNum.textContent = sorted.length;
+      monthNum.textContent = monthCount;
+      segClientCount.textContent = sorted.length;
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada catatan klien yang bergabung.</div>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="reminder-list">${sorted.map(cl => `
+        <div class="client-card">
+          <div class="client-top">
+            <div>
+              <div class="client-name">${escapeHtml(cl.clientName)}</div>
+              ${cl.businessName ? `<div class="client-biz">${escapeHtml(cl.businessName)}</div>` : ""}
+            </div>
+            <button type="button" class="reminder-del-btn" data-del-client="${escapeHtml(cl.docId)}" aria-label="Hapus klien">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="client-meta-row">
+            <span class="client-pill date">Gabung ${formatShortDateKey(cl.joinDate)}</span>
+            ${cl.packageName ? `<span class="client-pill pkg">${escapeHtml(cl.packageName)}</span>` : ""}
+            ${cl.phone ? `<span class="client-pill">${escapeHtml(cl.phone)}</span>` : ""}
+          </div>
+          ${cl.note ? `<div class="client-note-text">${escapeHtml(cleanNoteLines(cl.note))}</div>` : ""}
+        </div>
+      `).join("")}</div>`;
+
+      container.querySelectorAll("[data-del-client]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.delClient;
+          const ok = await showCustomConfirm("Hapus Catatan Klien", "Hapus data klien yang bergabung ini?", "Hapus");
+          if (!ok) return;
+          try {
+            await deleteDoc(doc(db, "absen_klien", id));
+            showToast("Catatan klien dihapus.", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus data klien.", "error");
+          }
+        });
+      });
+    }
+
+    document.getElementById("clientForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const clientName = document.getElementById("clientNameInput").value.trim();
+      const businessName = document.getElementById("clientBizInput").value.trim();
+      const phone = document.getElementById("clientPhoneInput").value.trim();
+      const packageName = document.getElementById("clientPkgInput").value.trim();
+      const joinDate = clientDateInput.value;
+      const note = document.getElementById("clientNoteInput").value.trim();
+      const saveBtn = document.getElementById("saveClientBtn");
+
+      if (!clientName || !joinDate) {
+        showToast("Isi nama klien dan tanggal bergabung.", "warn");
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Menyimpan...";
+
+      try {
+        const docId = `${currentUser.id}_client_${Date.now()}`;
+        await setDoc(doc(db, "absen_klien", docId), {
+          empId: currentUser.id,
+          username: currentUser.username,
+          clientName,
+          businessName,
+          phone,
+          packageName,
+          joinDate,
+          note,
+          createdAt: new Date().toISOString()
+        });
+
+        document.getElementById("clientNameInput").value = "";
+        document.getElementById("clientBizInput").value = "";
+        document.getElementById("clientPhoneInput").value = "";
+        document.getElementById("clientPkgInput").value = "";
+        document.getElementById("clientNoteInput").value = "";
+        initClientPicker();
+        showToast("Klien bergabung berhasil dicatat.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan catatan klien.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Klien Bergabung";
+      }
+    });
+
+    // ================= INIT =================
+    (function init() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (saved && saved.id && saved.username) {
+          currentUser = saved;
+          document.getElementById("displayUserName").textContent = saved.username;
+          document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
+          document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+        } else {
+          window.location.href = "index.html";
+          return;
+        }
+      } catch {
+        window.location.href = "index.html";
+        return;
+      }
+
+      initReminderPickers();
+      initClientPicker();
+
+      // Pantau status akun
+      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
+        if (!snap.exists()) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "index.html";
+        }
+      });
+
+      // Listen Target & Pengingat
+      const qRem = query(collection(db, "absen_pengingat"), where("empId", "==", currentUser.id));
+      onSnapshot(qRem, (snapshot) => {
+        myReminders = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderRemindersUI();
+      });
+
+      // Listen Klien Bergabung
+      const qClients = query(collection(db, "absen_klien"), where("empId", "==", currentUser.id));
+      onSnapshot(qClients, (snapshot) => {
+        myClients = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderClientsUI();
+      });
+    })();
+  </script>
+</body>
+</html>
