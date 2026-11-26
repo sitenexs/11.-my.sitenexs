@@ -185,7 +185,7 @@
       display: block;
     }
 
-    /* Bar daftar grup khusus bisnis pengguna */
+    /* Bar daftar grup yang diikuti user */
     .group-bar {
       flex-shrink: 0;
       background: #ffffff;
@@ -652,7 +652,7 @@
       <div class="user-badge" id="currentUserBadge">-</div>
     </header>
 
-    <!-- Daftar Grup Khusus Bisnis yang Sama -->
+    <!-- Daftar Grup yang Diikuti Pengguna -->
     <div class="group-bar" id="groupBar">
       <span class="group-chip active">Memuat grup...</span>
     </div>
@@ -761,11 +761,12 @@
     let currentUser = null;
     let currentBusinessId = "";
     let currentBusinessName = "";
-    let businessGroups = [];
+    let allBusinessGroups = [];
+    let businessGroups = []; // Hanya grup yang diikuti user (atau semua grup jika admin)
     let activeGroupId = requestedGroupId;
     let allMessages = [];
     let adminEmpIds = new Set();
-    let memberProfileMap = {}; // empId -> { username, photoURL }
+    let memberProfileMap = {};
     let replyData = null;
     let pendingPhoto = null;
     let toastTimer = null;
@@ -799,6 +800,17 @@
     function isAdminAccount(userObj) {
       if (!userObj) return false;
       return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
+    }
+
+    function canAccessGroup(grp) {
+      if (!grp || !currentUser) return false;
+      if (isAdminAccount(currentUser)) return true;
+      const members = Array.isArray(grp.memberIds) ? grp.memberIds : [];
+      return members.includes(currentUser.id);
+    }
+
+    function recomputeVisibleGroups() {
+      businessGroups = allBusinessGroups.filter(g => canAccessGroup(g));
     }
 
     function getBackUrl() {
@@ -1013,15 +1025,22 @@
 
       if (businessGroups.length === 0) {
         activeGroupId = "";
-        groupBarEl.innerHTML = `<span class="group-chip">Tidak ada grup untuk bisnis ini</span>`;
-        document.getElementById("activeGroupTitle").textContent = "Belum Ada Grup";
-        setComposerEnabled(false, "Belum ada grup di bisnis ini...");
-        chatMessagesEl.innerHTML = `<div class="empty-chat">Belum ada grup chat untuk bisnis <b>${escapeHtml(bizLabel)}</b>.<br>Grup dari bisnis lain tidak ditampilkan.</div>`;
+        if (unsubscribeMessages) {
+          unsubscribeMessages();
+          unsubscribeMessages = null;
+        }
+        groupBarEl.innerHTML = `<span class="group-chip">Belum terdaftar di grup manapun</span>`;
+        document.getElementById("activeGroupTitle").textContent = "Belum Masuk Grup";
+        setComposerEnabled(false, "Anda belum ditambahkan ke grup...");
+        chatMessagesEl.innerHTML = `<div class="empty-chat">Anda belum ditambahkan ke grup chat manapun di bisnis <b>${escapeHtml(bizLabel)}</b>.</div>`;
         return;
       }
 
+      const prevActive = activeGroupId;
       if (!businessGroups.some(g => g.id === activeGroupId)) {
         activeGroupId = businessGroups[0].id;
+      }
+      if (activeGroupId !== prevActive || !unsubscribeMessages) {
         subscribeGroupMessages(currentBusinessId, activeGroupId);
       }
 
@@ -1203,6 +1222,12 @@
         return;
       }
 
+      const activeGrp = businessGroups.find(g => g.id === activeGroupId);
+      if (!canAccessGroup(activeGrp)) {
+        showToast("Anda bukan anggota grup ini.");
+        return;
+      }
+
       const text = chatInputEl.value.trim();
       if (!text && !pendingPhoto) return;
 
@@ -1278,6 +1303,8 @@
         const userDoc = snap.data();
         currentUser = { ...currentUser, ...userDoc };
         renderCurrentUserBadge();
+        recomputeVisibleGroups();
+        renderGroupBar();
 
         const nextBizId = (userDoc.businessId || "").trim().toUpperCase();
         if (nextBizId !== currentBusinessId) {
@@ -1286,6 +1313,8 @@
           activeGroupId = requestedGroupId;
           adminEmpIds = new Set();
           memberProfileMap = {};
+          allBusinessGroups = [];
+          businessGroups = [];
 
           if (unsubscribeMessages) {
             unsubscribeMessages();
@@ -1302,7 +1331,6 @@
               renderGroupBar();
             });
 
-            // Muat foto profil & status admin seluruh anggota di bisnis yang sama
             const qMembers = query(collection(db, "absen_karyawan"), where("businessId", "==", currentBusinessId));
             unsubscribeBizMembers = onSnapshot(qMembers, (mSnap) => {
               const nextAdmins = new Set();
@@ -1321,16 +1349,19 @@
               adminEmpIds = nextAdmins;
               memberProfileMap = nextProfiles;
               renderCurrentUserBadge();
+              recomputeVisibleGroups();
+              renderGroupBar();
               renderMessages();
             });
 
             if (activeGroupSub) activeGroupSub();
             const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", currentBusinessId));
             activeGroupSub = onSnapshot(qGrp, (gSnap) => {
-              businessGroups = gSnap.docs
+              allBusinessGroups = gSnap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
                 .filter(g => g.businessId === currentBusinessId)
                 .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
+              recomputeVisibleGroups();
               renderGroupBar();
             });
           } else {
@@ -1338,6 +1369,7 @@
               activeGroupSub();
               activeGroupSub = null;
             }
+            allBusinessGroups = [];
             businessGroups = [];
             renderGroupBar();
           }
