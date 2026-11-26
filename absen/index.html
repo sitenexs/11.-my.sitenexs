@@ -196,6 +196,14 @@
       gap: 10px;
       min-width: 0;
       flex: 1;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 2px 4px 2px 0;
+      transition: background-color 0.14s ease;
+    }
+
+    .topbar-user:active {
+      background: rgba(15, 23, 42, 0.04);
     }
 
     .avatar-wrap {
@@ -216,6 +224,14 @@
       justify-content: center;
       text-transform: uppercase;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .main-app.is-admin-mode .avatar {
@@ -1316,6 +1332,138 @@
       animation: dotPulse 1.6s infinite ease-in-out;
     }
 
+    /* ================= POPUP FOTO PROFIL & PENYESUAIAN ================= */
+    .profile-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.62);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 260;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .profile-modal-card {
+      width: 100%;
+      max-width: 356px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 22px 44px rgba(15, 23, 42, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .profile-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .profile-modal-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .profile-close-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .profile-crop-stage {
+      position: relative;
+      width: 196px;
+      height: 196px;
+      margin: 0 auto;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 3px solid var(--primary);
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      cursor: grab;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+    }
+
+    .profile-crop-stage:active {
+      cursor: grabbing;
+    }
+
+    .profile-crop-stage img {
+      max-width: none;
+      max-height: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+      transform-origin: center center;
+    }
+
+    .profile-initial-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(135deg, #115e59, #14b8a6);
+      text-transform: uppercase;
+    }
+
+    .profile-adjust-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .slider-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .range-input {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .profile-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
     /* ================= POPUP CAMERA FALLBACK MODAL ================= */
     .camera-popup-modal {
       position: fixed;
@@ -1616,7 +1764,7 @@
     <div id="mainApp" class="main-app hidden">
       <!-- Fixed Topbar -->
       <header class="topbar">
-        <div class="topbar-user">
+        <div class="topbar-user" id="profileTrigger" title="Ketuk untuk mengatur foto profil">
           <div class="avatar-wrap">
             <div class="avatar" id="userAvatar">K</div>
             <span class="avatar-dot"></span>
@@ -1887,6 +2035,56 @@
     </div>
   </div>
 
+  <!-- POP-UP FOTO PROFIL & PENYESUAIAN -->
+  <div id="profileModal" class="profile-modal-overlay hidden">
+    <div class="profile-modal-card">
+      <div class="profile-modal-head">
+        <span class="profile-modal-title">Foto Profil</span>
+        <button type="button" class="profile-close-btn" id="closeProfileModalBtn">Tutup</button>
+      </div>
+
+      <div class="profile-crop-stage" id="profileCropStage">
+        <div class="profile-initial-placeholder" id="profileInitialBox">K</div>
+        <img id="profileEditorImg" class="hidden" alt="Pratinjau Foto Profil">
+      </div>
+
+      <div class="profile-adjust-box" id="profileAdjustControls">
+        <div class="slider-row">
+          <div class="slider-top">
+            <span>Perbesar (Zoom)</span>
+            <span id="zoomValLabel">1.0x</span>
+          </div>
+          <input type="range" id="profileZoomRange" class="range-input" min="1" max="2.5" step="0.05" value="1">
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <span>Geser Horizontal</span>
+            <span id="posXValLabel">0px</span>
+          </div>
+          <input type="range" id="profilePosXRange" class="range-input" min="-80" max="80" step="1" value="0">
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <span>Geser Vertikal</span>
+            <span id="posYValLabel">0px</span>
+          </div>
+          <input type="range" id="profilePosYRange" class="range-input" min="-80" max="80" step="1" value="0">
+        </div>
+
+        <button type="button" class="btn-outline-sm" id="resetProfileAdjustBtn" style="width:100%;">Reset Posisi</button>
+      </div>
+
+      <input type="file" id="profileFileInput" accept="image/*" class="hidden">
+
+      <div class="profile-btn-row">
+        <button type="button" class="btn-outline-sm" id="pickProfilePhotoBtn" style="width:100%;">Pilih Foto</button>
+        <button type="button" class="btn btn-masuk" id="saveProfilePhotoBtn" style="padding:9px 10px; font-size:12px;">Simpan Profil</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FALLBACK POPUP CAMERA FRAME (Jika window.open diblokir browser) -->
   <div id="cameraPopupModal" class="camera-popup-modal hidden">
     <iframe id="cameraPopupFrame" class="camera-popup-frame" allow="camera"></iframe>
@@ -1935,6 +2133,7 @@
       doc,
       getDoc,
       setDoc,
+      updateDoc,
       collection,
       query,
       where,
@@ -1997,6 +2196,17 @@
     let pendingDocPhotos = [];
     let cameraPopupWin = null;
 
+    // State pop-up foto profil & penyesuaian
+    let profileSrcDataUrl = "";
+    let profileZoom = 1;
+    let profileOffsetX = 0;
+    let profileOffsetY = 0;
+    let isDraggingProfile = false;
+    let dragStartPointerX = 0;
+    let dragStartPointerY = 0;
+    let dragStartOffsetX = 0;
+    let dragStartOffsetY = 0;
+
     // Lightbox state
     let lightboxPhotos = [];
     let lightboxIndex = 0;
@@ -2046,6 +2256,227 @@
         cancelBtn.onclick = () => cleanup(false);
       });
     }
+
+    // ================= RENDER AVATAR TOPBAR =================
+    function renderTopbarAvatar(userObj) {
+      const avatarEl = document.getElementById("userAvatar");
+      const initial = (userObj?.username || userObj?.id || "K").charAt(0);
+      if (userObj && userObj.photoURL) {
+        avatarEl.innerHTML = `<img src="${escapeHtml(userObj.photoURL)}" alt="${escapeHtml(userObj.username || "Profil")}">`;
+      } else {
+        avatarEl.textContent = initial;
+      }
+    }
+
+    // ================= POP-UP FOTO PROFIL & PENYESUAIAN =================
+    const profileModalEl = document.getElementById("profileModal");
+    const profileEditorImgEl = document.getElementById("profileEditorImg");
+    const profileInitialBoxEl = document.getElementById("profileInitialBox");
+    const profileZoomRangeEl = document.getElementById("profileZoomRange");
+    const profilePosXRangeEl = document.getElementById("profilePosXRange");
+    const profilePosYRangeEl = document.getElementById("profilePosYRange");
+    const profileFileInputEl = document.getElementById("profileFileInput");
+
+    function updateProfileTransformPreview() {
+      document.getElementById("zoomValLabel").textContent = `${profileZoom.toFixed(2)}x`;
+      document.getElementById("posXValLabel").textContent = `${Math.round(profileOffsetX)}px`;
+      document.getElementById("posYValLabel").textContent = `${Math.round(profileOffsetY)}px`;
+
+      profileZoomRangeEl.value = String(profileZoom);
+      profilePosXRangeEl.value = String(Math.round(profileOffsetX));
+      profilePosYRangeEl.value = String(Math.round(profileOffsetY));
+
+      if (profileSrcDataUrl) {
+        profileEditorImgEl.src = profileSrcDataUrl;
+        profileEditorImgEl.classList.remove("hidden");
+        profileInitialBoxEl.classList.add("hidden");
+        profileEditorImgEl.style.transform = `translate(${profileOffsetX}px, ${profileOffsetY}px) scale(${profileZoom})`;
+      } else {
+        profileEditorImgEl.classList.add("hidden");
+        profileInitialBoxEl.classList.remove("hidden");
+        profileInitialBoxEl.textContent = (currentUser?.username || "K").charAt(0);
+      }
+    }
+
+    function openProfileModal() {
+      if (!currentUser) return;
+      profileSrcDataUrl = currentUser.photoURL || "";
+      profileZoom = 1;
+      profileOffsetX = 0;
+      profileOffsetY = 0;
+      updateProfileTransformPreview();
+      profileModalEl.classList.remove("hidden");
+    }
+
+    document.getElementById("profileTrigger").addEventListener("click", openProfileModal);
+
+    document.getElementById("closeProfileModalBtn").addEventListener("click", () => {
+      profileModalEl.classList.add("hidden");
+    });
+
+    document.getElementById("pickProfilePhotoBtn").addEventListener("click", () => {
+      profileFileInputEl.click();
+    });
+
+    profileFileInputEl.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      profileFileInputEl.value = "";
+      if (!file) return;
+      if (!file.type || !file.type.startsWith("image/")) {
+        showToast("Pilih file gambar yang valid.", "error");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        profileSrcDataUrl = ev.target.result;
+        profileZoom = 1;
+        profileOffsetX = 0;
+        profileOffsetY = 0;
+        updateProfileTransformPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    profileZoomRangeEl.addEventListener("input", () => {
+      profileZoom = Number(profileZoomRangeEl.value) || 1;
+      updateProfileTransformPreview();
+    });
+
+    profilePosXRangeEl.addEventListener("input", () => {
+      profileOffsetX = Number(profilePosXRangeEl.value) || 0;
+      updateProfileTransformPreview();
+    });
+
+    profilePosYRangeEl.addEventListener("input", () => {
+      profileOffsetY = Number(profilePosYRangeEl.value) || 0;
+      updateProfileTransformPreview();
+    });
+
+    document.getElementById("resetProfileAdjustBtn").addEventListener("click", () => {
+      profileZoom = 1;
+      profileOffsetX = 0;
+      profileOffsetY = 0;
+      updateProfileTransformPreview();
+    });
+
+    // Geser foto profil langsung dengan sentuhan/pointer pada lingkaran pratinjau
+    const profileCropStageEl = document.getElementById("profileCropStage");
+    profileCropStageEl.addEventListener("pointerdown", (e) => {
+      if (!profileSrcDataUrl) return;
+      isDraggingProfile = true;
+      profileCropStageEl.setPointerCapture(e.pointerId);
+      dragStartPointerX = e.clientX;
+      dragStartPointerY = e.clientY;
+      dragStartOffsetX = profileOffsetX;
+      dragStartOffsetY = profileOffsetY;
+    });
+
+    profileCropStageEl.addEventListener("pointermove", (e) => {
+      if (!isDraggingProfile) return;
+      const dx = e.clientX - dragStartPointerX;
+      const dy = e.clientY - dragStartPointerY;
+      profileOffsetX = Math.max(-80, Math.min(80, dragStartOffsetX + dx));
+      profileOffsetY = Math.max(-80, Math.min(80, dragStartOffsetY + dy));
+      updateProfileTransformPreview();
+    });
+
+    profileCropStageEl.addEventListener("pointerup", () => {
+      isDraggingProfile = false;
+    });
+
+    function buildAdjustedProfileBlob() {
+      return new Promise((resolve, reject) => {
+        if (!profileSrcDataUrl) {
+          reject(new Error("Belum ada foto dipilih"));
+          return;
+        }
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const outSize = 420;
+          const previewSize = 196;
+          const ratio = outSize / previewSize;
+
+          const canvas = document.createElement("canvas");
+          canvas.width = outSize;
+          canvas.height = outSize;
+          const ctx = canvas.getContext("2d");
+
+          // Isi penuh persegi sesuai object-fit: cover
+          const imgRatio = img.width / img.height;
+          let drawW = outSize;
+          let drawH = outSize;
+          if (imgRatio > 1) {
+            drawW = outSize * imgRatio;
+          } else {
+            drawH = outSize / imgRatio;
+          }
+
+          ctx.save();
+          ctx.translate(outSize / 2 + profileOffsetX * ratio, outSize / 2 + profileOffsetY * ratio);
+          ctx.scale(profileZoom, profileZoom);
+          ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+
+          canvas.toBlob((blob) => {
+            if (!blob) return reject(new Error("Gagal membuat gambar profil"));
+            resolve(blob);
+          }, "image/jpeg", 0.85);
+        };
+        img.onerror = () => reject(new Error("Gagal memuat gambar"));
+        img.src = profileSrcDataUrl;
+      });
+    }
+
+    document.getElementById("saveProfilePhotoBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+      if (!profileSrcDataUrl) {
+        showToast("Pilih foto profil terlebih dahulu.", "warn");
+        return;
+      }
+
+      const saveBtn = document.getElementById("saveProfilePhotoBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Menyimpan...";
+
+      try {
+        const blob = await buildAdjustedProfileBlob();
+        const filePath = `profil/${currentUser.id}_${Date.now()}.jpg`;
+
+        const { error } = await supabase.storage
+          .from(SUPABASE_BUCKET)
+          .upload(filePath, blob, {
+            contentType: "image/jpeg",
+            upsert: false
+          });
+
+        if (error) throw error;
+
+        const { data } = supabase.storage
+          .from(SUPABASE_BUCKET)
+          .getPublicUrl(filePath);
+        const publicUrl = data.publicUrl;
+
+        await updateDoc(doc(db, "absen_karyawan", currentUser.id), {
+          photoURL: publicUrl,
+          updatedAt: new Date().toISOString()
+        });
+
+        currentUser = { ...currentUser, photoURL: publicUrl };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+        renderTopbarAvatar(currentUser);
+
+        profileModalEl.classList.add("hidden");
+        showToast("Foto profil berhasil disimpan.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan foto profil.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Profil";
+      }
+    });
 
     function isUserAdmin(userObj) {
       if (!userObj) return false;
@@ -2494,6 +2925,7 @@
         cameraPopupWin = popup;
         popup.focus();
       } else {
+        // Fallback jika pop-up browser diblokir oleh perangkat
         cameraPopupFrame.src = url;
         cameraPopupModal.classList.remove("hidden");
       }
@@ -2671,6 +3103,7 @@
         cameraPopupWin.close();
       }
       closeCameraFallbackModal();
+      profileModalEl.classList.add("hidden");
       currentUser = null;
       activeViewMode = "user";
       myRecords = [];
@@ -2713,7 +3146,7 @@
         currentUser = { ...currentUser, ...latestData };
         localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
         document.getElementById("displayUserName").textContent = currentUser.username;
-        document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
+        renderTopbarAvatar(currentUser);
 
         const isAdminNow = isUserAdmin(currentUser);
         const shouldLandAdmin = (!firstSnapHandled && isAdminNow && !localStorage.getItem(VIEW_MODE_KEY)) || (!wasAdmin && isAdminNow);
@@ -3025,7 +3458,7 @@
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
       document.getElementById("displayUserId").textContent = `ID: ${user.id}`;
-      document.getElementById("userAvatar").textContent = (user.username || "K").charAt(0);
+      renderTopbarAvatar(user);
       applyAdminUIState(user, isFirstLogin);
       startListeningChatUnread(user);
       watchCurrentUserStatus(user.id);
