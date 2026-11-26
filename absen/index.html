@@ -456,20 +456,21 @@
 
     .admin-stats-strip {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 7px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
     }
 
     .admin-mini-stat {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 11px;
-      padding: 8px;
+      padding: 8px 4px;
       text-align: center;
+      min-width: 0;
     }
 
     .admin-mini-val {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #ffffff;
       font-variant-numeric: tabular-nums;
@@ -477,10 +478,13 @@
     }
 
     .admin-mini-lbl {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 600;
       color: #dbeafe;
       margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .admin-switch-hint-card {
@@ -572,6 +576,53 @@
       flex-shrink: 0;
     }
 
+    .leave-req-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: itemEnter 0.2s ease;
+    }
+
+    .leave-req-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .leave-req-reason {
+      font-size: 12px;
+      color: var(--text);
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .leave-req-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .leave-photo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--admin-dark);
+      background: var(--admin-bg);
+      border: 1px solid rgba(29, 78, 216, 0.2);
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+
     /* ================= UNIFIED HERO CLOCK & ATTENDANCE CARD ================= */
     .hero-attendance-card {
       width: 100%;
@@ -644,7 +695,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 9px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
 
     .status-box {
@@ -701,6 +752,33 @@
     }
     .status-box.out-box .status-val { color: var(--danger); }
 
+    .absent-notice-bar {
+      margin-bottom: 9px;
+      padding: 7px 10px;
+      border-radius: 11px;
+      background: var(--danger-bg);
+      border: 1px solid #fecdd3;
+      color: var(--danger);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .absent-notice-bar.izin-approved {
+      background: var(--primary-bg);
+      border-color: rgba(15, 118, 110, 0.25);
+      color: var(--primary-dark);
+    }
+
+    .absent-notice-bar.izin-pending {
+      background: var(--warning-bg);
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
     .action-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -709,6 +787,15 @@
 
     .action-grid > * {
       min-width: 0;
+    }
+
+    .btn-izin {
+      margin-top: 8px;
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      padding: 9px 10px;
     }
 
     /* ================= COMPACT ATTENDANCE CHART ================= */
@@ -1662,7 +1749,7 @@
 
     .confirm-card {
       width: 100%;
-      max-width: 340px;
+      max-width: 346px;
       background: #ffffff;
       border-radius: 18px;
       padding: 18px;
@@ -1856,8 +1943,12 @@
                 <div class="admin-mini-lbl">Hadir Hari Ini</div>
               </div>
               <div class="admin-mini-stat">
-                <div class="admin-mini-val" id="admGroupCount">0</div>
-                <div class="admin-mini-lbl">Grup Aktif</div>
+                <div class="admin-mini-val" id="admLeaveCount">0</div>
+                <div class="admin-mini-lbl">Izin</div>
+              </div>
+              <div class="admin-mini-stat">
+                <div class="admin-mini-val" id="admAbsentCount">0</div>
+                <div class="admin-mini-lbl">Tidak Absen</div>
               </div>
             </div>
           </section>
@@ -1893,6 +1984,17 @@
               <div class="admin-emp-meta" style="text-align:center; padding:6px;">Memuat data karyawan...</div>
             </div>
           </section>
+
+          <!-- Card Persetujuan Izin Karyawan -->
+          <section class="card" id="operatorLeaveApprovalCard">
+            <div class="card-title">
+              <span>Pengajuan Izin Karyawan</span>
+              <span class="badge badge-warn" id="adminPendingLeaveBadge">0 Menunggu</span>
+            </div>
+            <div class="admin-emp-list" id="adminLeaveRequestsList">
+              <div class="admin-emp-meta" style="text-align:center; padding:6px;">Belum ada pengajuan izin.</div>
+            </div>
+          </section>
         </div>
 
         <!-- ==================== TAMPILAN MODE BIASA / USER ==================== -->
@@ -1922,6 +2024,11 @@
             </div>
 
             <div class="hero-body">
+              <div id="todayAttendanceStateBar" class="absent-notice-bar">
+                <span id="todayAttendanceStateText">Status Hari Ini: Tidak Masuk</span>
+                <span id="todayAttendanceStatePill">Belum Absen</span>
+              </div>
+
               <div class="today-status">
                 <div class="status-box in-box">
                   <div class="status-label">Masuk</div>
@@ -1945,6 +2052,11 @@
                   <span class="btn-sub" id="subCheckOut">Memuat...</span>
                 </button>
               </div>
+
+              <button type="button" class="btn btn-izin" id="openIzinModalBtn">
+                <span>Izin Tidak Masuk</span>
+                <span class="btn-sub" id="subIzinStatus">Wajib alasan &amp; foto</span>
+              </button>
             </div>
           </section>
 
@@ -2076,6 +2188,37 @@
           <span>Kalender</span>
         </a>
       </nav>
+    </div>
+  </div>
+
+  <!-- POP-UP PENGAJUAN IZIN (WAJIB ALASAN & FOTO) -->
+  <div id="izinModal" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title">Pengajuan Izin</div>
+      <div class="confirm-msg">Wajib mengisi alasan izin dan melampirkan foto bukti untuk persetujuan operator.</div>
+      <form id="izinForm">
+        <div class="form-group" style="text-align:left;">
+          <label class="form-label" for="izinReasonInput">Alasan Izin</label>
+          <textarea id="izinReasonInput" class="form-input" rows="3" placeholder="Tuliskan alasan izin bekerja..." required></textarea>
+        </div>
+
+        <div class="doc-photo-box" style="margin-bottom:12px;">
+          <div id="izinPhotoPreviewWrap" class="hidden" style="display:flex; align-items:center; gap:8px;">
+            <img id="izinPhotoPreviewImg" style="width:52px; height:52px; border-radius:9px; object-fit:cover; border:1px solid var(--border);" alt="Foto Izin">
+            <span style="font-size:11.5px; font-weight:700; color:var(--success);">Foto bukti terlampir</span>
+          </div>
+          <div class="doc-photo-actions">
+            <button type="button" class="doc-photo-trigger" id="izinCamBtn">Kamera</button>
+            <button type="button" class="doc-photo-trigger file-trigger" id="izinGaleriBtn">Galeri</button>
+          </div>
+          <input type="file" id="izinFileInput" accept="image/*" class="hidden">
+        </div>
+
+        <div class="confirm-actions">
+          <button type="button" class="btn-outline-sm" id="closeIzinModalBtn">Batal</button>
+          <button type="submit" class="btn btn-masuk" style="padding:8px;" id="submitIzinBtn">Kirim Izin</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -2279,13 +2422,16 @@
     let activeViewMode = "user"; // "admin" | "user"
     let myRecords = [];
     let myReminders = [];
+    let myLeaves = [];
     let adminBusinessEmployees = [];
+    let adminBusinessLeaves = [];
     let unsubscribeRecords = null;
     let unsubscribeReminders = null;
+    let unsubscribeLeaves = null;
     let unsubscribeUserWatch = null;
     let unsubscribeAdminTeam = null;
     let unsubscribeAdminToday = null;
-    let unsubscribeAdminGroups = null;
+    let unsubscribeAdminLeaves = null;
     let unsubscribeChatUnread = null;
     let activeChatBizId = null;
     let latestIncomingChatTs = "";
@@ -2297,6 +2443,7 @@
     let notifiedReminderIds = new Set();
 
     let pendingDocPhotos = [];
+    let pendingIzinPhoto = null;
     let cameraPopupWin = null;
 
     // State pop-up foto profil & penyesuaian
@@ -2315,6 +2462,8 @@
     let lightboxIndex = 0;
 
     const docFileInput = document.getElementById("docFileInput");
+    const izinFileInput = document.getElementById("izinFileInput");
+    const izinModalEl = document.getElementById("izinModal");
     const cameraPopupModal = document.getElementById("cameraPopupModal");
     const cameraPopupFrame = document.getElementById("cameraPopupFrame");
 
@@ -2597,6 +2746,201 @@
         return savedMode;
       }
       return "admin";
+    }
+
+    // ================= IZIN KARYAWAN (WAJIB ALASAN & FOTO) =================
+    function renderIzinPhotoPreview() {
+      const wrap = document.getElementById("izinPhotoPreviewWrap");
+      const img = document.getElementById("izinPhotoPreviewImg");
+      if (pendingIzinPhoto && pendingIzinPhoto.dataUrl) {
+        img.src = pendingIzinPhoto.dataUrl;
+        wrap.classList.remove("hidden");
+      } else {
+        img.src = "";
+        wrap.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("openIzinModalBtn").addEventListener("click", () => {
+      document.getElementById("izinReasonInput").value = "";
+      pendingIzinPhoto = null;
+      izinFileInput.value = "";
+      renderIzinPhotoPreview();
+      izinModalEl.classList.remove("hidden");
+      document.getElementById("izinReasonInput").focus();
+    });
+
+    document.getElementById("closeIzinModalBtn").addEventListener("click", () => {
+      izinModalEl.classList.add("hidden");
+      pendingIzinPhoto = null;
+      renderIzinPhotoPreview();
+    });
+
+    document.getElementById("izinCamBtn").addEventListener("click", () => {
+      openCameraPopup("izin", "Foto Bukti Izin", "environment");
+    });
+
+    document.getElementById("izinGaleriBtn").addEventListener("click", () => {
+      izinFileInput.click();
+    });
+
+    izinFileInput.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      izinFileInput.value = "";
+      if (!file) return;
+      try {
+        pendingIzinPhoto = await processImageFile(file);
+        renderIzinPhotoPreview();
+        showToast("Foto bukti izin terlampir.", "success");
+      } catch {
+        showToast("Pilih berkas gambar yang valid.", "error");
+      }
+    });
+
+    document.getElementById("izinForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const reason = document.getElementById("izinReasonInput").value.trim();
+      if (!reason) {
+        showToast("Alasan izin wajib diisi.", "warn");
+        return;
+      }
+      if (!pendingIzinPhoto || !pendingIzinPhoto.blob) {
+        showToast("Foto bukti izin wajib dilampirkan.", "warn");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submitIzinBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Mengirim...";
+
+      try {
+        const photoUrl = await uploadPhotoToSupabase(pendingIzinPhoto.blob, "izin", "bukti");
+        const todayKey = getTodayKey();
+        const docId = `${todayKey}_${currentUser.id}`;
+
+        await setDoc(doc(db, "absen_izin", docId), {
+          id: docId,
+          date: todayKey,
+          empId: currentUser.id,
+          username: currentUser.username,
+          businessId: (currentUser.businessId || "").trim().toUpperCase(),
+          reason,
+          photoUrl,
+          status: "pending",
+          createdAt: new Date().toISOString()
+        }, { merge: true });
+
+        izinModalEl.classList.add("hidden");
+        document.getElementById("izinReasonInput").value = "";
+        pendingIzinPhoto = null;
+        renderIzinPhotoPreview();
+        showToast("Pengajuan izin dikirim ke operator untuk disetujui.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal mengirim pengajuan izin.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Kirim Izin";
+      }
+    });
+
+    function startListeningMyLeaves(empId) {
+      if (unsubscribeLeaves) unsubscribeLeaves();
+      const q = query(collection(db, "absen_izin"), where("empId", "==", empId));
+      unsubscribeLeaves = onSnapshot(q, (snapshot) => {
+        myLeaves = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderDashboardUI();
+      });
+    }
+
+    function renderOperatorLeavesList() {
+      const listEl = document.getElementById("adminLeaveRequestsList");
+      const badgeEl = document.getElementById("adminPendingLeaveBadge");
+
+      const sorted = [...adminBusinessLeaves].sort((a, b) =>
+        String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
+      );
+      const pendingCount = sorted.filter(l => l.status === "pending").length;
+      badgeEl.textContent = `${pendingCount} Menunggu`;
+
+      if (sorted.length === 0) {
+        listEl.innerHTML = `<div class="admin-emp-meta" style="text-align:center; padding:6px;">Belum ada pengajuan izin pada unit bisnis ini.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = sorted.map(lv => {
+        const st = lv.status || "pending";
+        const statusLabel = st === "approved" ? "Disetujui" : (st === "rejected" ? "Ditolak" : "Menunggu");
+        const badgeClass = st === "approved" ? "badge-ok" : (st === "rejected" ? "badge-admin" : "badge-warn");
+
+        const actionButtonsHtml = st === "pending" ? `
+          <div class="leave-req-actions">
+            <button type="button" class="btn btn-masuk" style="padding:7px; font-size:11.5px;" data-approve-leave="${escapeHtml(lv.docId)}">Setujui</button>
+            <button type="button" class="btn btn-keluar" style="padding:7px; font-size:11.5px;" data-reject-leave="${escapeHtml(lv.docId)}">Tolak</button>
+          </div>
+        ` : "";
+
+        return `
+          <div class="leave-req-card">
+            <div class="leave-req-top">
+              <div>
+                <div class="admin-emp-name">${escapeHtml(lv.username || lv.empId)}</div>
+                <div class="admin-emp-meta">${escapeHtml(formatShortDateKey(lv.date))} • ${escapeHtml(lv.empId || "")}</div>
+              </div>
+              <span class="badge ${badgeClass}">${escapeHtml(statusLabel)}</span>
+            </div>
+            <div class="leave-req-reason">${escapeHtml(lv.reason || "-")}</div>
+            ${lv.photoUrl ? `<button type="button" class="leave-photo-link" data-view-leave-photo="${escapeHtml(lv.photoUrl)}" data-view-leave-user="${escapeHtml(lv.username || lv.empId)}">Lihat Foto Bukti</button>` : ""}
+            ${actionButtonsHtml}
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll("[data-view-leave-photo]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          openPhotoGallery([{ url: btn.dataset.viewLeavePhoto, label: "Bukti Izin" }], 0, `Bukti Izin • ${btn.dataset.viewLeaveUser}`);
+        });
+      });
+
+      listEl.querySelectorAll("[data-approve-leave]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.approveLeave;
+          btn.disabled = true;
+          try {
+            await updateDoc(doc(db, "absen_izin", id), {
+              status: "approved",
+              reviewedBy: currentUser?.id || "",
+              reviewedAt: new Date().toISOString()
+            });
+            showToast("Pengajuan izin disetujui.", "success");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menyetujui izin.", "error");
+            btn.disabled = false;
+          }
+        });
+      });
+
+      listEl.querySelectorAll("[data-reject-leave]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.rejectLeave;
+          btn.disabled = true;
+          try {
+            await updateDoc(doc(db, "absen_izin", id), {
+              status: "rejected",
+              reviewedBy: currentUser?.id || "",
+              reviewedAt: new Date().toISOString()
+            });
+            showToast("Pengajuan izin ditolak.", "info");
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menolak izin.", "error");
+            btn.disabled = false;
+          }
+        });
+      });
     }
 
     // ================= POP-UP ATUR WAKTU MASUK & KELUAR =================
@@ -2897,17 +3241,47 @@
     function stopAdminPreviewListeners() {
       if (unsubscribeAdminTeam) { unsubscribeAdminTeam(); unsubscribeAdminTeam = null; }
       if (unsubscribeAdminToday) { unsubscribeAdminToday(); unsubscribeAdminToday = null; }
-      if (unsubscribeAdminGroups) { unsubscribeAdminGroups(); unsubscribeAdminGroups = null; }
+      if (unsubscribeAdminLeaves) { unsubscribeAdminLeaves(); unsubscribeAdminLeaves = null; }
       activeAdminBizId = "";
       adminTeamEmpIds = new Set();
       adminTodayAllRecs = [];
       adminBusinessEmployees = [];
+      adminBusinessLeaves = [];
       renderAdminEmployeeDirectory();
+      renderOperatorLeavesList();
     }
 
-    function updateAdminPresentCounter() {
-      const count = adminTodayAllRecs.filter(r => r.empId && adminTeamEmpIds.has(r.empId) && r.checkIn).length;
-      document.getElementById("admPresentToday").textContent = count;
+    function updateAdminDailyStats() {
+      const todayKey = getTodayKey();
+      const presentIds = new Set();
+      adminTodayAllRecs.forEach(r => {
+        if (r.empId && adminTeamEmpIds.has(r.empId) && r.checkIn) {
+          presentIds.add(r.empId);
+        }
+      });
+
+      const approvedTodayIds = new Set();
+      let totalLeaveCount = 0;
+      adminBusinessLeaves.forEach(lv => {
+        if (!lv.empId || !adminTeamEmpIds.has(lv.empId)) return;
+        if (lv.status === "approved") {
+          totalLeaveCount += 1;
+          if (lv.date === todayKey) {
+            approvedTodayIds.add(lv.empId);
+          }
+        }
+      });
+
+      let absentTodayCount = 0;
+      adminTeamEmpIds.forEach(empId => {
+        if (!presentIds.has(empId) && !approvedTodayIds.has(empId)) {
+          absentTodayCount += 1;
+        }
+      });
+
+      document.getElementById("admPresentToday").textContent = presentIds.size;
+      document.getElementById("admLeaveCount").textContent = totalLeaveCount;
+      document.getElementById("admAbsentCount").textContent = absentTodayCount;
     }
 
     function applyAdminUIState(userObj, forceDefaultAdminLanding = false) {
@@ -2944,24 +3318,28 @@
             adminTeamEmpIds = new Set(adminBusinessEmployees.map(e => e.id || e.docId));
             document.getElementById("admTeamCount").textContent = snap.size;
             renderAdminEmployeeDirectory();
-            updateAdminPresentCounter();
+            updateAdminDailyStats();
           });
 
           const qRec = query(collection(db, "absen_riwayat"), where("date", "==", getTodayKey()));
           unsubscribeAdminToday = onSnapshot(qRec, (snap) => {
             adminTodayAllRecs = snap.docs.map(d => d.data());
-            updateAdminPresentCounter();
+            updateAdminDailyStats();
           });
 
-          const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", bizId));
-          unsubscribeAdminGroups = onSnapshot(qGrp, (snap) => {
-            document.getElementById("admGroupCount").textContent = snap.size;
+          const qLv = query(collection(db, "absen_izin"), where("businessId", "==", bizId));
+          unsubscribeAdminLeaves = onSnapshot(qLv, (snap) => {
+            adminBusinessLeaves = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+            renderOperatorLeavesList();
+            updateAdminDailyStats();
           });
         } else {
           document.getElementById("admTeamCount").textContent = "0";
           document.getElementById("admPresentToday").textContent = "0";
-          document.getElementById("admGroupCount").textContent = "0";
+          document.getElementById("admLeaveCount").textContent = "0";
+          document.getElementById("admAbsentCount").textContent = "0";
           renderAdminEmployeeDirectory();
+          renderOperatorLeavesList();
         }
       }
     }
@@ -3059,6 +3437,11 @@
     function getTodayRecord() {
       const todayKey = getTodayKey();
       return myRecords.find(r => r.date === todayKey) || null;
+    }
+
+    function getTodayLeave() {
+      const todayKey = getTodayKey();
+      return myLeaves.find(l => l.date === todayKey) || null;
     }
 
     function dataUrlToBlob(dataUrl) {
@@ -3227,6 +3610,13 @@
       const { purpose, dataUrl } = data;
       const blob = dataUrlToBlob(dataUrl);
 
+      if (purpose === "izin") {
+        pendingIzinPhoto = { blob, dataUrl };
+        renderIzinPhotoPreview();
+        showToast("Foto bukti izin terlampir.", "success");
+        return;
+      }
+
       if (purpose === "note") {
         pendingDocPhotos.push({ blob, dataUrl });
         renderPendingDocThumbs();
@@ -3385,6 +3775,10 @@
         unsubscribeReminders();
         unsubscribeReminders = null;
       }
+      if (unsubscribeLeaves) {
+        unsubscribeLeaves();
+        unsubscribeLeaves = null;
+      }
       if (unsubscribeUserWatch) {
         unsubscribeUserWatch();
         unsubscribeUserWatch = null;
@@ -3396,18 +3790,23 @@
       profileModalEl.classList.add("hidden");
       scheduleModalEl.classList.add("hidden");
       addEmpModalEl.classList.add("hidden");
+      izinModalEl.classList.add("hidden");
       currentUser = null;
       activeViewMode = "user";
       myRecords = [];
       myReminders = [];
+      myLeaves = [];
       pendingDocPhotos = [];
+      pendingIzinPhoto = null;
       docFileInput.value = "";
+      izinFileInput.value = "";
       localStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(VIEW_MODE_KEY);
       document.getElementById("loginForm").reset();
       noteInputEl.value = "";
       noteCharEl.textContent = "0 karakter";
       renderPendingDocThumbs();
+      renderIzinPhotoPreview();
       document.getElementById("mainApp").classList.add("hidden");
       document.getElementById("loginScreen").classList.remove("hidden");
       if (reasonMsg) showToast(reasonMsg, type);
@@ -3608,6 +4007,37 @@
       checkDueReminders();
 
       const todayRec = getTodayRecord();
+      const todayLeave = getTodayLeave();
+      const stateBar = document.getElementById("todayAttendanceStateBar");
+      const stateText = document.getElementById("todayAttendanceStateText");
+      const statePill = document.getElementById("todayAttendanceStatePill");
+      const subIzin = document.getElementById("subIzinStatus");
+
+      stateBar.classList.remove("izin-approved", "izin-pending");
+      if (todayRec && todayRec.checkIn) {
+        stateText.textContent = "Status Hari Ini: Hadir";
+        statePill.textContent = todayRec.checkOut ? "Lengkap" : "Sudah Masuk";
+      } else if (todayLeave && todayLeave.status === "approved") {
+        stateBar.classList.add("izin-approved");
+        stateText.textContent = "Status Hari Ini: Izin Disetujui";
+        statePill.textContent = "Izin";
+      } else if (todayLeave && todayLeave.status === "pending") {
+        stateBar.classList.add("izin-pending");
+        stateText.textContent = "Status Hari Ini: Menunggu Persetujuan Izin";
+        statePill.textContent = "Pending";
+      } else {
+        stateText.textContent = "Status Hari Ini: Tidak Masuk";
+        statePill.textContent = "Belum Absen";
+      }
+
+      if (todayLeave) {
+        if (todayLeave.status === "approved") subIzin.textContent = "Izin disetujui operator";
+        else if (todayLeave.status === "rejected") subIzin.textContent = "Izin ditolak • Ajukan ulang";
+        else subIzin.textContent = "Menunggu persetujuan operator";
+      } else {
+        subIzin.textContent = "Wajib alasan & foto";
+      }
+
       const inBtn = document.getElementById("btnCheckIn");
       const outBtn = document.getElementById("btnCheckOut");
       const subIn = document.getElementById("subCheckIn");
@@ -3757,6 +4187,7 @@
       watchCurrentUserStatus(user.id);
       startListeningRecords(user.id);
       startListeningReminders(user.id);
+      startListeningMyLeaves(user.id);
       updateClockAndButtons();
       if (isFirstLogin && !isUserAdmin(user)) {
         scheduleNoteLoginReminder();
