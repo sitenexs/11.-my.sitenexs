@@ -23,6 +23,9 @@
       --danger-bg: #ffe4e6;
       --warning: #d97706;
       --warning-bg: #fef3c7;
+      --admin-accent: #1d4ed8;
+      --admin-dark: #1e3a8a;
+      --admin-bg: #eff6ff;
       --radius: 18px;
       --radius-sm: 12px;
       --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
@@ -86,6 +89,13 @@
       padding-bottom: 76px;
     }
 
+    .app-container.is-admin-mode {
+      --primary: #1d4ed8;
+      --primary-dark: #1e3a8a;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+    }
+
     /* Fixed Topbar */
     .topbar {
       position: fixed;
@@ -104,6 +114,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+    }
+
+    .app-container.is-admin-mode .topbar {
+      background: rgba(248, 250, 252, 0.94);
+      border-bottom-color: rgba(147, 197, 253, 0.7);
     }
 
     .topbar-user {
@@ -134,6 +149,11 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
+    .app-container.is-admin-mode .avatar {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+    }
+
     .avatar-dot {
       position: absolute;
       bottom: -1px;
@@ -150,6 +170,13 @@
       flex: 1;
     }
 
+    .user-name-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
     .user-name {
       font-size: 13.5px;
       font-weight: 800;
@@ -159,6 +186,18 @@
       text-overflow: ellipsis;
       line-height: 1.2;
       letter-spacing: -0.2px;
+    }
+
+    .admin-role-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 800;
+      flex-shrink: 0;
     }
 
     .user-id {
@@ -191,6 +230,35 @@
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    .admin-mode-bar {
+      background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 8px 20px -4px rgba(30, 58, 138, 0.28);
+    }
+
+    .admin-mode-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .admin-mode-title {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .admin-mode-sub {
+      font-size: 10.5px;
+      color: #bfdbfe;
+      font-weight: 600;
+    }
+
     .card {
       width: 100%;
       background: var(--surface);
@@ -211,6 +279,20 @@
       justify-content: space-between;
       gap: 6px;
       flex-wrap: wrap;
+    }
+
+    .form-select {
+      width: 100%;
+      max-width: 100%;
+      padding: 9px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text);
+      background: #ffffff;
+      outline: none;
     }
 
     /* ================= CALENDAR ================= */
@@ -282,13 +364,14 @@
     .cal-cell:active:not(.empty) { transform: scale(0.93); }
     .cal-cell.empty { border: none; background: transparent; cursor: default; }
     .cal-cell.has-record { background: #ffffff; border-color: #cbd5e1; }
+    .cal-cell.has-target { border-color: rgba(29, 78, 216, 0.45); }
     .cal-cell.sunday { background: #fff8f9; }
     .cal-cell.holiday { background: #fff1f2; border-color: #fecdd3; }
     .cal-cell.today { border-color: var(--primary); background: var(--primary-bg); }
     .cal-cell.selected {
       background: var(--primary);
       border-color: var(--primary);
-      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.25);
+      box-shadow: 0 3px 10px rgba(29, 78, 216, 0.25);
     }
 
     .cal-num {
@@ -297,6 +380,14 @@
       color: var(--text);
       font-variant-numeric: tabular-nums;
       line-height: 1;
+    }
+
+    .cal-dots-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 4px;
     }
 
     .cal-dot {
@@ -308,13 +399,32 @@
 
     .cal-dot.full { background: var(--success); }
     .cal-dot.partial { background: var(--warning); }
+    .cal-dot.target-mark { background: #2563eb; }
     .cal-cell.selected .cal-dot.full,
-    .cal-cell.selected .cal-dot.partial { background: #ffffff; }
+    .cal-cell.selected .cal-dot.partial,
+    .cal-cell.selected .cal-dot.target-mark { background: #ffffff; }
 
     .cal-cell.sunday .cal-num,
     .cal-cell.holiday .cal-num { color: var(--danger); }
     .cal-cell.today .cal-num { color: var(--primary); font-weight: 800; }
     .cal-cell.selected .cal-num { color: #ffffff; font-weight: 800; }
+
+    .cal-legend {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 9px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .cal-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
 
     .cal-holidays-box {
       margin-top: 11px;
@@ -350,6 +460,36 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* ================= TARGET DI TANGGAL TERPILIH ================= */
+    .target-date-box {
+      background: var(--primary-bg);
+      border: 1px solid rgba(29, 78, 216, 0.22);
+      border-radius: 12px;
+      padding: 9px 11px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .target-date-head {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .target-date-chip {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 9px;
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     /* ================= FILTER & HISTORY ================= */
@@ -552,6 +692,7 @@
     }
 
     .badge-ok { background: var(--primary-bg); color: var(--primary); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
 
     .empty-state {
       text-align: center;
@@ -842,7 +983,7 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- Fixed Topbar -->
     <header class="topbar">
       <div class="topbar-user">
@@ -851,7 +992,10 @@
           <span class="avatar-dot"></span>
         </div>
         <div class="topbar-info">
-          <div class="user-name" id="displayUserName">-</div>
+          <div class="user-name-row">
+            <div class="user-name" id="displayUserName">-</div>
+            <span class="admin-role-pill hidden" id="adminRoleBadge">Admin</span>
+          </div>
           <div class="user-id" id="displayUserId">-</div>
         </div>
       </div>
@@ -859,6 +1003,20 @@
     </header>
 
     <main class="content-area">
+      <!-- Banner & Filter Karyawan Saat Mode Admin Aktif di index.html -->
+      <section class="admin-mode-bar hidden" id="adminModeBar">
+        <div class="admin-mode-top">
+          <div>
+            <div class="admin-mode-title">Mode Admin • Kalender Karyawan</div>
+            <div class="admin-mode-sub" id="adminBizSub">Bisnis: -</div>
+          </div>
+          <span class="badge badge-success" id="adminEmpCountBadge">0 Karyawan</span>
+        </div>
+        <select id="adminEmpSelect" class="form-select">
+          <option value="ALL">Semua Karyawan Bisnis Ini</option>
+        </select>
+      </section>
+
       <!-- Bagian Kalender -->
       <section class="card">
         <div class="cal-header">
@@ -867,15 +1025,23 @@
           <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Bulan berikutnya">&rsaquo;</button>
         </div>
         <div class="cal-grid" id="calendarGrid"></div>
+        <div class="cal-legend">
+          <span class="cal-legend-item"><span class="cal-dot full"></span>Absen Lengkap</span>
+          <span class="cal-legend-item"><span class="cal-dot partial"></span>Absen Sebagian</span>
+          <span class="cal-legend-item"><span class="cal-dot target-mark"></span>Target User</span>
+        </div>
         <div class="cal-holidays-box hidden" id="calHolidaysBox"></div>
       </section>
 
-      <!-- Bagian Riwayat Kerja -->
+      <!-- Bagian Riwayat Kerja, Foto Absen, Catatan & Target Tanggal -->
       <section class="card" id="riwayatSectionCard">
         <div class="card-title">
           <span>Riwayat Kerja</span>
           <span class="badge badge-ok" id="historyCountLabel">0 Data</span>
         </div>
+
+        <div id="selectedDateTargetsBox" class="target-date-box hidden"></div>
+
         <div class="filter-row">
           <label class="custom-picker-box" style="flex:1; min-width:0;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -988,8 +1154,18 @@
     const db = getFirestore(app);
 
     const SESSION_KEY = "absen_firebase_user_permanent";
+    const VIEW_MODE_KEY = "absen_active_view_mode";
     let currentUser = null;
+    let activeMode = "user";
     let myRecords = [];
+    let myTargets = [];
+    let businessEmployees = [];
+    let businessAllRecords = [];
+    let businessAllTargets = [];
+    let unsubBizEmp = null;
+    let unsubBizRec = null;
+    let unsubBizRem = null;
+    let activeBizId = "";
     let toastTimer = null;
 
     const initNow = new Date();
@@ -1001,6 +1177,7 @@
 
     const filterDateInput = document.getElementById("filterHistoryDate");
     const filterDateDisplay = document.getElementById("filterDateDisplay");
+    const adminEmpSelectEl = document.getElementById("adminEmpSelect");
 
     const FIXED_HOLIDAYS = {
       "01-01": { name: "Tahun Baru Masehi", isHoliday: true },
@@ -1131,6 +1308,131 @@
         .join("\n");
     }
 
+    function isUserAdmin(userObj) {
+      if (!userObj) return false;
+      return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
+    }
+
+    function isAdminModeActive() {
+      return isUserAdmin(currentUser) && activeMode === "admin";
+    }
+
+    function getActiveRecordsScope() {
+      if (!isAdminModeActive()) return myRecords;
+      const empIdSet = new Set(businessEmployees.map(e => e.id || e.docId));
+      const pickedEmp = adminEmpSelectEl.value || "ALL";
+      return businessAllRecords.filter(r => {
+        if (!r.empId || !empIdSet.has(r.empId)) return false;
+        if (pickedEmp !== "ALL" && r.empId !== pickedEmp) return false;
+        return true;
+      });
+    }
+
+    function getActiveTargetsScope() {
+      if (!isAdminModeActive()) return myTargets;
+      const empIdSet = new Set(businessEmployees.map(e => e.id || e.docId));
+      const pickedEmp = adminEmpSelectEl.value || "ALL";
+      return businessAllTargets.filter(t => {
+        if (!t.empId || !empIdSet.has(t.empId)) return false;
+        if (pickedEmp !== "ALL" && t.empId !== pickedEmp) return false;
+        return true;
+      });
+    }
+
+    function refreshAdminEmpDropdown() {
+      const prev = adminEmpSelectEl.value || "ALL";
+      const opts = [`<option value="ALL">Semua Karyawan Bisnis Ini (${businessEmployees.length})</option>`].concat(
+        businessEmployees.map(e => {
+          const idVal = e.id || e.docId;
+          return `<option value="${escapeHtml(idVal)}">${escapeHtml(e.username || idVal)} (${escapeHtml(idVal)})</option>`;
+        })
+      );
+      adminEmpSelectEl.innerHTML = opts.join("");
+      adminEmpSelectEl.value = Array.from(adminEmpSelectEl.options).some(o => o.value === prev) ? prev : "ALL";
+      document.getElementById("adminEmpCountBadge").textContent = `${businessEmployees.length} Karyawan`;
+    }
+
+    function startAdminBusinessListeners(bizId) {
+      if (bizId === activeBizId && unsubBizEmp && unsubBizRec && unsubBizRem) return;
+      if (unsubBizEmp) { unsubBizEmp(); unsubBizEmp = null; }
+      if (unsubBizRec) { unsubBizRec(); unsubBizRec = null; }
+      if (unsubBizRem) { unsubBizRem(); unsubBizRem = null; }
+
+      activeBizId = bizId || "";
+      businessEmployees = [];
+      businessAllRecords = [];
+      businessAllTargets = [];
+
+      if (!activeBizId) {
+        refreshAdminEmpDropdown();
+        renderCalendar();
+        renderHistory();
+        return;
+      }
+
+      const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", activeBizId));
+      unsubBizEmp = onSnapshot(qEmp, (snap) => {
+        businessEmployees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        refreshAdminEmpDropdown();
+        renderCalendar();
+        renderHistory();
+      });
+
+      unsubBizRec = onSnapshot(collection(db, "absen_riwayat"), (snap) => {
+        businessAllRecords = snap.docs.map(d => d.data());
+        renderCalendar();
+        renderHistory();
+      });
+
+      const qRem = query(collection(db, "absen_pengingat"), where("businessId", "==", activeBizId));
+      unsubBizRem = onSnapshot(qRem, (snap) => {
+        businessAllTargets = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderCalendar();
+        renderHistory();
+      });
+    }
+
+    function syncModeFromIndex() {
+      const canUseAdmin = isUserAdmin(currentUser);
+      if (!canUseAdmin) {
+        activeMode = "user";
+      } else {
+        const storedMode = localStorage.getItem(VIEW_MODE_KEY);
+        activeMode = (storedMode === "user") ? "user" : "admin";
+      }
+
+      const isAdminView = isAdminModeActive();
+      document.getElementById("appContainer").classList.toggle("is-admin-mode", isAdminView);
+      document.getElementById("adminRoleBadge").classList.toggle("hidden", !isAdminView);
+      document.getElementById("adminModeBar").classList.toggle("hidden", !isAdminView);
+
+      if (isAdminView) {
+        const bizId = (currentUser?.businessId || "").trim().toUpperCase();
+        document.getElementById("adminBizSub").textContent = bizId ? `Bisnis: ${bizId}` : "Bisnis belum diatur";
+        startAdminBusinessListeners(bizId);
+      }
+
+      renderCalendar();
+      renderHistory();
+    }
+
+    adminEmpSelectEl.addEventListener("change", () => {
+      renderCalendar();
+      renderHistory();
+    });
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === VIEW_MODE_KEY && currentUser) {
+        syncModeFromIndex();
+      }
+    });
+
+    window.addEventListener("pageshow", () => {
+      if (currentUser) {
+        syncModeFromIndex();
+      }
+    });
+
     function updateFilterDateDisplay() {
       if (filterDateInput.value) {
         filterDateDisplay.textContent = formatShortDateKey(filterDateInput.value);
@@ -1151,6 +1453,7 @@
       );
       if (!ok) return;
       localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(VIEW_MODE_KEY);
       window.location.href = "https://my.sitenexs.com/absen";
     });
 
@@ -1260,9 +1563,21 @@
       const todayKey = getTodayKey();
       const selectedDate = filterDateInput.value;
 
+      const scopedRecords = getActiveRecordsScope();
+      const scopedTargets = getActiveTargetsScope();
+
       const recordMap = {};
-      myRecords.forEach(r => {
-        if (r.date) recordMap[r.date] = r;
+      scopedRecords.forEach(r => {
+        if (!r.date) return;
+        if (!recordMap[r.date]) recordMap[r.date] = [];
+        recordMap[r.date].push(r);
+      });
+
+      const targetDateSet = new Set();
+      scopedTargets.forEach(t => {
+        if (t.date && (t.category === "Target" || Number(t.targetGoal) > 0 || !t.category)) {
+          targetDateSet.add(t.date);
+        }
       });
 
       const dows = [
@@ -1287,7 +1602,8 @@
         const mStr = String(calMonth + 1).padStart(2, "0");
         const dStr = String(day).padStart(2, "0");
         const dateKey = `${calYear}-${mStr}-${dStr}`;
-        const rec = recordMap[dateKey];
+        const dayRecs = recordMap[dateKey] || [];
+        const hasTargetMark = targetDateSet.has(dateKey);
         const dowIndex = (firstDayIndex + day - 1) % 7;
         const isSunday = dowIndex === 0;
         const importantInfo = getImportantDayInfo(dateKey);
@@ -1297,21 +1613,26 @@
         }
 
         const classes = ["cal-cell"];
-        if (rec) classes.push("has-record");
+        if (dayRecs.length > 0) classes.push("has-record");
+        if (hasTargetMark) classes.push("has-target");
         if (isSunday) classes.push("sunday");
         if (importantInfo && importantInfo.isHoliday) classes.push("holiday");
         if (dateKey === todayKey) classes.push("today");
         if (dateKey === selectedDate) classes.push("selected");
 
-        let dotClass = "";
-        if (rec) {
-          dotClass = (rec.checkIn && rec.checkOut) ? "full" : "partial";
+        let recDotClass = "";
+        if (dayRecs.length > 0) {
+          const allFull = dayRecs.every(r => r.checkIn && r.checkOut);
+          recDotClass = allFull ? "full" : "partial";
         }
 
         html += `
           <div class="${classes.join(" ")}" data-cal-date="${dateKey}" ${importantInfo ? `title="${escapeHtml(importantInfo.name)}"` : ""}>
             <span class="cal-num">${day}</span>
-            <span class="cal-dot ${dotClass}"></span>
+            <div class="cal-dots-row">
+              ${recDotClass ? `<span class="cal-dot ${recDotClass}"></span>` : ""}
+              ${hasTargetMark ? `<span class="cal-dot target-mark"></span>` : ""}
+            </div>
           </div>
         `;
       }
@@ -1367,12 +1688,69 @@
       });
     }
 
+    function renderSelectedDateTargets(filterVal) {
+      const box = document.getElementById("selectedDateTargetsBox");
+      const scopedTargets = getActiveTargetsScope();
+
+      if (!filterVal) {
+        box.classList.add("hidden");
+        box.innerHTML = "";
+        return;
+      }
+
+      const dayTargets = scopedTargets.filter(t => t.date === filterVal);
+      if (dayTargets.length === 0) {
+        box.classList.add("hidden");
+        box.innerHTML = "";
+        return;
+      }
+
+      const empNameMap = {};
+      businessEmployees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empNameMap[idVal] = e.username || idVal;
+      });
+
+      box.classList.remove("hidden");
+      box.innerHTML = `
+        <div class="target-date-head">Target User pada ${escapeHtml(formatShortDateKey(filterVal))} (${dayTargets.length})</div>
+        ${dayTargets.map(t => {
+          const goal = Number(t.targetGoal) || 0;
+          const cur = Number(t.targetCurrent) || 0;
+          const goalTxt = goal > 0 ? `${cur}/${goal} ${escapeHtml(t.targetUnit || "")}` : (t.category || "Target");
+          const whoTxt = isAdminModeActive() ? ` • ${escapeHtml(empNameMap[t.empId] || t.username || t.empId)}` : "";
+          return `
+            <div class="target-date-chip">
+              <div>
+                <b>${escapeHtml(t.title || "-")}</b>
+                <div style="font-size:10.5px; color:var(--muted);">${escapeHtml(goalTxt)}${whoTxt}</div>
+              </div>
+              <span class="badge ${t.completed ? "badge-success" : "badge-ok"}">${t.completed ? "Selesai" : "Aktif"}</span>
+            </div>
+          `;
+        }).join("")}
+      `;
+    }
+
     function renderHistory() {
       const container = document.getElementById("historyList");
       const countLabel = document.getElementById("historyCountLabel");
       const filterVal = filterDateInput.value;
 
-      let sorted = [...myRecords].sort((a, b) => b.date.localeCompare(a.date));
+      renderSelectedDateTargets(filterVal);
+
+      const empNameMap = {};
+      businessEmployees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empNameMap[idVal] = e.username || idVal;
+      });
+
+      let sorted = [...getActiveRecordsScope()].sort((a, b) => {
+        const dateCmp = String(b.date || "").localeCompare(String(a.date || ""));
+        if (dateCmp !== 0) return dateCmp;
+        return String(a.empId || "").localeCompare(String(b.empId || ""));
+      });
+
       if (filterVal) {
         sorted = sorted.filter(r => r.date === filterVal);
       }
@@ -1420,7 +1798,11 @@
           ? `<div class="history-note-box">${cleanedNote ? `<div class="history-note-text">${escapeHtml(cleanedNote)}</div>` : ""}${thumbsHtml}</div>`
           : "";
 
-        return `<div class="history-item"><div class="history-top"><div class="history-date-wrap"><span class="history-date">${formatShortDateKey(rec.date)}</span></div><div class="history-badges">${inChip}${outChip}</div></div>${noteSection}</div>`;
+        const whoBadge = isAdminModeActive()
+          ? `<span class="badge badge-ok" style="margin-left:5px;">${escapeHtml(empNameMap[rec.empId] || rec.username || rec.empId)}</span>`
+          : "";
+
+        return `<div class="history-item"><div class="history-top"><div class="history-date-wrap"><span class="history-date">${formatShortDateKey(rec.date)}</span>${whoBadge}</div><div class="history-badges">${inChip}${outChip}</div></div>${noteSection}</div>`;
       }).join("");
 
       container.innerHTML = `<div class="history-list">${cardsHtml}</div>`;
@@ -1431,7 +1813,8 @@
           const startIdx = Number(el.dataset.photoIdx) || 0;
           if (!rec) return;
           const allPhotos = collectRecordPhotos(rec);
-          openPhotoGallery(allPhotos, startIdx, formatShortDateKey(rec.date));
+          const ownerLabel = isAdminModeActive() ? ` • ${empNameMap[rec.empId] || rec.username || rec.empId}` : "";
+          openPhotoGallery(allPhotos, startIdx, `${formatShortDateKey(rec.date)}${ownerLabel}`);
         });
       });
     }
@@ -1484,6 +1867,7 @@
           document.getElementById("displayUserName").textContent = saved.username;
           document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
           document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+          syncModeFromIndex();
         } else {
           window.location.href = "https://my.sitenexs.com/absen";
           return;
@@ -1495,15 +1879,20 @@
 
       renderCalendar();
 
-      // Pantau status akun
+      // Pantau status akun & mode admin secara real-time
       onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
         if (!snap.exists()) {
           localStorage.removeItem(SESSION_KEY);
           window.location.href = "https://my.sitenexs.com/absen";
+          return;
         }
+        currentUser = { ...currentUser, ...snap.data() };
+        document.getElementById("displayUserName").textContent = currentUser.username || currentUser.id;
+        document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
+        syncModeFromIndex();
       });
 
-      // Listen Riwayat Absensi
+      // Listen Riwayat Absensi pribadi user
       const qRec = query(collection(db, "absen_riwayat"), where("empId", "==", currentUser.id));
       onSnapshot(qRec, (snapshot) => {
         myRecords = snapshot.docs.map(d => d.data());
@@ -1511,10 +1900,11 @@
         renderHistory();
       });
 
-      // Listen Badge Target Aktif
+      // Listen Target & Pengingat pribadi user
       const qRem = query(collection(db, "absen_pengingat"), where("empId", "==", currentUser.id));
       onSnapshot(qRem, (snapshot) => {
-        const activeCount = snapshot.docs.map(d => d.data()).filter(r => !r.completed).length;
+        myTargets = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        const activeCount = myTargets.filter(r => !r.completed).length;
         const navBadge = document.getElementById("navTargetBadge");
         if (activeCount > 0) {
           navBadge.textContent = activeCount;
@@ -1522,6 +1912,8 @@
         } else {
           navBadge.classList.add("hidden");
         }
+        renderCalendar();
+        renderHistory();
       });
     })();
   </script>
