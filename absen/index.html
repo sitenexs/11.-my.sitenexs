@@ -23,10 +23,6 @@
       --danger-bg: #ffe4e6;
       --warning: #d97706;
       --warning-bg: #fef3c7;
-      --purple: #6d28d9;
-      --purple-bg: #ede9fe;
-      --blue: #0284c7;
-      --blue-bg: #e0f2fe;
       --radius: 18px;
       --radius-sm: 12px;
       --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
@@ -51,7 +47,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* ================= ANIMATIONS ================= */
     @keyframes tabFadeSlide {
       from {
         opacity: 0;
@@ -60,28 +55,6 @@
       to {
         opacity: 1;
         transform: translateY(0);
-      }
-    }
-
-    @keyframes calSlideNext {
-      from {
-        opacity: 0;
-        transform: translateX(14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes calSlidePrev {
-      from {
-        opacity: 0;
-        transform: translateX(-14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
       }
     }
 
@@ -105,14 +78,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }
-
-    .cal-anim-next {
-      animation: calSlideNext 0.24s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .cal-anim-prev {
-      animation: calSlidePrev 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .app-container {
@@ -189,7 +154,6 @@
       padding-bottom: 76px;
     }
 
-    /* Fixed Topbar */
     .topbar {
       position: fixed;
       top: 0;
@@ -294,62 +258,13 @@
       opacity: 0.85;
     }
 
-    /* Main Content Area */
     .content-area {
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 12px;
       width: 100%;
-    }
-
-    .tab-view {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* ================= SUB-SEGMENT SWITCHER (TARGET & KLIEN) ================= */
-    .sub-segment {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      background: #e2e8f0;
-      padding: 4px;
-      border-radius: 14px;
-    }
-
-    .sub-seg-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.18s ease;
-    }
-
-    .sub-seg-btn.active {
-      background: #ffffff;
-      color: var(--primary);
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-    }
-
-    .seg-count {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: var(--primary-bg);
-      color: var(--primary);
     }
 
     /* ================= UNIFIED HERO CLOCK & ATTENDANCE CARD ================= */
@@ -398,7 +313,6 @@
       background: var(--surface);
     }
 
-    /* Compact Clay Card */
     .card {
       width: 100%;
       background: var(--surface);
@@ -406,7 +320,6 @@
       border-radius: var(--radius);
       padding: 14px;
       box-shadow: var(--clay-shadow);
-      transition: box-shadow 0.2s ease;
     }
 
     .card-title {
@@ -422,7 +335,6 @@
       flex-wrap: wrap;
     }
 
-    /* Status Grid */
     .today-status {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -826,7 +738,7 @@
       display: block;
     }
 
-    /* ================= CUSTOM INPUTS & PILLS ================= */
+    /* ================= INPUTS & BUTTONS ================= */
     .form-group {
       margin-bottom: 10px;
     }
@@ -859,106 +771,6 @@
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
-    .picker-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 9px;
-    }
-
-    .custom-picker-box {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 8px 10px;
-      min-height: 38px;
-      cursor: pointer;
-      transition: border-color 0.15s, background-color 0.15s;
-    }
-
-    .custom-picker-box:focus-within {
-      border-color: var(--primary);
-      background: #ffffff;
-    }
-
-    .custom-picker-box svg {
-      width: 15px;
-      height: 15px;
-      color: var(--primary);
-      flex-shrink: 0;
-    }
-
-    .custom-picker-text {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .custom-picker-text.placeholder {
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .native-overlay-input {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      border: none;
-    }
-
-    .cat-pills {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .cat-pill-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-secondary);
-      padding: 7px 6px;
-      border-radius: 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-    }
-
-    .cat-pill-btn:active {
-      transform: scale(0.96);
-    }
-
-    .cat-pill-btn.active[data-cat="Target"] {
-      background: var(--primary-bg);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .cat-pill-btn.active[data-cat="Jadwal"] {
-      background: var(--purple-bg);
-      border-color: var(--purple);
-      color: var(--purple);
-    }
-
-    .cat-pill-btn.active[data-cat="Penting"] {
-      background: var(--warning-bg);
-      border-color: var(--warning);
-      color: var(--warning);
-    }
-
-    /* Compact Buttons */
     .btn {
       width: 100%;
       border: none;
@@ -1027,15 +839,21 @@
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.12s, background-color 0.15s;
     }
 
-    .btn-outline-sm:active {
-      transform: scale(0.96);
-      background: #e2e8f0;
+    .badge {
+      display: inline-block;
+      padding: 3.5px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
-    /* ================= TARGET & PENGINGAT JADWAL ================= */
+    .badge-ok { background: var(--primary-bg); color: var(--primary); }
+    .badge-warn { background: var(--warning-bg); color: var(--warning); }
+
+    /* ================= BANNER PENGINGAT AKTIF ================= */
     .reminder-banner {
       background: linear-gradient(135deg, #fffbeb, #fef3c7);
       border: 1px solid #fde68a;
@@ -1045,7 +863,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      cursor: pointer;
+      text-decoration: none;
       box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
       transition: transform 0.12s;
     }
@@ -1094,616 +912,7 @@
       text-overflow: ellipsis;
     }
 
-    .reminder-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .reminder-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 10px 11px;
-      transition: opacity 0.2s, background-color 0.2s;
-      animation: itemEnter 0.22s ease;
-    }
-
-    .reminder-item.done {
-      opacity: 0.65;
-      background: #f8fafc;
-    }
-
-    .reminder-check {
-      width: 20px;
-      height: 20px;
-      border-radius: 7px;
-      border: 2px solid #cbd5e1;
-      background: #ffffff;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .reminder-item.done .reminder-check {
-      background: var(--success);
-      border-color: var(--success);
-    }
-
-    .reminder-body {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .reminder-head {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 3px;
-    }
-
-    .cat-tag {
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-    }
-
-    .cat-tag.Target { background: var(--primary-bg); color: var(--primary); }
-    .cat-tag.Jadwal { background: var(--purple-bg); color: var(--purple); }
-    .cat-tag.Penting { background: var(--warning-bg); color: var(--warning); }
-
-    .reminder-when {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .reminder-when.overdue {
-      color: var(--danger);
-    }
-
-    .reminder-title {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--text);
-      word-wrap: break-word;
-    }
-
-    .reminder-item.done .reminder-title {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    .reminder-note {
-      font-size: 11.5px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-      white-space: pre-line;
-      word-wrap: break-word;
-    }
-
-    /* Target Progress Bar inside Target Item */
-    .target-progress-box {
-      margin-top: 7px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 7px 9px;
-    }
-
-    .target-prog-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .target-prog-nums {
-      color: var(--primary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .target-step-btns {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .target-step-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text);
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .target-step-btn:active {
-      background: var(--primary-bg);
-      color: var(--primary);
-    }
-
-    .reminder-del-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 4px;
-      border-radius: 7px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .reminder-del-btn:active {
-      color: var(--danger);
-      background: var(--danger-bg);
-    }
-
-    /* ================= CATATAN KLIEN BERGABUNG ================= */
-    .client-summary-strip {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .client-stat-box {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .client-stat-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .client-stat-val {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--primary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .client-card {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-left: 3.5px solid var(--success);
-      border-radius: 13px;
-      padding: 10px 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      animation: itemEnter 0.22s ease;
-    }
-
-    .client-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .client-name {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1.25;
-    }
-
-    .client-biz {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-
-    .client-meta-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 2px;
-    }
-
-    .client-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 2.5px 8px;
-      border-radius: 7px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .client-pill.pkg {
-      background: var(--blue-bg);
-      border-color: rgba(2, 132, 199, 0.2);
-      color: var(--blue);
-    }
-
-    .client-pill.date {
-      background: var(--success-bg);
-      border-color: rgba(5, 150, 105, 0.2);
-      color: var(--success);
-    }
-
-    .client-note-text {
-      font-size: 11.5px;
-      color: var(--text-secondary);
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 7px 9px;
-      margin-top: 2px;
-      white-space: pre-line;
-      word-wrap: break-word;
-    }
-
-    /* ================= CLEAN CALENDAR ================= */
-    .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      margin-bottom: 11px;
-    }
-
-    .cal-month-label {
-      font-size: 14px;
-      font-weight: 800;
-      text-align: center;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .cal-nav-btn {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text);
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.12s, background-color 0.15s;
-    }
-
-    .cal-nav-btn:active {
-      transform: scale(0.92);
-      background: #e2e8f0;
-    }
-
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 5px;
-      width: 100%;
-    }
-
-    .cal-dow {
-      text-align: center;
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--muted);
-      padding-bottom: 4px;
-      text-transform: uppercase;
-    }
-
-    .cal-dow.sun {
-      color: var(--danger);
-    }
-
-    .cal-cell {
-      aspect-ratio: 1 / 1;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: var(--surface-soft);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      cursor: pointer;
-      min-width: 0;
-      transition: transform 0.12s, border-color 0.15s, background-color 0.15s, color 0.15s;
-    }
-
-    .cal-cell:active:not(.empty) {
-      transform: scale(0.93);
-    }
-
-    .cal-cell.empty {
-      border: none;
-      background: transparent;
-      cursor: default;
-    }
-
-    .cal-cell.has-record {
-      background: #ffffff;
-      border-color: #cbd5e1;
-    }
-
-    .cal-cell.sunday {
-      background: #fff8f9;
-    }
-
-    .cal-cell.holiday {
-      background: #fff1f2;
-      border-color: #fecdd3;
-    }
-
-    .cal-cell.today {
-      border-color: var(--primary);
-      background: var(--primary-bg);
-    }
-
-    .cal-cell.selected {
-      background: var(--primary);
-      border-color: var(--primary);
-      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.25);
-    }
-
-    .cal-num {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-    }
-
-    .cal-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 999px;
-      background: transparent;
-    }
-
-    .cal-dot.full {
-      background: var(--success);
-    }
-
-    .cal-dot.partial {
-      background: var(--warning);
-    }
-
-    .cal-cell.selected .cal-dot.full,
-    .cal-cell.selected .cal-dot.partial {
-      background: #ffffff;
-    }
-
-    .cal-cell.sunday .cal-num,
-    .cal-cell.holiday .cal-num {
-      color: var(--danger);
-    }
-
-    .cal-cell.today .cal-num {
-      color: var(--primary);
-      font-weight: 800;
-    }
-
-    .cal-cell.selected .cal-num {
-      color: #ffffff;
-      font-weight: 800;
-    }
-
-    /* Holiday Info Box inside Calendar Card */
-    .cal-holidays-box {
-      margin-top: 11px;
-      padding-top: 9px;
-      border-top: 1px dashed var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .cal-holiday-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      padding: 5px 8px;
-      border-radius: 8px;
-      background: #fff1f2;
-      cursor: pointer;
-    }
-
-    .cal-holiday-date {
-      font-weight: 800;
-      color: var(--danger);
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .cal-holiday-name {
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ================= CLEAN FILTER & HISTORY CARDS ================= */
-    .filter-row {
-      display: flex;
-      gap: 7px;
-      margin-bottom: 11px;
-      align-items: stretch;
-    }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .history-item {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      animation: itemEnter 0.22s ease;
-    }
-
-    .history-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .history-date-wrap {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-
-    .history-date {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .history-badges {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-
-    .time-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3.5px 8px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      border: none;
-      cursor: pointer;
-    }
-
-    .time-chip.in {
-      background: var(--success-bg);
-      color: var(--success);
-    }
-
-    .time-chip.out {
-      background: var(--danger-bg);
-      color: var(--danger);
-    }
-
-    .time-chip.late {
-      background: var(--warning-bg);
-      color: var(--warning);
-    }
-
-    .time-chip.empty {
-      background: #e2e8f0;
-      color: var(--muted);
-      cursor: default;
-    }
-
-    .chip-cam {
-      font-size: 9.5px;
-      opacity: 0.9;
-      text-decoration: underline;
-    }
-
-    .chip-late-pill {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(217, 119, 6, 0.16);
-      color: #b45309;
-      text-transform: uppercase;
-    }
-
-    .history-note-box {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 10px;
-    }
-
-    .history-note-text {
-      font-size: 12px;
-      color: var(--text);
-      white-space: pre-line;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      line-height: 1.45;
-    }
-
-    .history-note-box .photo-thumbs {
-      margin-top: 7px;
-      padding-top: 7px;
-      border-top: 1px dashed var(--border);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3.5px 9px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .badge-ok { background: var(--primary-bg); color: var(--primary); }
-    .badge-warn { background: var(--warning-bg); color: var(--warning); }
-    .badge-success { background: var(--success-bg); color: var(--success); }
-
-    .empty-state {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      padding: 20px 10px;
-      background: var(--surface-soft);
-      border-radius: 12px;
-      border: 1px dashed #cbd5e1;
-    }
-
-    /* Fixed Bottom Navigation (Capsule Pill Active State) */
+    /* ================= FIXED BOTTOM NAVIGATION (LINK HALAMAN) ================= */
     .bottom-nav {
       position: fixed;
       left: 50%;
@@ -1735,6 +944,7 @@
       padding: 4px;
       font-size: 10.5px;
       font-weight: 700;
+      text-decoration: none;
       cursor: pointer;
       transition: color 0.2s;
     }
@@ -1821,84 +1031,25 @@
       box-shadow: 0 4px 12px rgba(15, 118, 110, 0.28);
     }
 
-    /* ================= CAMERA MODAL ================= */
-    .camera-modal {
+    /* ================= POPUP CAMERA FALLBACK MODAL ================= */
+    .camera-popup-modal {
       position: fixed;
       inset: 0;
       background: #0f172a;
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
+      z-index: 220;
       max-width: 440px;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
       animation: tabFadeSlide 0.2s ease;
     }
 
-    .cam-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 12px 14px;
-      color: #ffffff;
-      background: rgba(15, 23, 42, 0.92);
-    }
-
-    .cam-title {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .cam-close-btn {
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      padding: 5px 11px;
-      border-radius: 9px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .cam-stage {
-      position: relative;
-      flex: 1;
-      width: 100%;
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .cam-video, .cam-preview {
+    .camera-popup-frame {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      border: none;
       display: block;
-    }
-
-    .cam-video.mirror {
-      transform: scaleX(-1);
-    }
-
-    .cam-controls {
-      padding: 13px 13px calc(15px + env(safe-area-inset-bottom, 0px));
       background: #0f172a;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .cam-btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-    }
-
-    .cam-btn-secondary {
-      background: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
     }
 
     /* ================= PHOTO GALLERY LIGHTBOX MODAL ================= */
@@ -1940,6 +1091,17 @@
     .lb-counter {
       font-size: 11px;
       color: #94a3b8;
+    }
+
+    .cam-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .lb-stage {
@@ -2165,7 +1327,7 @@
       </section>
     </div>
 
-    <!-- HALAMAN UTAMA ABSENSI -->
+    <!-- HALAMAN UTAMA PRESENSI -->
     <div id="mainApp" class="main-app hidden">
       <!-- Fixed Topbar -->
       <header class="topbar">
@@ -2183,347 +1345,150 @@
       </header>
 
       <main class="content-area">
-        <!-- TAB 1: PRESENSI & CATATAN -->
-        <div id="viewPresensi" class="tab-view">
-          <!-- Banner Pengingat Aktif -->
-          <div id="activeReminderBanner" class="reminder-banner hidden">
-            <div class="reminder-banner-left">
-              <div class="reminder-bell">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        <!-- Banner Pengingat Aktif (Langsung membuka halaman target.html) -->
+        <a href="target.html" id="activeReminderBanner" class="reminder-banner hidden">
+          <div class="reminder-banner-left">
+            <div class="reminder-bell">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </div>
+            <div class="reminder-banner-text">
+              <div class="reminder-banner-title" id="bannerRemTitle">-</div>
+              <div class="reminder-banner-sub" id="bannerRemSub">-</div>
+            </div>
+          </div>
+          <span class="badge badge-warn" id="bannerRemCount">0</span>
+        </a>
+
+        <!-- Unified Hero Clock & Attendance Card -->
+        <section class="hero-attendance-card">
+          <div class="clock-box">
+            <div class="clock-date" id="clockDate">-</div>
+            <div class="clock-time" id="clockTime">00:00:00</div>
+          </div>
+
+          <div class="hero-body">
+            <div class="today-status">
+              <div class="status-box in-box">
+                <div class="status-label">Masuk</div>
+                <div class="status-val" id="todayIn">--:--</div>
+                <span class="status-late-tag hidden" id="todayInLateTag">Telat</span>
+              </div>
+              <div class="status-box out-box">
+                <div class="status-label">Keluar</div>
+                <div class="status-val" id="todayOut">--:--</div>
+                <span class="status-late-tag hidden" id="todayOutLateTag">Telat</span>
+              </div>
+            </div>
+
+            <div class="action-grid">
+              <button type="button" class="btn btn-masuk" id="btnCheckIn" disabled>
+                <span>Absen Masuk</span>
+                <span class="btn-sub" id="subCheckIn">Memuat...</span>
+              </button>
+              <button type="button" class="btn btn-keluar" id="btnCheckOut" disabled>
+                <span>Absen Keluar</span>
+                <span class="btn-sub" id="subCheckOut">Memuat...</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Grafik Persentase Hadir & Aktif -->
+        <section class="card">
+          <div class="card-title">
+            <span>Performa</span>
+            <span class="badge badge-ok" id="chartDaysLabel">0 Hari</span>
+          </div>
+
+          <div class="chart-layout">
+            <div class="donut-wrap">
+              <svg class="donut-svg" viewBox="0 0 78 78">
+                <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
+                <circle class="donut-progress" id="activeRing" cx="39" cy="39" r="34"></circle>
+              </svg>
+              <div class="donut-center">
+                <span class="donut-pct" id="activePctText">0%</span>
+                <span class="donut-sub">Aktif</span>
+              </div>
+            </div>
+
+            <div class="chart-metrics">
+              <div class="metric-row">
+                <div class="metric-head">
+                  <span class="metric-name">Kehadiran</span>
+                  <span class="metric-val" id="hadirPctText">0%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bar-hadir" id="hadirBar"></div>
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <div class="metric-head">
+                  <span class="metric-name">Catatan Kerja</span>
+                  <span class="metric-val" id="notePctText">0%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bar-catatan" id="noteBar"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-alert warn hidden" id="chartAlert"></div>
+        </section>
+
+        <!-- Daily Work Note Card -->
+        <section class="card">
+          <div class="card-title">
+            <span>Catatan (<span id="noteDateLabel">-</span>)</span>
+            <span class="badge badge-ok hidden" id="noteSavedBadge">Tersimpan</span>
+          </div>
+
+          <div class="note-box">
+            <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
+            <div class="note-footer">
+              <span id="noteCharCount">0 karakter</span>
+            </div>
+          </div>
+
+          <!-- Foto Dokumentasi -->
+          <div class="doc-photo-box">
+            <div id="pendingThumbsRow" class="pending-thumbs-row hidden"></div>
+            <div class="doc-photo-actions">
+              <button type="button" class="doc-photo-trigger" id="openDocCamBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
                 </svg>
-              </div>
-              <div class="reminder-banner-text">
-                <div class="reminder-banner-title" id="bannerRemTitle">-</div>
-                <div class="reminder-banner-sub" id="bannerRemSub">-</div>
-              </div>
-            </div>
-            <span class="badge badge-warn" id="bannerRemCount">0</span>
-          </div>
-
-          <!-- Unified Hero Clock & Attendance Card -->
-          <section class="hero-attendance-card">
-            <div class="clock-box">
-              <div class="clock-date" id="clockDate">-</div>
-              <div class="clock-time" id="clockTime">00:00:00</div>
-            </div>
-
-            <div class="hero-body">
-              <div class="today-status">
-                <div class="status-box in-box">
-                  <div class="status-label">Masuk</div>
-                  <div class="status-val" id="todayIn">--:--</div>
-                  <span class="status-late-tag hidden" id="todayInLateTag">Telat</span>
-                </div>
-                <div class="status-box out-box">
-                  <div class="status-label">Keluar</div>
-                  <div class="status-val" id="todayOut">--:--</div>
-                  <span class="status-late-tag hidden" id="todayOutLateTag">Telat</span>
-                </div>
-              </div>
-
-              <div class="action-grid">
-                <button type="button" class="btn btn-masuk" id="btnCheckIn" disabled>
-                  <span>Absen Masuk</span>
-                  <span class="btn-sub" id="subCheckIn">Memuat...</span>
-                </button>
-                <button type="button" class="btn btn-keluar" id="btnCheckOut" disabled>
-                  <span>Absen Keluar</span>
-                  <span class="btn-sub" id="subCheckOut">Memuat...</span>
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <!-- Grafik Persentase Hadir & Aktif -->
-          <section class="card">
-            <div class="card-title">
-              <span>Performa</span>
-              <span class="badge badge-ok" id="chartDaysLabel">0 Hari</span>
-            </div>
-
-            <div class="chart-layout">
-              <div class="donut-wrap">
-                <svg class="donut-svg" viewBox="0 0 78 78">
-                  <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
-                  <circle class="donut-progress" id="activeRing" cx="39" cy="39" r="34"></circle>
+                <span>Kamera</span>
+              </button>
+              <button type="button" class="doc-photo-trigger file-trigger" id="openDocFileBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <div class="donut-center">
-                  <span class="donut-pct" id="activePctText">0%</span>
-                  <span class="donut-sub">Aktif</span>
-                </div>
-              </div>
-
-              <div class="chart-metrics">
-                <div class="metric-row">
-                  <div class="metric-head">
-                    <span class="metric-name">Kehadiran</span>
-                    <span class="metric-val" id="hadirPctText">0%</span>
-                  </div>
-                  <div class="bar-track">
-                    <div class="bar-fill bar-hadir" id="hadirBar"></div>
-                  </div>
-                </div>
-
-                <div class="metric-row">
-                  <div class="metric-head">
-                    <span class="metric-name">Catatan Kerja</span>
-                    <span class="metric-val" id="notePctText">0%</span>
-                  </div>
-                  <div class="bar-track">
-                    <div class="bar-fill bar-catatan" id="noteBar"></div>
-                  </div>
-                </div>
-              </div>
+                <span>Galeri</span>
+              </button>
             </div>
-
-            <div class="chart-alert warn hidden" id="chartAlert"></div>
-          </section>
-
-          <!-- Daily Work Note Card -->
-          <section class="card">
-            <div class="card-title">
-              <span>Catatan (<span id="noteDateLabel">-</span>)</span>
-              <span class="badge badge-ok hidden" id="noteSavedBadge">Tersimpan</span>
-            </div>
-
-            <div class="note-box">
-              <textarea id="dailyNoteInput" class="note-textarea" placeholder="Tulis progres pekerjaan hari ini..."></textarea>
-              <div class="note-footer">
-                <span id="noteCharCount">0 karakter</span>
-              </div>
-            </div>
-
-            <!-- Foto Dokumentasi -->
-            <div class="doc-photo-box">
-              <div id="pendingThumbsRow" class="pending-thumbs-row hidden"></div>
-              <div class="doc-photo-actions">
-                <button type="button" class="doc-photo-trigger" id="openDocCamBtn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                    <circle cx="12" cy="13" r="4"></circle>
-                  </svg>
-                  <span>Kamera</span>
-                </button>
-                <button type="button" class="doc-photo-trigger file-trigger" id="openDocFileBtn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                  </svg>
-                  <span>Galeri</span>
-                </button>
-              </div>
-              <input type="file" id="docFileInput" accept="image/*" multiple class="hidden">
-            </div>
-
-            <button type="button" class="btn btn-primary" id="saveNoteBtn">Simpan Catatan</button>
-
-            <div id="savedNotePreview" class="saved-note-preview hidden">
-              <div class="saved-note-head">
-                <span>Tersimpan</span>
-                <span id="noteTimestamp">-</span>
-              </div>
-              <div class="saved-note-body" id="savedNoteBody"></div>
-              <div class="photo-thumbs" id="savedNoteThumbs"></div>
-            </div>
-          </section>
-        </div>
-
-        <!-- TAB 2: TARGET, PENGINGAT & CATATAN KLIEN BERGABUNG -->
-        <div id="viewTarget" class="tab-view hidden">
-          <!-- Sub-Switch antara Target & Klien Bergabung -->
-          <div class="sub-segment">
-            <button type="button" class="sub-seg-btn active" data-subview="subTargetSection">
-              <span>Target &amp; Jadwal</span>
-              <span class="seg-count" id="segTargetCount">0</span>
-            </button>
-            <button type="button" class="sub-seg-btn" data-subview="subClientSection">
-              <span>Klien Bergabung</span>
-              <span class="seg-count" id="segClientCount">0</span>
-            </button>
+            <input type="file" id="docFileInput" accept="image/*" multiple class="hidden">
           </div>
 
-          <!-- BAGIAN A: TARGET & PENGINGAT JADWAL -->
-          <div id="subTargetSection" style="display:flex; flex-direction:column; gap:12px;">
-            <section class="card">
-              <div class="card-title">
-                <span>Tambah Target &amp; Pengingat</span>
-              </div>
+          <button type="button" class="btn btn-primary" id="saveNoteBtn">Simpan Catatan</button>
 
-              <form id="reminderForm">
-                <div class="cat-pills" id="remCatPills">
-                  <button type="button" class="cat-pill-btn active" data-cat="Target">Target</button>
-                  <button type="button" class="cat-pill-btn" data-cat="Jadwal">Jadwal</button>
-                  <button type="button" class="cat-pill-btn" data-cat="Penting">Penting</button>
-                </div>
-
-                <div class="form-group">
-                  <input type="text" id="remTitleInput" class="form-input" placeholder="Judul target (misal: Closing 10 Klien)..." required>
-                </div>
-
-                <!-- Input Angka Target (Muncul saat kategori Target dipilih) -->
-                <div class="picker-row" id="targetMetricRow">
-                  <div>
-                    <input type="number" id="remTargetNumInput" class="form-input" min="1" placeholder="Angka target (opsional)">
-                  </div>
-                  <div>
-                    <input type="text" id="remTargetUnitInput" class="form-input" placeholder="Satuan (Klien / Paket)">
-                  </div>
-                </div>
-
-                <div class="picker-row">
-                  <label class="custom-picker-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span class="custom-picker-text" id="remDateDisplay">Hari ini</span>
-                    <input type="date" id="remDateInput" class="native-overlay-input" required>
-                  </label>
-
-                  <label class="custom-picker-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span class="custom-picker-text placeholder" id="remTimeDisplay">Jam (opsional)</span>
-                    <input type="time" id="remTimeInput" class="native-overlay-input">
-                  </label>
-                </div>
-
-                <div class="note-box">
-                  <textarea id="remNoteInput" class="note-textarea" style="min-height: 54px;" placeholder="Catatan detail target, strategi, atau keterangan..."></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="saveRemBtn">Simpan Target</button>
-              </form>
-            </section>
-
-            <section class="card">
-              <div class="card-title">
-                <span>Daftar Target &amp; Jadwal</span>
-                <span class="badge badge-warn" id="remPendingCount">0 Aktif</span>
-              </div>
-              <div id="reminderListContainer">
-                <div class="empty-state">Belum ada target atau pengingat.</div>
-              </div>
-            </section>
+          <div id="savedNotePreview" class="saved-note-preview hidden">
+            <div class="saved-note-head">
+              <span>Tersimpan</span>
+              <span id="noteTimestamp">-</span>
+            </div>
+            <div class="saved-note-body" id="savedNoteBody"></div>
+            <div class="photo-thumbs" id="savedNoteThumbs"></div>
           </div>
-
-          <!-- BAGIAN B: CATATAN KLIEN YANG BERGABUNG -->
-          <div id="subClientSection" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-            <section class="card">
-              <div class="card-title">
-                <span>Catat Klien Bergabung</span>
-                <span class="badge badge-success">Baru</span>
-              </div>
-
-              <form id="clientForm">
-                <div class="form-group">
-                  <label class="form-label" for="clientNameInput">Nama Klien / PIC</label>
-                  <input type="text" id="clientNameInput" class="form-input" placeholder="Nama lengkap klien..." required>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="clientBizInput">Nama Usaha / Instansi</label>
-                  <input type="text" id="clientBizInput" class="form-input" placeholder="Contoh: Kopi Senja / Toko Berkah">
-                </div>
-
-                <div class="picker-row">
-                  <div>
-                    <input type="tel" id="clientPhoneInput" class="form-input" placeholder="No. WhatsApp / HP">
-                  </div>
-                  <div>
-                    <input type="text" id="clientPkgInput" class="form-input" placeholder="Paket / Layanan">
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="custom-picker-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span class="custom-picker-text" id="clientDateDisplay">Tanggal bergabung</span>
-                    <input type="date" id="clientDateInput" class="native-overlay-input" required>
-                  </label>
-                </div>
-
-                <div class="note-box">
-                  <textarea id="clientNoteInput" class="note-textarea" style="min-height: 56px;" placeholder="Catatan tambahan klien (kebutuhan, deal, atau tindak lanjut)..."></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-masuk" id="saveClientBtn">Simpan Klien Bergabung</button>
-              </form>
-            </section>
-
-            <section class="card">
-              <div class="card-title">
-                <span>Daftar Klien Bergabung</span>
-                <span class="badge badge-ok" id="clientTotalBadge">0 Klien</span>
-              </div>
-
-              <div class="client-summary-strip">
-                <div class="client-stat-box">
-                  <span class="client-stat-label">Total Klien</span>
-                  <span class="client-stat-val" id="clientTotalNum">0</span>
-                </div>
-                <div class="client-stat-box">
-                  <span class="client-stat-label">Bulan Ini</span>
-                  <span class="client-stat-val" id="clientMonthNum">0</span>
-                </div>
-              </div>
-
-              <div id="clientListContainer">
-                <div class="empty-state">Belum ada catatan klien yang bergabung.</div>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <!-- TAB 3: KALENDER & RIWAYAT KERJA -->
-        <div id="viewKalender" class="tab-view hidden">
-          <!-- Bagian Kalender -->
-          <section class="card">
-            <div class="cal-header">
-              <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Bulan sebelumnya">&lsaquo;</button>
-              <div class="cal-month-label" id="calMonthLabel">-</div>
-              <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Bulan berikutnya">&rsaquo;</button>
-            </div>
-            <div class="cal-grid" id="calendarGrid"></div>
-            <div class="cal-holidays-box hidden" id="calHolidaysBox"></div>
-          </section>
-
-          <!-- Bagian Riwayat Kerja -->
-          <section class="card" id="riwayatSectionCard">
-            <div class="card-title">
-              <span>Riwayat Kerja</span>
-              <span class="badge badge-ok" id="historyCountLabel">0 Data</span>
-            </div>
-            <div class="filter-row">
-              <label class="custom-picker-box" style="flex:1; min-width:0;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span class="custom-picker-text placeholder" id="filterDateDisplay">Semua tanggal</span>
-                <input type="date" id="filterHistoryDate" class="native-overlay-input" aria-label="Filter tanggal">
-              </label>
-              <button type="button" class="btn-outline-sm" id="resetFilterDateBtn">Semua</button>
-            </div>
-            <div id="historyList">
-              <div class="empty-state">Memuat...</div>
-            </div>
-          </section>
-        </div>
+        </section>
       </main>
 
       <!-- Floating Round Chat Button -->
@@ -2535,52 +1500,34 @@
         </a>
       </div>
 
-      <!-- Fixed Bottom Navigation (Capsule Pill Design) -->
+      <!-- Fixed Bottom Navigation (Pindah Halaman Penuh) -->
       <nav class="bottom-nav">
-        <button type="button" class="nav-btn active" data-target="viewPresensi">
+        <a href="index.html" class="nav-btn active">
           <span class="nav-icon-pill">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </span>
           <span>Presensi</span>
-        </button>
-        <button type="button" class="nav-btn" data-target="viewTarget">
+        </a>
+        <a href="target.html" class="nav-btn">
           <span class="nav-icon-pill">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
           </span>
           <span>Target &amp; Klien</span>
           <span class="nav-badge hidden" id="navTargetBadge">0</span>
-        </button>
-        <button type="button" class="nav-btn" data-target="viewKalender">
+        </a>
+        <a href="kalender.html" class="nav-btn">
           <span class="nav-icon-pill">
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
           </span>
           <span>Kalender</span>
-        </button>
+        </a>
       </nav>
     </div>
   </div>
 
-  <!-- CAMERA MODAL -->
-  <div id="cameraModal" class="camera-modal hidden">
-    <div class="cam-topbar">
-      <div class="cam-title" id="camModalTitle">Ambil Foto</div>
-      <button type="button" class="cam-close-btn" id="camCloseBtn">Tutup</button>
-    </div>
-    <div class="cam-stage">
-      <video id="camVideo" class="cam-video mirror" autoplay playsinline muted></video>
-      <img id="camPreview" class="cam-preview hidden" alt="Hasil foto">
-      <canvas id="camCanvas" class="hidden"></canvas>
-    </div>
-    <div class="cam-controls">
-      <div id="camLiveControls" class="cam-btn-row">
-        <button type="button" class="btn cam-btn-secondary" id="camSwitchBtn">Ganti Kamera</button>
-        <button type="button" class="btn btn-primary" id="camCaptureBtn">Jepret</button>
-      </div>
-      <div id="camPreviewControls" class="cam-btn-row hidden">
-        <button type="button" class="btn cam-btn-secondary" id="camRetakeBtn">Ulangi</button>
-        <button type="button" class="btn btn-masuk" id="camConfirmBtn">Gunakan</button>
-      </div>
-    </div>
+  <!-- FALLBACK POPUP CAMERA FRAME (Jika window.open diblokir browser) -->
+  <div id="cameraPopupModal" class="camera-popup-modal hidden">
+    <iframe id="cameraPopupFrame" class="camera-popup-frame" allow="camera"></iframe>
   </div>
 
   <!-- PHOTO GALLERY LIGHTBOX MODAL -->
@@ -2626,8 +1573,6 @@
       doc,
       getDoc,
       setDoc,
-      updateDoc,
-      deleteDoc,
       collection,
       query,
       where,
@@ -2664,112 +1609,29 @@
     };
 
     const SESSION_KEY = "absen_firebase_user_permanent";
+    const CAMERA_RESULT_KEY = "absen_camera_result_payload";
     let currentUser = null;
     let myRecords = [];
     let myReminders = [];
-    let myClients = [];
     let unsubscribeRecords = null;
     let unsubscribeReminders = null;
-    let unsubscribeClients = null;
     let unsubscribeUserWatch = null;
     let toastTimer = null;
     let noteReminderTimer = null;
     let notifiedReminderIds = new Set();
 
-    const initNow = new Date();
-    let calYear = initNow.getFullYear();
-    let calMonth = initNow.getMonth();
-
-    let cameraStream = null;
-    let currentFacingMode = "user";
-    let cameraPurpose = null;
-    let tempCapturedBlob = null;
-    let tempCapturedDataUrl = null;
     let pendingDocPhotos = [];
+    let cameraPopupWin = null;
 
     // Lightbox state
     let lightboxPhotos = [];
     let lightboxIndex = 0;
 
-    // Selected reminder category
-    let selectedRemCategory = "Target";
-
-    const camModal = document.getElementById("cameraModal");
-    const camVideo = document.getElementById("camVideo");
-    const camPreview = document.getElementById("camPreview");
-    const camCanvas = document.getElementById("camCanvas");
-    const camLiveControls = document.getElementById("camLiveControls");
-    const camPreviewControls = document.getElementById("camPreviewControls");
-    const camConfirmBtn = document.getElementById("camConfirmBtn");
     const docFileInput = document.getElementById("docFileInput");
-    const filterDateInput = document.getElementById("filterHistoryDate");
-    const filterDateDisplay = document.getElementById("filterDateDisplay");
+    const cameraPopupModal = document.getElementById("cameraPopupModal");
+    const cameraPopupFrame = document.getElementById("cameraPopupFrame");
 
-    // ================= HARI PENTING INDONESIA =================
-    const FIXED_HOLIDAYS = {
-      "01-01": { name: "Tahun Baru Masehi", isHoliday: true },
-      "02-14": { name: "Hari Kasih Sayang", isHoliday: false },
-      "03-08": { name: "Hari Perempuan Internasional", isHoliday: false },
-      "04-21": { name: "Hari Kartini", isHoliday: false },
-      "05-01": { name: "Hari Buruh Internasional", isHoliday: true },
-      "05-02": { name: "Hari Pendidikan Nasional", isHoliday: false },
-      "05-20": { name: "Hari Kebangkitan Nasional", isHoliday: false },
-      "06-01": { name: "Hari Lahir Pancasila", isHoliday: true },
-      "08-17": { name: "Hari Kemerdekaan RI", isHoliday: true },
-      "10-01": { name: "Hari Kesaktian Pancasila", isHoliday: false },
-      "10-02": { name: "Hari Batik Nasional", isHoliday: false },
-      "10-28": { name: "Hari Sumpah Pemuda", isHoliday: false },
-      "11-10": { name: "Hari Pahlawan", isHoliday: false },
-      "11-25": { name: "Hari Guru Nasional", isHoliday: false },
-      "12-22": { name: "Hari Ibu", isHoliday: false },
-      "12-25": { name: "Hari Raya Natal", isHoliday: true },
-      "12-26": { name: "Cuti Bersama Natal", isHoliday: true }
-    };
-
-    const SPECIFIC_HOLIDAYS = {
-      "2025-01-27": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
-      "2025-01-29": { name: "Tahun Baru Imlek 2576", isHoliday: true },
-      "2025-03-29": { name: "Hari Suci Nyepi 1947", isHoliday: true },
-      "2025-03-31": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
-      "2025-04-01": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
-      "2025-04-18": { name: "Wafat Yesus Kristus", isHoliday: true },
-      "2025-05-12": { name: "Hari Raya Waisak 2569 BE", isHoliday: true },
-      "2025-05-29": { name: "Kenaikan Yesus Kristus", isHoliday: true },
-      "2025-06-06": { name: "Hari Raya Idul Adha 1446 H", isHoliday: true },
-      "2025-06-27": { name: "Tahun Baru Islam 1447 H", isHoliday: true },
-      "2025-09-05": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
-      "2026-01-16": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
-      "2026-02-17": { name: "Tahun Baru Imlek 2577", isHoliday: true },
-      "2026-03-19": { name: "Hari Suci Nyepi 1948", isHoliday: true },
-      "2026-03-20": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
-      "2026-03-21": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
-      "2026-04-03": { name: "Wafat Yesus Kristus", isHoliday: true },
-      "2026-05-14": { name: "Kenaikan Yesus Kristus", isHoliday: true },
-      "2026-05-27": { name: "Hari Raya Idul Adha 1447 H", isHoliday: true },
-      "2026-05-31": { name: "Hari Raya Waisak 2570 BE", isHoliday: true },
-      "2026-06-16": { name: "Tahun Baru Islam 1448 H", isHoliday: true },
-      "2026-08-25": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
-      "2027-01-05": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
-      "2027-02-06": { name: "Tahun Baru Imlek 2578", isHoliday: true },
-      "2027-03-08": { name: "Hari Suci Nyepi 1949", isHoliday: true },
-      "2027-03-09": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
-      "2027-03-10": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
-      "2027-03-26": { name: "Wafat Yesus Kristus", isHoliday: true },
-      "2027-05-06": { name: "Kenaikan Yesus Kristus", isHoliday: true },
-      "2027-05-16": { name: "Hari Raya Idul Adha 1448 H", isHoliday: true },
-      "2027-05-20": { name: "Hari Raya Waisak 2571 BE", isHoliday: true },
-      "2027-06-06": { name: "Tahun Baru Islam 1449 H", isHoliday: true },
-      "2027-08-14": { name: "Maulid Nabi Muhammad SAW", isHoliday: true }
-    };
-
-    function getImportantDayInfo(dateKey) {
-      if (SPECIFIC_HOLIDAYS[dateKey]) return SPECIFIC_HOLIDAYS[dateKey];
-      const mmdd = dateKey.slice(5);
-      if (FIXED_HOLIDAYS[mmdd]) return FIXED_HOLIDAYS[mmdd];
-      return null;
-    }
-
-    // ================= RECTANGULAR BOTTOM TOAST & CONFIRM =================
+    // ================= TOAST & CONFIRM =================
     const TOAST_ICONS = {
       success: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
       error: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
@@ -2811,36 +1673,6 @@
       });
     }
 
-    // ================= NAVIGATION & SUB-SEGMENT =================
-    function switchTab(targetId) {
-      document.querySelectorAll(".tab-view").forEach(v => v.classList.add("hidden"));
-      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-      const targetView = document.getElementById(targetId);
-      const targetBtn = document.querySelector(`.nav-btn[data-target="${targetId}"]`);
-      if (targetView) targetView.classList.remove("hidden");
-      if (targetBtn) targetBtn.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-      btn.addEventListener("click", () => switchTab(btn.dataset.target));
-    });
-
-    document.querySelectorAll(".sub-seg-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".sub-seg-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        const targetSub = btn.dataset.subview;
-        document.getElementById("subTargetSection").classList.toggle("hidden", targetSub !== "subTargetSection");
-        document.getElementById("subClientSection").classList.toggle("hidden", targetSub !== "subClientSection");
-      });
-    });
-
-    document.getElementById("activeReminderBanner").addEventListener("click", () => {
-      switchTab("viewTarget");
-      document.querySelector('.sub-seg-btn[data-subview="subTargetSection"]').click();
-    });
-
     const noteInputEl = document.getElementById("dailyNoteInput");
     const noteCharEl = document.getElementById("noteCharCount");
     noteInputEl.addEventListener("input", () => {
@@ -2878,17 +1710,11 @@
       const endMins = toMinutes(endStr);
 
       if (startMins <= endMins) {
-        if (currentMins < startMins) {
-          return { status: "early", lateMinutes: 0 };
-        }
-        if (currentMins <= endMins) {
-          return { status: "ontime", lateMinutes: 0 };
-        }
+        if (currentMins < startMins) return { status: "early", lateMinutes: 0 };
+        if (currentMins <= endMins) return { status: "ontime", lateMinutes: 0 };
         return { status: "late", lateMinutes: currentMins - endMins };
       } else {
-        if (currentMins >= startMins || currentMins <= endMins) {
-          return { status: "ontime", lateMinutes: 0 };
-        }
+        if (currentMins >= startMins || currentMins <= endMins) return { status: "ontime", lateMinutes: 0 };
         return { status: "late", lateMinutes: currentMins - endMins };
       }
     }
@@ -2942,14 +1768,17 @@
       return myRecords.find(r => r.date === todayKey) || null;
     }
 
-    function updateFilterDateDisplay() {
-      if (filterDateInput.value) {
-        filterDateDisplay.textContent = formatShortDateKey(filterDateInput.value);
-        filterDateDisplay.classList.remove("placeholder");
-      } else {
-        filterDateDisplay.textContent = "Semua tanggal";
-        filterDateDisplay.classList.add("placeholder");
+    function dataUrlToBlob(dataUrl) {
+      const arr = dataUrl.split(",");
+      const mimeMatch = arr[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : "image/jpeg";
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
       }
+      return new Blob([u8arr], { type: mime });
     }
 
     // ================= LIGHTBOX GALLERY =================
@@ -3065,121 +1894,144 @@
       return data.publicUrl;
     }
 
-    // ================= CAMERA ENGINE =================
-    function stopCameraStream() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-      }
-      camVideo.srcObject = null;
+    // ================= POP-UP PEMANGGIL KAMERA (kamera.html) =================
+    function closeCameraFallbackModal() {
+      cameraPopupModal.classList.add("hidden");
+      cameraPopupFrame.src = "about:blank";
     }
 
-    function updateCameraMirrorClass() {
-      if (currentFacingMode === "user") {
-        camVideo.classList.add("mirror");
+    function openCameraPopup(purpose, title, defaultFacing) {
+      const params = new URLSearchParams({
+        purpose,
+        title,
+        facing: defaultFacing
+      });
+      const url = `kamera.html?${params.toString()}`;
+
+      const width = Math.min(440, window.screen.availWidth || 420);
+      const height = Math.min(760, window.screen.availHeight || 720);
+      const left = Math.max(0, Math.round(((window.screen.availWidth || width) - width) / 2));
+      const top = Math.max(0, Math.round(((window.screen.availHeight || height) - height) / 2));
+
+      const popup = window.open(
+        url,
+        "AbsensiCameraPopup",
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
+      );
+
+      if (popup && !popup.closed) {
+        cameraPopupWin = popup;
+        popup.focus();
       } else {
-        camVideo.classList.remove("mirror");
+        // Fallback jika pop-up browser diblokir oleh perangkat
+        cameraPopupFrame.src = url;
+        cameraPopupModal.classList.remove("hidden");
       }
     }
 
-    async function startCameraStream() {
-      stopCameraStream();
-      updateCameraMirrorClass();
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: currentFacingMode },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-        camVideo.srcObject = cameraStream;
-      } catch (err) {
-        console.error(err);
-        showToast("Izin kamera ditolak atau tidak tersedia.", "error");
-        closeCameraModal();
-      }
-    }
+    async function handleCameraCapturePayload(data) {
+      if (!data || !data.purpose || !data.dataUrl || !currentUser) return;
 
-    async function openCameraModal(purpose, title, defaultFacing) {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        showToast("Browser tidak mendukung kamera.", "error");
+      const { purpose, dataUrl } = data;
+      const blob = dataUrlToBlob(dataUrl);
+
+      if (purpose === "note") {
+        pendingDocPhotos.push({ blob, dataUrl });
+        renderPendingDocThumbs();
+        showToast(`${pendingDocPhotos.length} foto siap disimpan`, "success");
         return;
       }
 
-      cameraPurpose = purpose;
-      currentFacingMode = defaultFacing;
-      tempCapturedBlob = null;
-      tempCapturedDataUrl = null;
+      if (purpose === "checkin" || purpose === "checkout") {
+        const isMasuk = (purpose === "checkin");
+        const targetBtn = isMasuk ? document.getElementById("btnCheckIn") : document.getElementById("btnCheckOut");
+        const targetSub = isMasuk ? document.getElementById("subCheckIn") : document.getElementById("subCheckOut");
 
-      document.getElementById("camModalTitle").textContent = title;
-      camVideo.classList.remove("hidden");
-      camPreview.classList.add("hidden");
-      camLiveControls.classList.remove("hidden");
-      camPreviewControls.classList.add("hidden");
-      camConfirmBtn.disabled = false;
-      camConfirmBtn.textContent = (purpose === "note") ? "Gunakan" : "Konfirmasi";
+        targetBtn.disabled = true;
+        targetSub.textContent = "Mengunggah foto...";
 
-      camModal.classList.remove("hidden");
-      await startCameraStream();
+        try {
+          const winInfo = isMasuk
+            ? getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai)
+            : getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
+          const isLate = (winInfo.status === "late");
+
+          const photoUrl = await uploadPhotoToSupabase(
+            blob,
+            "absen",
+            isMasuk ? (isLate ? "masuk_telat" : "masuk") : (isLate ? "keluar_telat" : "keluar")
+          );
+
+          const todayKey = getTodayKey();
+          const docId = `${todayKey}_${currentUser.id}`;
+          const timeNow = getNowTimeStr();
+
+          const payload = {
+            date: todayKey,
+            empId: currentUser.id,
+            username: currentUser.username,
+            updatedAt: new Date().toISOString()
+          };
+
+          if (isMasuk) {
+            payload.checkIn = timeNow;
+            payload.checkInPhoto = photoUrl;
+            payload.checkInLate = isLate;
+            payload.checkInLateMinutes = isLate ? winInfo.lateMinutes : 0;
+          } else {
+            payload.checkOut = timeNow;
+            payload.checkOutPhoto = photoUrl;
+            payload.checkOutLate = isLate;
+            payload.checkOutLateMinutes = isLate ? winInfo.lateMinutes : 0;
+          }
+
+          await setDoc(doc(db, "absen_riwayat", docId), payload, { merge: true });
+
+          if (isLate) {
+            showToast(
+              isMasuk
+                ? `Masuk tercatat dengan catatan TELAT (${timeNow})`
+                : `Keluar tercatat dengan catatan TELAT (${timeNow})`,
+              "warn"
+            );
+          } else {
+            showToast(
+              isMasuk
+                ? `Masuk tercatat (${timeNow})`
+                : `Keluar tercatat (${timeNow})`,
+              "success"
+            );
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Gagal unggah foto absensi.", "error");
+          updateClockAndButtons();
+        }
+      }
     }
 
-    function closeCameraModal() {
-      stopCameraStream();
-      camModal.classList.add("hidden");
-      cameraPurpose = null;
-      tempCapturedBlob = null;
-      tempCapturedDataUrl = null;
-    }
-
-    document.getElementById("camCloseBtn").addEventListener("click", closeCameraModal);
-
-    document.getElementById("camSwitchBtn").addEventListener("click", async () => {
-      currentFacingMode = (currentFacingMode === "user") ? "environment" : "user";
-      await startCameraStream();
+    // Menerima hasil dari pop-up kamera.html
+    window.addEventListener("message", (event) => {
+      const msg = event.data;
+      if (!msg || typeof msg !== "object") return;
+      if (msg.type === "CAMERA_CAPTURED") {
+        closeCameraFallbackModal();
+        handleCameraCapturePayload(msg);
+      } else if (msg.type === "CAMERA_CLOSED") {
+        closeCameraFallbackModal();
+      }
     });
 
-    document.getElementById("camCaptureBtn").addEventListener("click", () => {
-      if (!camVideo.videoWidth) {
-        showToast("Kamera sedang memuat...", "warn");
-        return;
+    // Cadangan sinkronisasi via localStorage jika pop-up kehilangan window.opener
+    window.addEventListener("storage", (e) => {
+      if (e.key === CAMERA_RESULT_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          localStorage.removeItem(CAMERA_RESULT_KEY);
+          closeCameraFallbackModal();
+          handleCameraCapturePayload(parsed);
+        } catch {}
       }
-
-      const maxWidth = 900;
-      const scale = Math.min(1, maxWidth / camVideo.videoWidth);
-      camCanvas.width = Math.round(camVideo.videoWidth * scale);
-      camCanvas.height = Math.round(camVideo.videoHeight * scale);
-
-      const ctx = camCanvas.getContext("2d");
-      ctx.save();
-      if (currentFacingMode === "user") {
-        ctx.translate(camCanvas.width, 0);
-        ctx.scale(-1, 1);
-      }
-      ctx.drawImage(camVideo, 0, 0, camCanvas.width, camCanvas.height);
-      ctx.restore();
-
-      tempCapturedDataUrl = camCanvas.toDataURL("image/jpeg", 0.8);
-      camCanvas.toBlob((blob) => {
-        tempCapturedBlob = blob;
-        camPreview.src = tempCapturedDataUrl;
-        camVideo.classList.add("hidden");
-        camPreview.classList.remove("hidden");
-        camLiveControls.classList.add("hidden");
-        camPreviewControls.classList.remove("hidden");
-        stopCameraStream();
-      }, "image/jpeg", 0.8);
-    });
-
-    document.getElementById("camRetakeBtn").addEventListener("click", async () => {
-      tempCapturedBlob = null;
-      tempCapturedDataUrl = null;
-      camPreview.classList.add("hidden");
-      camVideo.classList.remove("hidden");
-      camPreviewControls.classList.add("hidden");
-      camLiveControls.classList.remove("hidden");
-      await startCameraStream();
     });
 
     function renderPendingDocThumbs() {
@@ -3215,85 +2067,6 @@
       });
     }
 
-    camConfirmBtn.addEventListener("click", async () => {
-      if (!tempCapturedBlob) return;
-
-      if (cameraPurpose === "note") {
-        pendingDocPhotos.push({
-          blob: tempCapturedBlob,
-          dataUrl: tempCapturedDataUrl
-        });
-        renderPendingDocThumbs();
-        closeCameraModal();
-        showToast(`${pendingDocPhotos.length} foto siap disimpan`, "success");
-        return;
-      }
-
-      camConfirmBtn.disabled = true;
-      camConfirmBtn.textContent = "Mengunggah...";
-
-      try {
-        const isMasuk = (cameraPurpose === "checkin");
-        const winInfo = isMasuk
-          ? getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai)
-          : getScheduleWindowStatus(jadwal.keluarMulai, jadwal.keluarSelesai);
-        const isLate = (winInfo.status === "late");
-
-        const photoUrl = await uploadPhotoToSupabase(
-          tempCapturedBlob,
-          "absen",
-          isMasuk ? (isLate ? "masuk_telat" : "masuk") : (isLate ? "keluar_telat" : "keluar")
-        );
-
-        const todayKey = getTodayKey();
-        const docId = `${todayKey}_${currentUser.id}`;
-        const timeNow = getNowTimeStr();
-
-        const payload = {
-          date: todayKey,
-          empId: currentUser.id,
-          username: currentUser.username,
-          updatedAt: new Date().toISOString()
-        };
-
-        if (isMasuk) {
-          payload.checkIn = timeNow;
-          payload.checkInPhoto = photoUrl;
-          payload.checkInLate = isLate;
-          payload.checkInLateMinutes = isLate ? winInfo.lateMinutes : 0;
-        } else {
-          payload.checkOut = timeNow;
-          payload.checkOutPhoto = photoUrl;
-          payload.checkOutLate = isLate;
-          payload.checkOutLateMinutes = isLate ? winInfo.lateMinutes : 0;
-        }
-
-        await setDoc(doc(db, "absen_riwayat", docId), payload, { merge: true });
-        closeCameraModal();
-
-        if (isLate) {
-          showToast(
-            isMasuk
-              ? `Masuk tercatat dengan catatan TELAT (${timeNow})`
-              : `Keluar tercatat dengan catatan TELAT (${timeNow})`,
-            "warn"
-          );
-        } else {
-          showToast(
-            isMasuk
-              ? `Masuk tercatat (${timeNow})`
-              : `Keluar tercatat (${timeNow})`,
-            "success"
-          );
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal unggah foto.", "error");
-        camConfirmBtn.disabled = false;
-        camConfirmBtn.textContent = "Konfirmasi";
-      }
-    });
-
     // ================= AUTH & SYNC =================
     function scheduleNoteLoginReminder() {
       clearTimeout(noteReminderTimer);
@@ -3314,19 +2087,17 @@
         unsubscribeReminders();
         unsubscribeReminders = null;
       }
-      if (unsubscribeClients) {
-        unsubscribeClients();
-        unsubscribeClients = null;
-      }
       if (unsubscribeUserWatch) {
         unsubscribeUserWatch();
         unsubscribeUserWatch = null;
       }
-      closeCameraModal();
+      if (cameraPopupWin && !cameraPopupWin.closed) {
+        cameraPopupWin.close();
+      }
+      closeCameraFallbackModal();
       currentUser = null;
       myRecords = [];
       myReminders = [];
-      myClients = [];
       pendingDocPhotos = [];
       docFileInput.value = "";
       localStorage.removeItem(SESSION_KEY);
@@ -3334,9 +2105,6 @@
       noteInputEl.value = "";
       noteCharEl.textContent = "0 karakter";
       renderPendingDocThumbs();
-      filterDateInput.value = "";
-      updateFilterDateDisplay();
-      switchTab("viewPresensi");
       document.getElementById("mainApp").classList.add("hidden");
       document.getElementById("loginScreen").classList.remove("hidden");
       if (reasonMsg) showToast(reasonMsg, type);
@@ -3373,51 +2141,13 @@
       });
     }
 
-    // ================= PENGINGAT JADWAL & TARGET =================
-    const remDateInput = document.getElementById("remDateInput");
-    const remDateDisplay = document.getElementById("remDateDisplay");
-    const remTimeInput = document.getElementById("remTimeInput");
-    const remTimeDisplay = document.getElementById("remTimeDisplay");
-    const targetMetricRow = document.getElementById("targetMetricRow");
-
-    function initReminderPickers() {
-      const todayKey = getTodayKey();
-      remDateInput.value = todayKey;
-      remDateDisplay.textContent = formatShortDateKey(todayKey);
-      remTimeInput.value = "";
-      remTimeDisplay.textContent = "Jam (opsional)";
-      remTimeDisplay.classList.add("placeholder");
-    }
-
-    remDateInput.addEventListener("change", () => {
-      remDateDisplay.textContent = remDateInput.value ? formatShortDateKey(remDateInput.value) : "Pilih tanggal";
-    });
-
-    remTimeInput.addEventListener("change", () => {
-      if (remTimeInput.value) {
-        remTimeDisplay.textContent = remTimeInput.value;
-        remTimeDisplay.classList.remove("placeholder");
-      } else {
-        remTimeDisplay.textContent = "Jam (opsional)";
-        remTimeDisplay.classList.add("placeholder");
-      }
-    });
-
-    document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("#remCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedRemCategory = btn.dataset.cat;
-        targetMetricRow.classList.toggle("hidden", selectedRemCategory !== "Target");
-      });
-    });
-
+    // ================= BANNER & BADGE PENGINGAT =================
     function startListeningReminders(empId) {
       if (unsubscribeReminders) unsubscribeReminders();
       const q = query(collection(db, "absen_pengingat"), where("empId", "==", empId));
       unsubscribeReminders = onSnapshot(q, (snapshot) => {
         myReminders = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-        renderRemindersUI();
+        renderReminderBannerAndBadge();
       }, (err) => {
         console.error(err);
       });
@@ -3438,25 +2168,17 @@
       });
     }
 
-    function renderRemindersUI() {
-      const container = document.getElementById("reminderListContainer");
-      const pendingBadge = document.getElementById("remPendingCount");
-      const segTargetCount = document.getElementById("segTargetCount");
+    function renderReminderBannerAndBadge() {
       const navBadge = document.getElementById("navTargetBadge");
       const banner = document.getElementById("activeReminderBanner");
 
-      const sorted = [...myReminders].sort((a, b) => {
-        if (Boolean(a.completed) !== Boolean(b.completed)) {
-          return a.completed ? 1 : -1;
-        }
-        const keyA = `${a.date || "9999-99-99"} ${a.time || "23:59"}`;
-        const keyB = `${b.date || "9999-99-99"} ${b.time || "23:59"}`;
-        return keyA.localeCompare(keyB);
-      });
-
-      const activeList = sorted.filter(r => !r.completed);
-      pendingBadge.textContent = `${activeList.length} Aktif`;
-      segTargetCount.textContent = activeList.length;
+      const activeList = [...myReminders]
+        .filter(r => !r.completed)
+        .sort((a, b) => {
+          const keyA = `${a.date || "9999-99-99"} ${a.time || "23:59"}`;
+          const keyB = `${b.date || "9999-99-99"} ${b.time || "23:59"}`;
+          return keyA.localeCompare(keyB);
+        });
 
       if (activeList.length > 0) {
         navBadge.textContent = activeList.length;
@@ -3471,320 +2193,7 @@
         navBadge.classList.add("hidden");
         banner.classList.add("hidden");
       }
-
-      if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat jadwal.</div>`;
-        return;
-      }
-
-      const todayKey = getTodayKey();
-      container.innerHTML = `<div class="reminder-list">${sorted.map(rem => {
-        const isOverdue = !rem.completed && rem.date && rem.date < todayKey;
-        const whenLabel = `${formatShortDateKey(rem.date)}${rem.time ? ` • ${rem.time}` : ""}`;
-        const cat = rem.category || "Target";
-
-        const targetGoal = Number(rem.targetGoal) || 0;
-        const targetCurrent = Number(rem.targetCurrent) || 0;
-        const pct = targetGoal > 0 ? Math.min(100, Math.round((targetCurrent / targetGoal) * 100)) : 0;
-        const unitStr = rem.targetUnit ? ` ${escapeHtml(rem.targetUnit)}` : "";
-
-        const progressHtml = targetGoal > 0 ? `
-          <div class="target-progress-box">
-            <div class="target-prog-top">
-              <span class="target-prog-nums">${targetCurrent} / ${targetGoal}${unitStr} (${pct}%)</span>
-              <div class="target-step-btns">
-                <button type="button" class="target-step-btn" data-step-rem="${escapeHtml(rem.docId)}" data-delta="-1">-1</button>
-                <button type="button" class="target-step-btn" data-step-rem="${escapeHtml(rem.docId)}" data-delta="1">+1</button>
-              </div>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill bar-hadir" style="width:${pct}%;"></div>
-            </div>
-          </div>
-        ` : "";
-
-        return `
-          <div class="reminder-item ${rem.completed ? "done" : ""}">
-            <button type="button" class="reminder-check" data-toggle-rem="${escapeHtml(rem.docId)}" aria-label="Tandai selesai">
-              ${rem.completed ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ""}
-            </button>
-            <div class="reminder-body">
-              <div class="reminder-head">
-                <span class="cat-tag ${escapeHtml(cat)}">${escapeHtml(cat)}</span>
-                <span class="reminder-when ${isOverdue ? "overdue" : ""}">${whenLabel}</span>
-              </div>
-              <div class="reminder-title">${escapeHtml(rem.title)}</div>
-              ${progressHtml}
-              ${rem.note ? `<div class="reminder-note">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
-            </div>
-            <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
-            </button>
-          </div>
-        `;
-      }).join("")}</div>`;
-
-      container.querySelectorAll("[data-step-rem]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.stepRem;
-          const delta = Number(btn.dataset.delta);
-          const target = myReminders.find(r => r.docId === id);
-          if (!target) return;
-
-          const goal = Number(target.targetGoal) || 0;
-          const nextVal = Math.max(0, (Number(target.targetCurrent) || 0) + delta);
-          const isReached = goal > 0 && nextVal >= goal;
-
-          try {
-            await updateDoc(doc(db, "absen_pengingat", id), {
-              targetCurrent: nextVal,
-              completed: isReached ? true : Boolean(target.completed),
-              updatedAt: new Date().toISOString()
-            });
-            if (isReached && !target.completed) {
-              showToast("Selamat! Target angka tercapai.", "success");
-            }
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal memperbarui progres.", "error");
-          }
-        });
-      });
-
-      container.querySelectorAll("[data-toggle-rem]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.toggleRem;
-          const target = myReminders.find(r => r.docId === id);
-          if (!target) return;
-          try {
-            await updateDoc(doc(db, "absen_pengingat", id), {
-              completed: !target.completed,
-              updatedAt: new Date().toISOString()
-            });
-            showToast(!target.completed ? "Target ditandai selesai" : "Status dikembalikan", "success");
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal memperbarui status.", "error");
-          }
-        });
-      });
-
-      container.querySelectorAll("[data-del-rem]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.delRem;
-          const ok = await showCustomConfirm("Hapus Pengingat", "Hapus target atau jadwal ini?", "Hapus");
-          if (!ok) return;
-          try {
-            await deleteDoc(doc(db, "absen_pengingat", id));
-            showToast("Pengingat dihapus.", "success");
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal menghapus pengingat.", "error");
-          }
-        });
-      });
     }
-
-    document.getElementById("reminderForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!currentUser) return;
-
-      const title = document.getElementById("remTitleInput").value.trim();
-      const date = remDateInput.value;
-      const time = remTimeInput.value;
-      const note = document.getElementById("remNoteInput").value.trim();
-      const targetGoalRaw = document.getElementById("remTargetNumInput").value.trim();
-      const targetUnit = document.getElementById("remTargetUnitInput").value.trim();
-      const saveBtn = document.getElementById("saveRemBtn");
-
-      if (!title || !date) {
-        showToast("Isi judul dan tanggal.", "warn");
-        return;
-      }
-
-      const targetGoal = (selectedRemCategory === "Target" && targetGoalRaw) ? Math.max(0, Number(targetGoalRaw)) : 0;
-
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Menyimpan...";
-
-      try {
-        const docId = `${currentUser.id}_${Date.now()}`;
-        await setDoc(doc(db, "absen_pengingat", docId), {
-          empId: currentUser.id,
-          username: currentUser.username,
-          category: selectedRemCategory,
-          title,
-          targetGoal,
-          targetCurrent: 0,
-          targetUnit: targetGoal > 0 ? targetUnit : "",
-          date,
-          time: time || "",
-          note,
-          completed: false,
-          createdAt: new Date().toISOString()
-        });
-
-        document.getElementById("remTitleInput").value = "";
-        document.getElementById("remTargetNumInput").value = "";
-        document.getElementById("remTargetUnitInput").value = "";
-        document.getElementById("remNoteInput").value = "";
-        initReminderPickers();
-        showToast("Target & pengingat disimpan.", "success");
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal menyimpan target.", "error");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Simpan Target";
-      }
-    });
-
-    // ================= CATATAN KLIEN YANG BERGABUNG =================
-    const clientDateInput = document.getElementById("clientDateInput");
-    const clientDateDisplay = document.getElementById("clientDateDisplay");
-
-    function initClientPicker() {
-      const todayKey = getTodayKey();
-      clientDateInput.value = todayKey;
-      clientDateDisplay.textContent = formatShortDateKey(todayKey);
-    }
-
-    clientDateInput.addEventListener("change", () => {
-      clientDateDisplay.textContent = clientDateInput.value ? formatShortDateKey(clientDateInput.value) : "Pilih tanggal";
-    });
-
-    function startListeningClients(empId) {
-      if (unsubscribeClients) unsubscribeClients();
-      const q = query(collection(db, "absen_klien"), where("empId", "==", empId));
-      unsubscribeClients = onSnapshot(q, (snapshot) => {
-        myClients = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-        renderClientsUI();
-      }, (err) => {
-        console.error(err);
-      });
-    }
-
-    function renderClientsUI() {
-      const container = document.getElementById("clientListContainer");
-      const totalBadge = document.getElementById("clientTotalBadge");
-      const totalNum = document.getElementById("clientTotalNum");
-      const monthNum = document.getElementById("clientMonthNum");
-      const segClientCount = document.getElementById("segClientCount");
-
-      const sorted = [...myClients].sort((a, b) => {
-        const dA = `${a.joinDate || "0000-00-00"} ${a.createdAt || ""}`;
-        const dB = `${b.joinDate || "0000-00-00"} ${b.createdAt || ""}`;
-        return dB.localeCompare(dA);
-      });
-
-      const currentMonthPrefix = getTodayKey().slice(0, 7);
-      const monthCount = sorted.filter(c => (c.joinDate || "").startsWith(currentMonthPrefix)).length;
-
-      totalBadge.textContent = `${sorted.length} Klien`;
-      totalNum.textContent = sorted.length;
-      monthNum.textContent = monthCount;
-      segClientCount.textContent = sorted.length;
-
-      if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada catatan klien yang bergabung.</div>`;
-        return;
-      }
-
-      container.innerHTML = `<div class="reminder-list">${sorted.map(cl => `
-        <div class="client-card">
-          <div class="client-top">
-            <div>
-              <div class="client-name">${escapeHtml(cl.clientName)}</div>
-              ${cl.businessName ? `<div class="client-biz">${escapeHtml(cl.businessName)}</div>` : ""}
-            </div>
-            <button type="button" class="reminder-del-btn" data-del-client="${escapeHtml(cl.docId)}" aria-label="Hapus klien">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="client-meta-row">
-            <span class="client-pill date">Gabung ${formatShortDateKey(cl.joinDate)}</span>
-            ${cl.packageName ? `<span class="client-pill pkg">${escapeHtml(cl.packageName)}</span>` : ""}
-            ${cl.phone ? `<span class="client-pill">${escapeHtml(cl.phone)}</span>` : ""}
-          </div>
-          ${cl.note ? `<div class="client-note-text">${escapeHtml(cleanNoteLines(cl.note))}</div>` : ""}
-        </div>
-      `).join("")}</div>`;
-
-      container.querySelectorAll("[data-del-client]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.delClient;
-          const ok = await showCustomConfirm("Hapus Catatan Klien", "Hapus data klien yang bergabung ini?", "Hapus");
-          if (!ok) return;
-          try {
-            await deleteDoc(doc(db, "absen_klien", id));
-            showToast("Catatan klien dihapus.", "success");
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal menghapus data klien.", "error");
-          }
-        });
-      });
-    }
-
-    document.getElementById("clientForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!currentUser) return;
-
-      const clientName = document.getElementById("clientNameInput").value.trim();
-      const businessName = document.getElementById("clientBizInput").value.trim();
-      const phone = document.getElementById("clientPhoneInput").value.trim();
-      const packageName = document.getElementById("clientPkgInput").value.trim();
-      const joinDate = clientDateInput.value;
-      const note = document.getElementById("clientNoteInput").value.trim();
-      const saveBtn = document.getElementById("saveClientBtn");
-
-      if (!clientName || !joinDate) {
-        showToast("Isi nama klien dan tanggal bergabung.", "warn");
-        return;
-      }
-
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Menyimpan...";
-
-      try {
-        const docId = `${currentUser.id}_client_${Date.now()}`;
-        await setDoc(doc(db, "absen_klien", docId), {
-          empId: currentUser.id,
-          username: currentUser.username,
-          clientName,
-          businessName,
-          phone,
-          packageName,
-          joinDate,
-          note,
-          createdAt: new Date().toISOString()
-        });
-
-        document.getElementById("clientNameInput").value = "";
-        document.getElementById("clientBizInput").value = "";
-        document.getElementById("clientPhoneInput").value = "";
-        document.getElementById("clientPkgInput").value = "";
-        document.getElementById("clientNoteInput").value = "";
-        initClientPicker();
-        showToast("Klien bergabung berhasil dicatat.", "success");
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal menyimpan catatan klien.", "error");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Simpan Klien Bergabung";
-      }
-    });
 
     // ================= ATTENDANCE CHART =================
     function renderAttendanceChart() {
@@ -3930,129 +2339,6 @@
       }
     }
 
-    function renderCalendar(animDir = "") {
-      const grid = document.getElementById("calendarGrid");
-      const label = document.getElementById("calMonthLabel");
-      const holidaysBox = document.getElementById("calHolidaysBox");
-      const monthDate = new Date(calYear, calMonth, 1);
-
-      label.textContent = monthDate.toLocaleDateString("id-ID", {
-        month: "long",
-        year: "numeric"
-      });
-
-      const firstDayIndex = monthDate.getDay();
-      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-      const todayKey = getTodayKey();
-      const selectedDate = filterDateInput.value;
-
-      const recordMap = {};
-      myRecords.forEach(r => {
-        if (r.date) recordMap[r.date] = r;
-      });
-
-      const dows = [
-        { name: "Min", isSun: true },
-        { name: "Sen", isSun: false },
-        { name: "Sel", isSun: false },
-        { name: "Rab", isSun: false },
-        { name: "Kam", isSun: false },
-        { name: "Jum", isSun: false },
-        { name: "Sab", isSun: false }
-      ];
-
-      let html = dows.map(d => `<div class="cal-dow ${d.isSun ? "sun" : ""}">${d.name}</div>`).join("");
-
-      for (let i = 0; i < firstDayIndex; i++) {
-        html += `<div class="cal-cell empty"></div>`;
-      }
-
-      const monthImportantDays = [];
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const mStr = String(calMonth + 1).padStart(2, "0");
-        const dStr = String(day).padStart(2, "0");
-        const dateKey = `${calYear}-${mStr}-${dStr}`;
-        const rec = recordMap[dateKey];
-        const dowIndex = (firstDayIndex + day - 1) % 7;
-        const isSunday = dowIndex === 0;
-        const importantInfo = getImportantDayInfo(dateKey);
-
-        if (importantInfo) {
-          monthImportantDays.push({ day, dateKey, ...importantInfo });
-        }
-
-        const classes = ["cal-cell"];
-        if (rec) classes.push("has-record");
-        if (isSunday) classes.push("sunday");
-        if (importantInfo && importantInfo.isHoliday) classes.push("holiday");
-        if (dateKey === todayKey) classes.push("today");
-        if (dateKey === selectedDate) classes.push("selected");
-
-        let dotClass = "";
-        if (rec) {
-          dotClass = (rec.checkIn && rec.checkOut) ? "full" : "partial";
-        }
-
-        html += `
-          <div class="${classes.join(" ")}" data-cal-date="${dateKey}" ${importantInfo ? `title="${escapeHtml(importantInfo.name)}"` : ""}>
-            <span class="cal-num">${day}</span>
-            <span class="cal-dot ${dotClass}"></span>
-          </div>
-        `;
-      }
-
-      grid.classList.remove("cal-anim-next", "cal-anim-prev");
-      if (animDir) {
-        void grid.offsetWidth;
-        grid.classList.add(animDir === "next" ? "cal-anim-next" : "cal-anim-prev");
-      }
-      grid.innerHTML = html;
-
-      if (monthImportantDays.length > 0) {
-        holidaysBox.classList.remove("hidden");
-        holidaysBox.innerHTML = monthImportantDays.map(item => `
-          <div class="cal-holiday-item" data-hol-date="${item.dateKey}">
-            <span class="cal-holiday-date">${item.day} ${monthDate.toLocaleDateString("id-ID", { month: "short" })}</span>
-            <span class="cal-holiday-name">• ${escapeHtml(item.name)}</span>
-          </div>
-        `).join("");
-
-        holidaysBox.querySelectorAll("[data-hol-date]").forEach(el => {
-          el.addEventListener("click", () => {
-            const picked = el.dataset.holDate;
-            filterDateInput.value = picked;
-            updateFilterDateDisplay();
-            renderCalendar();
-            renderHistory();
-            document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
-          });
-        });
-      } else {
-        holidaysBox.classList.add("hidden");
-        holidaysBox.innerHTML = "";
-      }
-
-      grid.querySelectorAll("[data-cal-date]").forEach(cell => {
-        cell.addEventListener("click", () => {
-          const picked = cell.dataset.calDate;
-          if (filterDateInput.value === picked) {
-            filterDateInput.value = "";
-          } else {
-            filterDateInput.value = picked;
-            const info = getImportantDayInfo(picked);
-            if (info) {
-              showToast(`${formatShortDateKey(picked)}: ${info.name}`, "info");
-            }
-          }
-          updateFilterDateDisplay();
-          renderCalendar();
-          renderHistory();
-          document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
-        });
-      });
-    }
-
     function renderDashboardUI() {
       const todayRec = getTodayRecord();
       document.getElementById("todayIn").textContent = (todayRec && todayRec.checkIn) ? todayRec.checkIn.slice(0, 5) : "--:--";
@@ -4108,78 +2394,7 @@
       }
 
       renderAttendanceChart();
-      renderCalendar();
-      renderHistory();
       updateClockAndButtons();
-    }
-
-    function renderHistory() {
-      const container = document.getElementById("historyList");
-      const countLabel = document.getElementById("historyCountLabel");
-      const filterVal = filterDateInput.value;
-
-      let sorted = [...myRecords].sort((a, b) => b.date.localeCompare(a.date));
-      if (filterVal) {
-        sorted = sorted.filter(r => r.date === filterVal);
-      }
-
-      countLabel.textContent = `${sorted.length} Data`;
-
-      if (sorted.length === 0) {
-        const msg = filterVal
-          ? `Tidak ada data pada ${formatShortDateKey(filterVal)}`
-          : "Belum ada riwayat kerja.";
-        container.innerHTML = `<div class="empty-state">${msg}</div>`;
-        return;
-      }
-
-      const cardsHtml = sorted.map((rec, rIdx) => {
-        const allPhotos = collectRecordPhotos(rec);
-        const inIdx = allPhotos.findIndex(p => p.url === rec.checkInPhoto);
-        const outIdx = allPhotos.findIndex(p => p.url === rec.checkOutPhoto);
-
-        const inLateBadge = rec.checkInLate ? `<span class="chip-late-pill">Telat</span>` : "";
-        const outLateBadge = rec.checkOutLate ? `<span class="chip-late-pill">Telat</span>` : "";
-
-        const inChip = rec.checkIn
-          ? (rec.checkInPhoto
-              ? `<button type="button" class="time-chip ${rec.checkInLate ? "late" : "in"}" data-rec-idx="${rIdx}" data-photo-idx="${inIdx}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge} <span class="chip-cam">Foto</span></button>`
-              : `<span class="time-chip ${rec.checkInLate ? "late" : "in"}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge}</span>`)
-          : `<span class="time-chip empty">M --:--</span>`;
-
-        const outChip = rec.checkOut
-          ? (rec.checkOutPhoto
-              ? `<button type="button" class="time-chip ${rec.checkOutLate ? "late" : "out"}" data-rec-idx="${rIdx}" data-photo-idx="${outIdx}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge} <span class="chip-cam">Foto</span></button>`
-              : `<span class="time-chip ${rec.checkOutLate ? "late" : "out"}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge}</span>`)
-          : `<span class="time-chip empty">K --:--</span>`;
-
-        const cleanedNote = cleanNoteLines(rec.note);
-        const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
-        const thumbsHtml = notePhotos.length > 0
-          ? `<div class="photo-thumbs">${notePhotos.map(u => {
-              const pIdx = allPhotos.findIndex(p => p.url === u);
-              return `<button type="button" class="photo-thumb-btn" data-rec-idx="${rIdx}" data-photo-idx="${pIdx >= 0 ? pIdx : 0}"><img src="${escapeHtml(u)}" alt="Doc"></button>`;
-            }).join("")}</div>`
-          : "";
-
-        const noteSection = (cleanedNote || notePhotos.length > 0)
-          ? `<div class="history-note-box">${cleanedNote ? `<div class="history-note-text">${escapeHtml(cleanedNote)}</div>` : ""}${thumbsHtml}</div>`
-          : "";
-
-        return `<div class="history-item"><div class="history-top"><div class="history-date-wrap"><span class="history-date">${formatShortDateKey(rec.date)}</span></div><div class="history-badges">${inChip}${outChip}</div></div>${noteSection}</div>`;
-      }).join("");
-
-      container.innerHTML = `<div class="history-list">${cardsHtml}</div>`;
-
-      container.querySelectorAll("[data-rec-idx]").forEach(el => {
-        el.addEventListener("click", () => {
-          const rec = sorted[Number(el.dataset.recIdx)];
-          const startIdx = Number(el.dataset.photoIdx) || 0;
-          if (!rec) return;
-          const allPhotos = collectRecordPhotos(rec);
-          openPhotoGallery(allPhotos, startIdx, formatShortDateKey(rec.date));
-        });
-      });
     }
 
     function listenScheduleFromAdmin() {
@@ -4211,60 +2426,21 @@
       });
     }
 
-    function openDashboard(user) {
+    function openDashboard(user, isFirstLogin = false) {
       currentUser = user;
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
       document.getElementById("displayUserId").textContent = `ID: ${user.id}`;
       document.getElementById("userAvatar").textContent = (user.username || "K").charAt(0);
-      initReminderPickers();
-      initClientPicker();
       watchCurrentUserStatus(user.id);
       startListeningRecords(user.id);
       startListeningReminders(user.id);
-      startListeningClients(user.id);
-      renderCalendar();
       updateClockAndButtons();
-      scheduleNoteLoginReminder();
+      if (isFirstLogin) {
+        scheduleNoteLoginReminder();
+      }
     }
-
-    document.getElementById("calPrevBtn").addEventListener("click", () => {
-      calMonth--;
-      if (calMonth < 0) {
-        calMonth = 11;
-        calYear--;
-      }
-      renderCalendar("prev");
-    });
-
-    document.getElementById("calNextBtn").addEventListener("click", () => {
-      calMonth++;
-      if (calMonth > 11) {
-        calMonth = 0;
-        calYear++;
-      }
-      renderCalendar("next");
-    });
-
-    filterDateInput.addEventListener("change", (e) => {
-      const val = e.target.value;
-      updateFilterDateDisplay();
-      if (val) {
-        const [y, m] = val.split("-").map(Number);
-        calYear = y;
-        calMonth = m - 1;
-      }
-      renderCalendar();
-      renderHistory();
-    });
-
-    document.getElementById("resetFilterDateBtn").addEventListener("click", () => {
-      filterDateInput.value = "";
-      updateFilterDateDisplay();
-      renderCalendar();
-      renderHistory();
-    });
 
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -4294,7 +2470,7 @@
 
         localStorage.setItem(SESSION_KEY, JSON.stringify(empData));
         showToast(`Halo, ${empData.username}`, "success");
-        openDashboard(empData);
+        openDashboard(empData, true);
       } catch (err) {
         console.error(err);
         showToast("Gagal terhubung ke server.", "error");
@@ -4304,6 +2480,7 @@
       }
     });
 
+    // Tombol Absen Masuk memanggil pop-up kamera.html
     document.getElementById("btnCheckIn").addEventListener("click", () => {
       if (!currentUser) return;
       const inWin = getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai);
@@ -4314,9 +2491,10 @@
       const modalTitle = (inWin.status === "late")
         ? "Foto Absen Masuk (Telat)"
         : "Foto Absen Masuk";
-      openCameraModal("checkin", modalTitle, "user");
+      openCameraPopup("checkin", modalTitle, "user");
     });
 
+    // Tombol Absen Keluar memanggil pop-up kamera.html
     document.getElementById("btnCheckOut").addEventListener("click", () => {
       if (!currentUser) return;
       const todayRec = getTodayRecord();
@@ -4332,11 +2510,12 @@
       const modalTitle = (outWin.status === "late")
         ? "Foto Absen Keluar (Telat)"
         : "Foto Absen Keluar";
-      openCameraModal("checkout", modalTitle, "user");
+      openCameraPopup("checkout", modalTitle, "user");
     });
 
+    // Tombol Kamera Dokumentasi memanggil pop-up kamera.html
     document.getElementById("openDocCamBtn").addEventListener("click", () => {
-      openCameraModal("note", "Foto Dokumentasi", "environment");
+      openCameraPopup("note", "Foto Dokumentasi", "environment");
     });
 
     document.getElementById("openDocFileBtn").addEventListener("click", () => {
@@ -4466,7 +2645,6 @@
     });
 
     (function init() {
-      updateFilterDateDisplay();
       listenScheduleFromAdmin();
       updateClockAndButtons();
       setInterval(updateClockAndButtons, 1000);
@@ -4474,7 +2652,7 @@
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
         if (saved && saved.id && saved.username) {
-          openDashboard(saved);
+          openDashboard(saved, false);
           return;
         }
       } catch {}
