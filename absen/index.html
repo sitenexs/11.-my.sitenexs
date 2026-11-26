@@ -1894,7 +1894,7 @@
       return data.publicUrl;
     }
 
-    // ================= POP-UP PEMANGGIL KAMERA (kamera.html) =================
+    // ================= POP-UP PEMANGGIL KAMERA (kamera/) =================
     function closeCameraFallbackModal() {
       cameraPopupModal.classList.add("hidden");
       cameraPopupFrame.src = "about:blank";
@@ -1906,7 +1906,7 @@
         title,
         facing: defaultFacing
       });
-      const url = `kamera.html?${params.toString()}`;
+      const url = `kamera/?${params.toString()}`;
 
       const width = Math.min(440, window.screen.availWidth || 420);
       const height = Math.min(760, window.screen.availHeight || 720);
@@ -2010,7 +2010,7 @@
       }
     }
 
-    // Menerima hasil dari pop-up kamera.html
+    // Menerima hasil dari pop-up kamera/
     window.addEventListener("message", (event) => {
       const msg = event.data;
       if (!msg || typeof msg !== "object") return;
@@ -2480,7 +2480,7 @@
       }
     });
 
-    // Tombol Absen Masuk memanggil pop-up kamera.html
+    // Tombol Absen Masuk memanggil pop-up kamera/
     document.getElementById("btnCheckIn").addEventListener("click", () => {
       if (!currentUser) return;
       const inWin = getScheduleWindowStatus(jadwal.masukMulai, jadwal.masukSelesai);
@@ -2494,7 +2494,7 @@
       openCameraPopup("checkin", modalTitle, "user");
     });
 
-    // Tombol Absen Keluar memanggil pop-up kamera.html
+    // Tombol Absen Keluar memanggil pop-up kamera/
     document.getElementById("btnCheckOut").addEventListener("click", () => {
       if (!currentUser) return;
       const todayRec = getTodayRecord();
@@ -2513,7 +2513,7 @@
       openCameraPopup("checkout", modalTitle, "user");
     });
 
-    // Tombol Kamera Dokumentasi memanggil pop-up kamera.html
+    // Tombol Kamera Dokumentasi memanggil pop-up kamera/
     document.getElementById("openDocCamBtn").addEventListener("click", () => {
       openCameraPopup("note", "Foto Dokumentasi", "environment");
     });
