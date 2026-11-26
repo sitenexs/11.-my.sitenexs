@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Admin Sitenexs - Bisnis, Grup &amp; Penunjukan Admin</title>
+  <title>Panel Admin Absensi - Absensi Karyawan</title>
   <style>
     :root {
       --bg: #f3f6f8;
@@ -52,6 +52,11 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     @keyframes itemEnter {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -65,7 +70,7 @@
       display: flex;
       flex-direction: column;
       padding-top: 58px;
-      padding-bottom: 28px;
+      padding-bottom: 30px;
     }
 
     .topbar {
@@ -80,63 +85,87 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 14px;
+      padding: 9px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
 
-    .topbar-brand {
+    .topbar-user {
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
+      flex: 1;
     }
 
-    .brand-icon {
+    .avatar {
       width: 35px;
       height: 35px;
       border-radius: 12px;
       background: linear-gradient(135deg, #115e59, #14b8a6);
       color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-transform: uppercase;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.22);
     }
 
-    .brand-title {
-      font-size: 14px;
+    .topbar-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-name-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 13.5px;
       font-weight: 800;
       color: var(--text);
-      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       line-height: 1.2;
     }
 
-    .brand-sub {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .me-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      border: 1px solid rgba(15, 118, 110, 0.22);
       flex-shrink: 0;
     }
 
-    .btn-link-sm {
+    .user-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-back-link {
       text-decoration: none;
       border: 1px solid var(--border);
       background: var(--surface-soft);
-      color: var(--primary);
-      padding: 6px 10px;
+      color: var(--text);
+      padding: 6px 11px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
@@ -208,6 +237,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .form-group {
@@ -222,7 +252,7 @@
       margin-bottom: 5px;
     }
 
-    .form-input, .form-select {
+    .form-input {
       width: 100%;
       max-width: 100%;
       padding: 10px 12px;
@@ -236,35 +266,111 @@
       transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
     }
 
-    .form-input:focus, .form-select:focus {
+    .form-input:focus {
       border-color: var(--primary);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
-    .checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 11px;
+    /* ================= CUSTOM DROPDOWN PICKER ================= */
+    .custom-select-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
       background: var(--surface-soft);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    .checkbox-row input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-
-    .checkbox-label {
-      font-size: 12px;
+      padding: 10px 12px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .custom-select-trigger.open,
+    .custom-select-trigger:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      outline: none;
+    }
+
+    .custom-select-val {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select-val.placeholder {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .custom-select-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.16s ease;
+    }
+
+    .custom-select-trigger.open .custom-select-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
+      padding: 5px;
+      max-height: 210px;
+      overflow-y: auto;
+      z-index: 40;
+      animation: itemEnter 0.16s ease;
+    }
+
+    .custom-select-option {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      transition: background-color 0.12s, color 0.12s;
+    }
+
+    .custom-select-option:hover {
+      background: var(--surface-soft);
+    }
+
+    .custom-select-option.selected {
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-weight: 800;
     }
 
     .btn {
@@ -304,6 +410,23 @@
       box-shadow: 0 5px 14px rgba(5, 150, 105, 0.22);
     }
 
+    .btn-keluar {
+      background: linear-gradient(135deg, #e11d48, #f43f5e);
+      color: #ffffff;
+    }
+
+    .btn-outline-sm {
+      flex-shrink: 0;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 13px;
+      border-radius: 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .btn-danger-sm {
       border: 1px solid #fecdd3;
       background: var(--danger-bg);
@@ -313,17 +436,19 @@
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .btn-toggle-admin {
-      border: 1px solid var(--border);
-      background: #ffffff;
+    .btn-detail-sm {
+      border: 1px solid rgba(15, 118, 110, 0.24);
+      background: var(--primary-bg);
       color: var(--primary);
-      padding: 5px 9px;
-      border-radius: 8px;
+      padding: 4px 8px;
+      border-radius: 7px;
       font-size: 10.5px;
       font-weight: 800;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .badge {
@@ -339,22 +464,138 @@
     .badge-success { background: var(--success-bg); color: var(--success); }
     .badge-warn { background: var(--warning-bg); color: var(--warning); }
 
-    .item-list {
+    /* ================= GRAFIK PERFORMA KARYAWAN ================= */
+    .chart-layout {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .donut-wrap {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+    }
+
+    .donut-svg {
+      width: 78px;
+      height: 78px;
+      transform: rotate(-90deg);
+    }
+
+    .donut-bg {
+      fill: none;
+      stroke: #e2e8f0;
+      stroke-width: 8;
+    }
+
+    .donut-progress {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 213.6;
+      transition: stroke-dashoffset 0.45s ease, stroke 0.25s ease;
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .donut-pct {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .donut-sub {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .chart-metrics {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      gap: 6px;
+    }
+
+    .metric-name {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .metric-val {
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .bar-hadir { background: linear-gradient(90deg, #059669, #10b981); }
+    .bar-catatan { background: linear-gradient(90deg, #0f766e, #14b8a6); }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
     }
 
     .list-card {
       background: var(--surface-soft);
       border: 1px solid var(--border);
       border-radius: 13px;
-      padding: 10px 12px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: itemEnter 0.2s ease;
+    }
+
+    .list-card-row {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
-      animation: itemEnter 0.2s ease;
     }
 
     .list-card-body {
@@ -379,11 +620,114 @@
       word-break: break-word;
     }
 
-    .card-actions {
+    .monitor-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .mini-chip {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2.5px 7px;
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-chip.in {
+      background: var(--success-bg);
+      border-color: transparent;
+      color: var(--success);
+    }
+
+    .mini-chip.warn {
+      background: var(--warning-bg);
+      border-color: transparent;
+      color: var(--warning);
+    }
+
+    .note-box-preview {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      color: var(--text);
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* ================= TERPISAH: FOTO PRESENSI & FOTO CATATAN ================= */
+    .photo-section-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
+    }
+
+    .photo-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-secondary);
+    }
+
+    .photo-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .photo-thumb-btn {
+      display: block;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      padding: 0;
+      cursor: pointer;
       flex-shrink: 0;
+    }
+
+    .photo-thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .denied-card {
+      text-align: center;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .denied-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--danger);
+    }
+
+    .denied-msg {
+      font-size: 12px;
+      color: var(--text-secondary);
+      max-width: 300px;
     }
 
     .empty-state {
@@ -395,6 +739,141 @@
       border: 1px dashed #cbd5e1;
       border-radius: 12px;
     }
+
+    /* ================= LIGHTBOX FOTO ================= */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.96);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      max-width: 440px;
+      margin: 0 auto;
+      color: #ffffff;
+      animation: tabFadeSlide 0.2s ease;
+    }
+
+    .lb-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lb-info { min-width: 0; }
+    .lb-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-counter { font-size: 11px; color: #94a3b8; }
+
+    .cam-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lb-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .lb-main-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: modalPop 0.2s ease;
+    }
+
+    .lb-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .lb-nav-btn.prev { left: 10px; }
+    .lb-nav-btn.next { right: 10px; }
+
+    .lb-thumbs-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+    }
+
+    .lb-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      opacity: 0.55;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .lb-thumb.active { border-color: var(--primary-light); opacity: 1; }
+    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ================= KONFIRMASI YA / TIDAK ================= */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-card {
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+      text-align: center;
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .confirm-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .confirm-msg { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 15px; }
+    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 
     .hidden {
       display: none !important;
@@ -430,153 +909,230 @@
 <body>
   <div class="app-container">
     <header class="topbar">
-      <div class="topbar-brand">
-        <div class="brand-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-        </div>
-        <div>
-          <div class="brand-title">Administrator Sitenexs</div>
-          <div class="brand-sub">Bisnis, grup &amp; penunjukan admin</div>
+      <div class="topbar-user">
+        <div class="avatar" id="adminAvatar">A</div>
+        <div class="topbar-info">
+          <div class="user-name-row">
+            <div class="user-name" id="adminName">Memverifikasi...</div>
+            <span class="me-tag">saya</span>
+          </div>
+          <div class="user-sub" id="adminRoleSub">Admin Absensi • saya</div>
         </div>
       </div>
-      <div class="topbar-actions">
-        <a href="adminAbsen.html" class="btn-link-sm">Admin Absen</a>
-        <a href="chat/" class="btn-link-sm">Chat</a>
-      </div>
+      <a href="index.html" class="btn-back-link">Kembali</a>
     </header>
 
-    <main class="content-area">
+    <!-- Pesan jika belum ditunjuk sebagai admin -->
+    <main class="content-area hidden" id="deniedPanel">
+      <section class="card denied-card">
+        <div class="denied-title">Akses Admin Belum Aktif</div>
+        <div class="denied-msg" id="deniedReason">
+          Akun Anda belum ditunjuk oleh Administrator Sitenexs sebagai Admin Absensi.
+        </div>
+        <a href="index.html" class="btn btn-primary" style="max-width:200px; text-decoration:none; margin-top:4px;">
+          Ke Halaman Presensi
+        </a>
+      </section>
+    </main>
+
+    <!-- Panel Utama Admin yang Ditunjuk -->
+    <main class="content-area hidden" id="adminPanel">
       <div class="sub-segment">
-        <button type="button" class="sub-seg-btn active" data-tab="tabBisnis">
-          <span>Bisnis</span>
-          <span class="seg-count" id="countBisnis">0</span>
+        <button type="button" class="sub-seg-btn active" data-tab="tabPantau">
+          <span>Pantau</span>
+          <span class="seg-count" id="countPantau">0</span>
         </button>
-        <button type="button" class="sub-seg-btn" data-tab="tabGrup">
+        <button type="button" class="sub-seg-btn" data-tab="tabTambah">
+          <span>Karyawan</span>
+          <span class="seg-count" id="countKaryawan">0</span>
+        </button>
+        <button type="button" class="sub-seg-btn" data-tab="tabAnggotaGrup">
           <span>Grup</span>
           <span class="seg-count" id="countGrup">0</span>
         </button>
-        <button type="button" class="sub-seg-btn" data-tab="tabUser">
-          <span>Karyawan</span>
-          <span class="seg-count" id="countUser">0</span>
-        </button>
       </div>
 
-      <!-- TAB 1: BUAT & DAFTAR BISNIS -->
-      <div id="tabBisnis" style="display:flex; flex-direction:column; gap:12px;">
+      <!-- TAB 1: PANTAU GRAFIK, CATATAN & FOTO KARYAWAN -->
+      <div id="tabPantau" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
-            <span>Buat Bisnis Baru</span>
-            <span class="badge badge-ok">absen_bisnis</span>
+            <span>Filter Karyawan &amp; Grafik</span>
+            <span class="badge badge-ok" id="todayDateBadge">-</span>
           </div>
-          <form id="bisnisForm">
+          <div class="custom-select-wrap" id="monitorFilterPicker">
+            <button type="button" class="custom-select-trigger" id="monitorFilterTrigger">
+              <span class="custom-select-val" id="monitorFilterLabel">Semua Karyawan Bisnis Ini</span>
+              <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="custom-select-menu hidden" id="monitorFilterMenu"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Grafik Performa Karyawan</span>
+            <span class="badge badge-success" id="monitorDaysLabel">0 Hari</span>
+          </div>
+          <div class="chart-layout">
+            <div class="donut-wrap">
+              <svg class="donut-svg" viewBox="0 0 78 78">
+                <circle class="donut-bg" cx="39" cy="39" r="34"></circle>
+                <circle class="donut-progress" id="admActiveRing" cx="39" cy="39" r="34"></circle>
+              </svg>
+              <div class="donut-center">
+                <span class="donut-pct" id="admActivePct">0%</span>
+                <span class="donut-sub">Aktif</span>
+              </div>
+            </div>
+            <div class="chart-metrics">
+              <div class="metric-row">
+                <div class="metric-head">
+                  <span class="metric-name">Kehadiran</span>
+                  <span class="metric-val" id="admHadirPct">0%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bar-hadir" id="admHadirBar" style="width:0%;"></div>
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-head">
+                  <span class="metric-name">Catatan Kerja</span>
+                  <span class="metric-val" id="admNotePct">0%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bar-catatan" id="admNoteBar" style="width:0%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Catatan &amp; Foto Karyawan</span>
+            <span class="badge badge-ok" id="monitorRecCount">0 Riwayat</span>
+          </div>
+          <div id="monitorList" class="item-list">
+            <div class="empty-state">Memuat data pemantauan...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 2: TAMBAH & HAPUS KARYAWAN -->
+      <div id="tabTambah" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Tambah Karyawan Baru</span>
+            <span class="badge badge-success">absen_karyawan</span>
+          </div>
+          <form id="addEmpForm">
             <div class="form-group">
-              <label class="form-label" for="bisnisCodeInput">Kode Bisnis (Unik)</label>
-              <input type="text" id="bisnisCodeInput" class="form-input" placeholder="Contoh: KOPI_SENJA atau SITENEXS" required>
+              <label class="form-label" for="newEmpIdInput">ID Karyawan</label>
+              <input type="text" id="newEmpIdInput" class="form-input" placeholder="Contoh: EMP002" required>
             </div>
             <div class="form-group">
-              <label class="form-label" for="bisnisNameInput">Nama Bisnis</label>
-              <input type="text" id="bisnisNameInput" class="form-input" placeholder="Contoh: Kopi Senja Nusantara" required>
+              <label class="form-label" for="newEmpNameInput">Nama / Username Karyawan</label>
+              <input type="text" id="newEmpNameInput" class="form-input" placeholder="Nama lengkap atau username login" required>
             </div>
             <div class="form-group">
-              <label class="form-label" for="bisnisDescInput">Keterangan (Opsional)</label>
-              <input type="text" id="bisnisDescInput" class="form-input" placeholder="Unit usaha, cabang, atau divisi utama">
+              <label class="form-label" for="newEmpBizInput">Bisnis</label>
+              <input type="text" id="newEmpBizInput" class="form-input" readonly>
             </div>
-            <button type="submit" class="btn btn-primary" id="saveBisnisBtn">Simpan Bisnis</button>
+            <button type="submit" class="btn btn-masuk" id="addEmpBtn">Tambah Karyawan</button>
           </form>
         </section>
 
         <section class="card">
           <div class="card-title">
-            <span>Daftar Bisnis</span>
-            <span class="badge badge-success" id="badgeTotalBisnis">0 Bisnis</span>
+            <span>Kelola Daftar Karyawan</span>
+            <span class="badge badge-ok" id="empManageBadge">0 Orang</span>
           </div>
-          <div id="bisnisList" class="item-list">
-            <div class="empty-state">Memuat daftar bisnis...</div>
-          </div>
-        </section>
-      </div>
-
-      <!-- TAB 2: BUAT & DAFTAR GRUP PER BISNIS -->
-      <div id="tabGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Buat Grup Chat Bisnis</span>
-            <span class="badge badge-ok">absen_grup</span>
-          </div>
-          <form id="grupForm">
-            <div class="form-group">
-              <label class="form-label" for="grupBisnisSelect">Pilih Bisnis Pemilik Grup</label>
-              <select id="grupBisnisSelect" class="form-select" required>
-                <option value="">-- Pilih Bisnis --</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="grupNameInput">Nama Grup</label>
-              <input type="text" id="grupNameInput" class="form-input" placeholder="Contoh: Tim Operasional, Sales, Umum" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="grupDescInput">Deskripsi Grup (Opsional)</label>
-              <input type="text" id="grupDescInput" class="form-input" placeholder="Hanya anggota bisnis terpilih yang bisa melihat">
-            </div>
-            <button type="submit" class="btn btn-masuk" id="saveGrupBtn">Simpan Grup</button>
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Daftar Grup Tersedia</span>
-            <span class="badge badge-success" id="badgeTotalGrup">0 Grup</span>
-          </div>
-          <div id="grupList" class="item-list">
-            <div class="empty-state">Memuat daftar grup...</div>
-          </div>
-        </section>
-      </div>
-
-      <!-- TAB 3: ATUR BISNIS & TUNJUK ADMIN ABSEN -->
-      <div id="tabUser" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
-        <section class="card">
-          <div class="card-title">
-            <span>Atur Bisnis &amp; Tunjuk Admin</span>
-            <span class="badge badge-warn">Akses Admin Absen</span>
-          </div>
-          <form id="assignUserForm">
-            <div class="form-group">
-              <label class="form-label" for="userTargetSelect">Pilih Karyawan (Pelanggan Presensi)</label>
-              <select id="userTargetSelect" class="form-select" required>
-                <option value="">-- Pilih Karyawan --</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="userBisnisSelect">Tetapkan ke Bisnis</label>
-              <select id="userBisnisSelect" class="form-select" required>
-                <option value="">-- Pilih Bisnis --</option>
-              </select>
-            </div>
-            <label class="checkbox-row">
-              <input type="checkbox" id="userIsAdminCheck">
-              <span class="checkbox-label">Tunjuk sebagai Admin Absensi (akses adminAbsen.html)</span>
-            </label>
-            <button type="submit" class="btn btn-primary" id="saveAssignBtn">Simpan Pengaturan Karyawan</button>
-          </form>
-        </section>
-
-        <section class="card">
-          <div class="card-title">
-            <span>Daftar Karyawan &amp; Peran</span>
-            <span class="badge badge-ok" id="badgeTotalUser">0 Akun</span>
-          </div>
-          <div id="userList" class="item-list">
+          <div id="empManageList" class="item-list">
             <div class="empty-state">Memuat daftar karyawan...</div>
           </div>
         </section>
       </div>
+
+      <!-- TAB 3: TAMBAH & HAPUS ANGGOTA GRUP -->
+      <div id="tabAnggotaGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Tambah Anggota ke Grup</span>
+            <span class="badge badge-ok">absen_grup</span>
+          </div>
+          <form id="addMemberForm">
+            <div class="form-group">
+              <label class="form-label">Pilih Grup Bisnis</label>
+              <div class="custom-select-wrap" id="groupPicker">
+                <button type="button" class="custom-select-trigger" id="groupPickerTrigger">
+                  <span class="custom-select-val placeholder" id="groupPickerLabel">-- Pilih Grup --</span>
+                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <div class="custom-select-menu hidden" id="groupPickerMenu"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pilih Karyawan</label>
+              <div class="custom-select-wrap" id="memberPicker">
+                <button type="button" class="custom-select-trigger" id="memberPickerTrigger">
+                  <span class="custom-select-val placeholder" id="memberPickerLabel">-- Pilih Karyawan --</span>
+                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <div class="custom-select-menu hidden" id="memberPickerMenu"></div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="addMemberBtn">Masukkan ke Grup</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Anggota Per Grup</span>
+            <span class="badge badge-success" id="groupMemberBadge">0 Grup</span>
+          </div>
+          <div id="groupMembersList" class="item-list">
+            <div class="empty-state">Memuat daftar grup...</div>
+          </div>
+        </section>
+      </div>
     </main>
+  </div>
+
+  <!-- PHOTO GALLERY LIGHTBOX MODAL -->
+  <div id="lightboxModal" class="lightbox-modal hidden">
+    <div class="lb-topbar">
+      <div class="lb-info">
+        <div class="lb-title" id="lbTitle">Galeri Foto</div>
+        <div class="lb-counter" id="lbCounter">1 / 1</div>
+      </div>
+      <button type="button" class="cam-close-btn" id="lbCloseBtn">Tutup</button>
+    </div>
+    <div class="lb-stage" id="lbStage">
+      <button type="button" class="lb-nav-btn prev" id="lbPrevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+      <img id="lbMainImg" class="lb-main-img" alt="Pratinjau Foto">
+      <button type="button" class="lb-nav-btn next" id="lbNextBtn" aria-label="Berikutnya">&rsaquo;</button>
+    </div>
+    <div class="lb-thumbs-bar" id="lbThumbsBar"></div>
+  </div>
+
+  <!-- KONFIRMASI YA / TIDAK -->
+  <div id="confirmOverlay" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title" id="confirmTitle">Konfirmasi</div>
+      <div class="confirm-msg" id="confirmMsg">-</div>
+      <div class="confirm-actions">
+        <button type="button" class="btn-outline-sm" id="confirmNoBtn">Tidak</button>
+        <button type="button" class="btn-keluar" style="padding:8px;" id="confirmYesBtn">Ya</button>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -590,6 +1146,8 @@
       setDoc,
       updateDoc,
       deleteDoc,
+      query,
+      where,
       onSnapshot
     } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
@@ -606,10 +1164,24 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let businesses = [];
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    let currentUser = null;
+    let adminBusinessId = "";
+    let employees = [];
+    let businessRecords = [];
     let groups = [];
-    let users = [];
     let toastTimer = null;
+
+    let selectedMonitorEmp = "ALL";
+    let selectedGroupId = "";
+    let selectedMemberEmpId = "";
+
+    let unsubEmp = null;
+    let unsubRec = null;
+    let unsubGrp = null;
+
+    let lightboxPhotos = [];
+    let lightboxIndex = 0;
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -617,6 +1189,29 @@
       el.classList.add("show");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function showYesNoConfirm(title, message, yesText = "Ya", noText = "Tidak") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("confirmOverlay");
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmMsg").textContent = message;
+        const yesBtn = document.getElementById("confirmYesBtn");
+        const noBtn = document.getElementById("confirmNoBtn");
+        yesBtn.textContent = yesText;
+        noBtn.textContent = noText;
+        overlay.classList.remove("hidden");
+
+        const cleanup = (res) => {
+          overlay.classList.add("hidden");
+          yesBtn.onclick = null;
+          noBtn.onclick = null;
+          resolve(res);
+        };
+
+        yesBtn.onclick = () => cleanup(true);
+        noBtn.onclick = () => cleanup(false);
+      });
     }
 
     function escapeHtml(str) {
@@ -628,330 +1223,671 @@
         .replace(/'/g, "&#39;");
     }
 
-    function slugifyBusinessId(raw) {
-      return String(raw || "")
-        .trim()
-        .toUpperCase()
-        .replace(/[^A-Z0-9]+/g, "_")
-        .replace(/^_+|_+$/g, "");
+    function cleanNoteLines(rawNote) {
+      return String(rawNote || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join("\n");
     }
 
-    function getBusinessName(businessId) {
-      const found = businesses.find(b => b.id === businessId);
-      return found ? `${found.name} (${found.id})` : (businessId || "Belum diatur");
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     }
 
-    function isEmployeeAdmin(u) {
-      return Boolean(u.isAbsenAdmin) || u.role === "admin_absen";
+    function hasAdminAuthority(docData) {
+      if (!docData) return false;
+      return Boolean(docData.isAbsenAdmin) || docData.role === "admin_absen";
     }
+
+    // ================= CUSTOM DROPDOWN PICKERS =================
+    function setupCustomDropdown({ triggerId, menuId, labelId, options, currentValue, placeholderText, onSelect }) {
+      const trigger = document.getElementById(triggerId);
+      const menu = document.getElementById(menuId);
+      const labelEl = document.getElementById(labelId);
+
+      const activeOpt = options.find(o => o.value === currentValue);
+      if (activeOpt) {
+        labelEl.textContent = activeOpt.label;
+        labelEl.classList.remove("placeholder");
+      } else {
+        labelEl.textContent = placeholderText;
+        labelEl.classList.add("placeholder");
+      }
+
+      if (options.length === 0) {
+        menu.innerHTML = `<div class="empty-state" style="padding:10px;">Tidak ada pilihan tersedia</div>`;
+      } else {
+        menu.innerHTML = options.map(opt => `
+          <button type="button" class="custom-select-option ${opt.value === currentValue ? "selected" : ""}" data-opt-val="${escapeHtml(opt.value)}">
+            <span>${escapeHtml(opt.label)}</span>
+            ${opt.sub ? `<span class="badge badge-ok">${escapeHtml(opt.sub)}</span>` : ""}
+          </button>
+        `).join("");
+      }
+
+      trigger.onclick = (e) => {
+        e.stopPropagation();
+        const willOpen = menu.classList.contains("hidden");
+        document.querySelectorAll(".custom-select-menu").forEach(m => m.classList.add("hidden"));
+        document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("open"));
+        if (willOpen) {
+          menu.classList.remove("hidden");
+          trigger.classList.add("open");
+        }
+      };
+
+      menu.querySelectorAll("[data-opt-val]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const val = btn.dataset.optVal;
+          menu.classList.add("hidden");
+          trigger.classList.remove("open");
+          onSelect(val);
+        });
+      });
+    }
+
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".custom-select-menu").forEach(m => m.classList.add("hidden"));
+      document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("open"));
+    });
+
+    function refreshAllCustomPickers() {
+      // 1. Filter Karyawan Pantau
+      const monOpts = [
+        { value: "ALL", label: "Semua Karyawan Bisnis Ini", sub: `${employees.length}` },
+        ...employees.map(emp => {
+          const idVal = emp.id || emp.docId;
+          return { value: idVal, label: emp.username || idVal, sub: idVal };
+        })
+      ];
+      if (!monOpts.some(o => o.value === selectedMonitorEmp)) {
+        selectedMonitorEmp = "ALL";
+      }
+      setupCustomDropdown({
+        triggerId: "monitorFilterTrigger",
+        menuId: "monitorFilterMenu",
+        labelId: "monitorFilterLabel",
+        options: monOpts,
+        currentValue: selectedMonitorEmp,
+        placeholderText: "Semua Karyawan Bisnis Ini",
+        onSelect: (val) => {
+          selectedMonitorEmp = val;
+          refreshAllCustomPickers();
+          renderMonitorChartAndList();
+        }
+      });
+
+      // 2. Pilih Grup
+      const grpOpts = groups.map(g => ({
+        value: g.id,
+        label: g.name,
+        sub: `${Array.isArray(g.memberIds) ? g.memberIds.length : 0} anggota`
+      }));
+      if (selectedGroupId && !grpOpts.some(o => o.value === selectedGroupId)) {
+        selectedGroupId = "";
+      }
+      setupCustomDropdown({
+        triggerId: "groupPickerTrigger",
+        menuId: "groupPickerMenu",
+        labelId: "groupPickerLabel",
+        options: grpOpts,
+        currentValue: selectedGroupId,
+        placeholderText: "-- Pilih Grup --",
+        onSelect: (val) => {
+          selectedGroupId = val;
+          refreshAllCustomPickers();
+        }
+      });
+
+      // 3. Pilih Karyawan untuk Grup
+      const empOpts = employees.map(emp => {
+        const idVal = emp.id || emp.docId;
+        return { value: idVal, label: emp.username || idVal, sub: idVal };
+      });
+      if (selectedMemberEmpId && !empOpts.some(o => o.value === selectedMemberEmpId)) {
+        selectedMemberEmpId = "";
+      }
+      setupCustomDropdown({
+        triggerId: "memberPickerTrigger",
+        menuId: "memberPickerMenu",
+        labelId: "memberPickerLabel",
+        options: empOpts,
+        currentValue: selectedMemberEmpId,
+        placeholderText: "-- Pilih Karyawan --",
+        onSelect: (val) => {
+          selectedMemberEmpId = val;
+          refreshAllCustomPickers();
+        }
+      });
+    }
+
+    // ================= PISAH FOTO PRESENSI & FOTO CATATAN =================
+    function getAttendancePhotos(rec) {
+      const list = [];
+      if (rec.checkInPhoto) {
+        list.push({
+          url: rec.checkInPhoto,
+          label: `Presensi Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"})`
+        });
+      }
+      if (rec.checkOutPhoto) {
+        list.push({
+          url: rec.checkOutPhoto,
+          label: `Presensi Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"})`
+        });
+      }
+      return list;
+    }
+
+    function getNotePhotos(rec) {
+      const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
+      return notePhotos.map((u, i) => ({
+        url: u,
+        label: `Catatan #${i + 1}`
+      }));
+    }
+
+    // Lightbox
+    function openPhotoGallery(photosList, startIndex = 0, title = "Galeri Foto") {
+      if (!Array.isArray(photosList) || photosList.length === 0) return;
+      lightboxPhotos = photosList;
+      lightboxIndex = Math.max(0, Math.min(startIndex, photosList.length - 1));
+      document.getElementById("lbTitle").textContent = title;
+      renderLightboxSlide();
+      document.getElementById("lightboxModal").classList.remove("hidden");
+    }
+
+    function renderLightboxSlide() {
+      const total = lightboxPhotos.length;
+      const item = lightboxPhotos[lightboxIndex];
+      const mainImg = document.getElementById("lbMainImg");
+      mainImg.style.animation = "none";
+      void mainImg.offsetWidth;
+      mainImg.style.animation = "";
+      mainImg.src = item.url;
+      document.getElementById("lbCounter").textContent = `${lightboxIndex + 1} / ${total} • ${item.label || "Foto"}`;
+
+      document.getElementById("lbPrevBtn").classList.toggle("hidden", total <= 1);
+      document.getElementById("lbNextBtn").classList.toggle("hidden", total <= 1);
+
+      const thumbsBar = document.getElementById("lbThumbsBar");
+      thumbsBar.innerHTML = lightboxPhotos.map((p, idx) => `
+        <button type="button" class="lb-thumb ${idx === lightboxIndex ? "active" : ""}" data-lb-idx="${idx}">
+          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label || "Foto")}">
+        </button>
+      `).join("");
+
+      thumbsBar.querySelectorAll("[data-lb-idx]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          lightboxIndex = Number(btn.dataset.lbIdx);
+          renderLightboxSlide();
+        });
+      });
+    }
+
+    document.getElementById("lbCloseBtn").addEventListener("click", () => {
+      document.getElementById("lightboxModal").classList.add("hidden");
+      lightboxPhotos = [];
+    });
+
+    document.getElementById("lbPrevBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
+
+    document.getElementById("lbNextBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
 
     document.querySelectorAll(".sub-seg-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".sub-seg-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         const tabId = btn.dataset.tab;
-        ["tabBisnis", "tabGrup", "tabUser"].forEach(id => {
+        ["tabPantau", "tabTambah", "tabAnggotaGrup"].forEach(id => {
           document.getElementById(id).classList.toggle("hidden", id !== tabId);
         });
       });
     });
 
-    function syncFormWithSelectedUser() {
-      const empId = document.getElementById("userTargetSelect").value;
-      const u = users.find(item => (item.id || item.docId) === empId);
-      if (!u) {
-        document.getElementById("userIsAdminCheck").checked = false;
+    function renderMonitorChartAndList() {
+      const todayKey = getTodayKey();
+      document.getElementById("todayDateBadge").textContent = todayKey;
+      document.getElementById("countPantau").textContent = employees.length;
+
+      const empIdSet = new Set(employees.map(e => e.id || e.docId));
+      const empNameMap = {};
+      employees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empNameMap[idVal] = e.username || idVal;
+      });
+
+      const scopedRecords = businessRecords.filter(r => {
+        if (!r.empId || !empIdSet.has(r.empId)) return false;
+        if (selectedMonitorEmp !== "ALL" && r.empId !== selectedMonitorEmp) return false;
+        return true;
+      });
+
+      // Grafik performa
+      const totalDays = scopedRecords.length;
+      const circumference = 2 * Math.PI * 34;
+      const ring = document.getElementById("admActiveRing");
+
+      document.getElementById("monitorDaysLabel").textContent = `${totalDays} Hari`;
+
+      if (totalDays === 0) {
+        document.getElementById("admActivePct").textContent = "0%";
+        document.getElementById("admHadirPct").textContent = "0%";
+        document.getElementById("admNotePct").textContent = "0%";
+        document.getElementById("admHadirBar").style.width = "0%";
+        document.getElementById("admNoteBar").style.width = "0%";
+        ring.style.strokeDashoffset = circumference;
+      } else {
+        let hadirScore = 0;
+        let noteCount = 0;
+        let activeScore = 0;
+
+        scopedRecords.forEach(rec => {
+          const hasIn = Boolean(rec.checkIn);
+          const hasOut = Boolean(rec.checkOut);
+          const hasNote = Boolean(rec.note && rec.note.trim().length > 0);
+
+          hadirScore += (hasIn ? 50 : 0) + (hasOut ? 50 : 0);
+          if (hasNote) noteCount += 1;
+          activeScore += (hasIn ? 35 : 0) + (hasOut ? 35 : 0) + (hasNote ? 30 : 0);
+        });
+
+        const hadirPct = Math.round(hadirScore / totalDays);
+        const notePct = Math.round((noteCount / totalDays) * 100);
+        const activePct = Math.round(activeScore / totalDays);
+
+        document.getElementById("admActivePct").textContent = `${activePct}%`;
+        document.getElementById("admHadirPct").textContent = `${hadirPct}%`;
+        document.getElementById("admNotePct").textContent = `${notePct}%`;
+        document.getElementById("admHadirBar").style.width = `${hadirPct}%`;
+        document.getElementById("admNoteBar").style.width = `${notePct}%`;
+        ring.style.strokeDashoffset = circumference - (activePct / 100) * circumference;
+        ring.style.stroke = activePct >= 80 ? "var(--success)" : (activePct >= 50 ? "var(--warning)" : "var(--danger)");
+      }
+
+      const sorted = [...scopedRecords].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+      document.getElementById("monitorRecCount").textContent = `${sorted.length} Riwayat`;
+
+      const container = document.getElementById("monitorList");
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada riwayat catatan atau foto karyawan.</div>`;
         return;
       }
-      if (u.businessId) {
-        document.getElementById("userBisnisSelect").value = u.businessId;
-      }
-      document.getElementById("userIsAdminCheck").checked = isEmployeeAdmin(u);
-    }
 
-    document.getElementById("userTargetSelect").addEventListener("change", syncFormWithSelectedUser);
+      container.innerHTML = sorted.map((rec, idx) => {
+        const absenPhotos = getAttendancePhotos(rec);
+        const notePhotos = getNotePhotos(rec);
+        const cleanNote = cleanNoteLines(rec.note);
+        const empLabel = empNameMap[rec.empId] || rec.username || rec.empId;
 
-    function refreshSelectOptions() {
-      const grupBisnisSelect = document.getElementById("grupBisnisSelect");
-      const userBisnisSelect = document.getElementById("userBisnisSelect");
-      const userTargetSelect = document.getElementById("userTargetSelect");
+        const absenSectionHtml = `
+          <div class="photo-section-box">
+            <div class="photo-section-head">
+              <span>Foto Presensi (${absenPhotos.length})</span>
+              ${absenPhotos.length > 0 ? `<button type="button" class="btn-detail-sm" data-open-absen-rec="${idx}" data-photo-idx="0">Lihat Galeri</button>` : ""}
+            </div>
+            ${absenPhotos.length > 0
+              ? `<div class="photo-thumbs">${absenPhotos.map((p, pIdx) => `
+                  <button type="button" class="photo-thumb-btn" data-open-absen-rec="${idx}" data-photo-idx="${pIdx}" title="${escapeHtml(p.label)}">
+                    <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label)}">
+                  </button>
+                `).join("")}</div>`
+              : `<div class="list-card-sub" style="margin-top:0;">Belum ada foto presensi.</div>`
+            }
+          </div>
+        `;
 
-      const prevGrupBiz = grupBisnisSelect.value;
-      const prevUserBiz = userBisnisSelect.value;
-      const prevUserTarget = userTargetSelect.value;
+        const noteSectionHtml = `
+          <div class="photo-section-box">
+            <div class="photo-section-head">
+              <span>Foto Catatan (${notePhotos.length})</span>
+              ${notePhotos.length > 0 ? `<button type="button" class="btn-detail-sm" data-open-note-rec="${idx}" data-photo-idx="0">Lihat Galeri</button>` : ""}
+            </div>
+            ${notePhotos.length > 0
+              ? `<div class="photo-thumbs">${notePhotos.map((p, pIdx) => `
+                  <button type="button" class="photo-thumb-btn" data-open-note-rec="${idx}" data-photo-idx="${pIdx}" title="${escapeHtml(p.label)}">
+                    <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label)}">
+                  </button>
+                `).join("")}</div>`
+              : `<div class="list-card-sub" style="margin-top:0;">Belum ada foto catatan.</div>`
+            }
+          </div>
+        `;
 
-      const bizOpts = [`<option value="">-- Pilih Bisnis --</option>`].concat(
-        businesses.map(b => `<option value="${escapeHtml(b.id)}">${escapeHtml(b.name)} [${escapeHtml(b.id)}]</option>`)
-      );
-      grupBisnisSelect.innerHTML = bizOpts.join("");
-      userBisnisSelect.innerHTML = bizOpts.join("");
-
-      if (prevGrupBiz) grupBisnisSelect.value = prevGrupBiz;
-      if (prevUserBiz) userBisnisSelect.value = prevUserBiz;
-
-      const userOpts = [`<option value="">-- Pilih Karyawan --</option>`].concat(
-        users.map(u => {
-          const idVal = u.id || u.docId;
-          return `<option value="${escapeHtml(idVal)}">${escapeHtml(u.username || idVal)} (${escapeHtml(idVal)})</option>`;
-        })
-      );
-      userTargetSelect.innerHTML = userOpts.join("");
-      if (prevUserTarget) {
-        userTargetSelect.value = prevUserTarget;
-        syncFormWithSelectedUser();
-      }
-    }
-
-    function renderBusinesses() {
-      document.getElementById("countBisnis").textContent = businesses.length;
-      document.getElementById("badgeTotalBisnis").textContent = `${businesses.length} Bisnis`;
-
-      const container = document.getElementById("bisnisList");
-      if (businesses.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada bisnis dibuat.</div>`;
-        return;
-      }
-
-      container.innerHTML = businesses.map(b => {
-        const grpCount = groups.filter(g => g.businessId === b.id).length;
         return `
           <div class="list-card">
-            <div class="list-card-body">
-              <div class="list-card-title">
-                <span>${escapeHtml(b.name)}</span>
-                <span class="badge badge-ok">${escapeHtml(b.id)}</span>
-                <span class="badge badge-success">${grpCount} Grup</span>
+            <div class="list-card-row">
+              <div class="list-card-body">
+                <div class="list-card-title">
+                  <span>${escapeHtml(empLabel)}</span>
+                  <span class="badge badge-ok">${escapeHtml(rec.empId)}</span>
+                  <span class="badge badge-success">${escapeHtml(rec.date || "-")}</span>
+                </div>
               </div>
-              ${b.description ? `<div class="list-card-sub">${escapeHtml(b.description)}</div>` : ""}
             </div>
-            <button type="button" class="btn-danger-sm" data-del-biz="${escapeHtml(b.id)}">Hapus</button>
+
+            <div class="monitor-chips">
+              <span class="mini-chip ${rec.checkIn ? "in" : ""}">Masuk: ${rec.checkIn ? rec.checkIn.slice(0, 5) : "--:--"}${rec.checkInLate ? " (Telat)" : ""}</span>
+              <span class="mini-chip ${rec.checkOut ? "in" : ""}">Keluar: ${rec.checkOut ? rec.checkOut.slice(0, 5) : "--:--"}</span>
+            </div>
+
+            <div class="note-box-preview">${cleanNote ? escapeHtml(cleanNote) : "Belum ada catatan kerja."}</div>
+            ${absenSectionHtml}
+            ${noteSectionHtml}
           </div>
         `;
       }).join("");
 
-      container.querySelectorAll("[data-del-biz]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.delBiz;
-          try {
-            await deleteDoc(doc(db, "absen_bisnis", id));
-            showToast("Bisnis dihapus.");
-          } catch {
-            showToast("Gagal menghapus bisnis.");
-          }
+      container.querySelectorAll("[data-open-absen-rec]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const rec = sorted[Number(btn.dataset.openAbsenRec)];
+          const pIdx = Number(btn.dataset.photoIdx) || 0;
+          if (!rec) return;
+          const nama = empNameMap[rec.empId] || rec.username || rec.empId;
+          openPhotoGallery(getAttendancePhotos(rec), pIdx, `Foto Presensi • ${nama} (${rec.date || ""})`);
+        });
+      });
+
+      container.querySelectorAll("[data-open-note-rec]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const rec = sorted[Number(btn.dataset.openNoteRec)];
+          const pIdx = Number(btn.dataset.photoIdx) || 0;
+          if (!rec) return;
+          const nama = empNameMap[rec.empId] || rec.username || rec.empId;
+          openPhotoGallery(getNotePhotos(rec), pIdx, `Foto Catatan • ${nama} (${rec.date || ""})`);
         });
       });
     }
 
-    function renderGroups() {
-      document.getElementById("countGrup").textContent = groups.length;
-      document.getElementById("badgeTotalGrup").textContent = `${groups.length} Grup`;
+    function renderEmployeesManage() {
+      document.getElementById("countKaryawan").textContent = employees.length;
+      document.getElementById("empManageBadge").textContent = `${employees.length} Orang`;
 
-      const container = document.getElementById("grupList");
-      if (groups.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada grup dibuat.</div>`;
+      const container = document.getElementById("empManageList");
+      if (employees.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada karyawan terdaftar.</div>`;
         return;
       }
 
-      container.innerHTML = groups.map(g => {
-        const memberCount = Array.isArray(g.memberIds) ? g.memberIds.length : 0;
+      container.innerHTML = employees.map(emp => {
+        const empId = emp.id || emp.docId;
+        const isSelf = currentUser && empId === currentUser.id;
         return `
           <div class="list-card">
-            <div class="list-card-body">
-              <div class="list-card-title">
-                <span>${escapeHtml(g.name)}</span>
-                <span class="badge badge-warn">${escapeHtml(getBusinessName(g.businessId))}</span>
-                <span class="badge badge-ok">${memberCount} Anggota</span>
+            <div class="list-card-row">
+              <div class="list-card-body">
+                <div class="list-card-title">
+                  <span>${escapeHtml(emp.username || empId)}</span>
+                  ${isSelf ? `<span class="me-tag">saya</span>` : ""}
+                  <span class="badge badge-ok">${escapeHtml(empId)}</span>
+                </div>
+                <div class="list-card-sub">Bisnis: ${escapeHtml(emp.businessId || adminBusinessId || "-")}</div>
               </div>
-              ${g.description ? `<div class="list-card-sub">${escapeHtml(g.description)}</div>` : ""}
-            </div>
-            <button type="button" class="btn-danger-sm" data-del-grp="${escapeHtml(g.id)}">Hapus</button>
-          </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll("[data-del-grp]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.delGrp;
-          try {
-            await deleteDoc(doc(db, "absen_grup", id));
-            showToast("Grup dihapus.");
-          } catch {
-            showToast("Gagal menghapus grup.");
-          }
-        });
-      });
-    }
-
-    function renderUsers() {
-      document.getElementById("countUser").textContent = users.length;
-      document.getElementById("badgeTotalUser").textContent = `${users.length} Akun`;
-
-      const container = document.getElementById("userList");
-      if (users.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada data karyawan.</div>`;
-        return;
-      }
-
-      container.innerHTML = users.map(u => {
-        const empId = u.id || u.docId;
-        const hasBiz = Boolean(u.businessId);
-        const isAdmin = isEmployeeAdmin(u);
-        return `
-          <div class="list-card">
-            <div class="list-card-body">
-              <div class="list-card-title">
-                <span>${escapeHtml(u.username || empId)}</span>
-                ${isAdmin ? `<span class="badge badge-success">Admin Absen</span>` : `<span class="badge badge-ok">Karyawan</span>`}
-                <span class="badge ${hasBiz ? "badge-ok" : "badge-warn"}">
-                  ${escapeHtml(hasBiz ? getBusinessName(u.businessId) : "Belum ada bisnis")}
-                </span>
-              </div>
-              <div class="list-card-sub">ID: ${escapeHtml(empId)}</div>
-            </div>
-            <div class="card-actions">
-              <button type="button" class="btn-toggle-admin" data-toggle-admin="${escapeHtml(empId)}" data-next-admin="${!isAdmin}">
-                ${isAdmin ? "Cabut Admin" : "Tunjuk Admin"}
-              </button>
+              ${!isSelf
+                ? `<button type="button" class="btn-danger-sm" data-del-emp="${escapeHtml(empId)}" data-del-name="${escapeHtml(emp.username || empId)}">Hapus</button>`
+                : `<span class="badge badge-success">saya</span>`
+              }
             </div>
           </div>
         `;
       }).join("");
 
-      container.querySelectorAll("[data-toggle-admin]").forEach(btn => {
+      container.querySelectorAll("[data-del-emp]").forEach(btn => {
         btn.addEventListener("click", async () => {
-          const empId = btn.dataset.toggleAdmin;
-          const nextAdmin = btn.dataset.nextAdmin === "true";
+          const empId = btn.dataset.delEmp;
+          const empName = btn.dataset.delName;
+          const confirmed = await showYesNoConfirm(
+            "Hapus Karyawan",
+            `Yakin ingin menghapus karyawan ${empName} (${empId})?`,
+            "Ya, Hapus",
+            "Tidak"
+          );
+          if (!confirmed) return;
+
           try {
-            await updateDoc(doc(db, "absen_karyawan", empId), {
-              isAbsenAdmin: nextAdmin,
-              role: nextAdmin ? "admin_absen" : "karyawan",
-              updatedAt: new Date().toISOString()
-            });
-            showToast(nextAdmin ? `${empId} ditunjuk sebagai Admin Absen.` : `Status Admin ${empId} dicabut.`);
+            await deleteDoc(doc(db, "absen_karyawan", empId));
+            showToast(`Karyawan ${empName} (${empId}) dihapus.`);
           } catch (err) {
             console.error(err);
-            showToast("Gagal mengubah status admin.");
+            showToast("Gagal menghapus karyawan.");
           }
         });
       });
     }
 
-    document.getElementById("bisnisForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const bizId = slugifyBusinessId(document.getElementById("bisnisCodeInput").value);
-      const name = document.getElementById("bisnisNameInput").value.trim();
-      const description = document.getElementById("bisnisDescInput").value.trim();
-      const btn = document.getElementById("saveBisnisBtn");
+    function renderGroupMembers() {
+      document.getElementById("countGrup").textContent = groups.length;
+      document.getElementById("groupMemberBadge").textContent = `${groups.length} Grup`;
 
-      if (!bizId || !name) {
-        showToast("Kode bisnis dan nama bisnis wajib diisi.");
+      const container = document.getElementById("groupMembersList");
+      if (groups.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada grup untuk bisnis ini. Buat grup di menu Admin Sitenexs.</div>`;
         return;
       }
+
+      const empMap = {};
+      employees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empMap[idVal] = e.username || idVal;
+      });
+
+      container.innerHTML = groups.map(g => {
+        const members = Array.isArray(g.memberIds) ? g.memberIds : [];
+        const memberRowsHtml = members.length === 0
+          ? `<div class="list-card-sub">Belum ada anggota di grup ini.</div>`
+          : `<div class="item-list">${members.map(mId => `
+              <div class="list-card" style="padding:7px 9px; background:#ffffff;">
+                <div class="list-card-row">
+                  <div class="list-card-body">
+                    <div class="list-card-title" style="font-size:12px;">
+                      <span>${escapeHtml(empMap[mId] || mId)}</span>
+                      <span class="badge badge-ok">${escapeHtml(mId)}</span>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-danger-sm" data-remove-member-grp="${escapeHtml(g.id)}" data-member-id="${escapeHtml(mId)}">Keluarkan</button>
+                </div>
+              </div>
+            `).join("")}</div>`;
+
+        return `
+          <div class="list-card">
+            <div class="list-card-title">
+              <span>${escapeHtml(g.name)}</span>
+              <span class="badge badge-success">${members.length} Anggota</span>
+            </div>
+            ${memberRowsHtml}
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll("[data-remove-member-grp]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const grpId = btn.dataset.removeMemberGrp;
+          const memberId = btn.dataset.memberId;
+          const grp = groups.find(item => item.id === grpId);
+          if (!grp) return;
+
+          const nextMembers = (Array.isArray(grp.memberIds) ? grp.memberIds : []).filter(id => id !== memberId);
+          try {
+            await updateDoc(doc(db, "absen_grup", grpId), {
+              memberIds: nextMembers,
+              updatedAt: new Date().toISOString()
+            });
+            showToast(`${memberId} dihapus dari grup.`);
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus anggota grup.");
+          }
+        });
+      });
+    }
+
+    document.getElementById("addEmpForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const empId = document.getElementById("newEmpIdInput").value.trim().toUpperCase();
+      const username = document.getElementById("newEmpNameInput").value.trim();
+      const btn = document.getElementById("addEmpBtn");
+
+      if (!empId || !username) return;
 
       btn.disabled = true;
       try {
-        await setDoc(doc(db, "absen_bisnis", bizId), {
-          id: bizId,
-          name,
-          description,
+        await setDoc(doc(db, "absen_karyawan", empId), {
+          id: empId,
+          username,
+          businessId: adminBusinessId,
+          isAbsenAdmin: false,
+          role: "karyawan",
           createdAt: new Date().toISOString()
         }, { merge: true });
 
-        document.getElementById("bisnisCodeInput").value = "";
-        document.getElementById("bisnisNameInput").value = "";
-        document.getElementById("bisnisDescInput").value = "";
-        showToast(`Bisnis ${name} tersimpan.`);
+        document.getElementById("newEmpIdInput").value = "";
+        document.getElementById("newEmpNameInput").value = "";
+        showToast(`Karyawan ${username} (${empId}) ditambahkan.`);
       } catch (err) {
         console.error(err);
-        showToast("Gagal menyimpan bisnis.");
+        showToast("Gagal menambah karyawan.");
       } finally {
         btn.disabled = false;
       }
     });
 
-    document.getElementById("grupForm").addEventListener("submit", async (e) => {
+    document.getElementById("addMemberForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const businessId = document.getElementById("grupBisnisSelect").value;
-      const name = document.getElementById("grupNameInput").value.trim();
-      const description = document.getElementById("grupDescInput").value.trim();
-      const btn = document.getElementById("saveGrupBtn");
+      const grpId = selectedGroupId;
+      const memberId = selectedMemberEmpId;
+      const btn = document.getElementById("addMemberBtn");
 
-      if (!businessId || !name) {
-        showToast("Pilih bisnis dan isi nama grup.");
+      if (!grpId || !memberId) {
+        showToast("Pilih grup dan karyawan terlebih dahulu.");
+        return;
+      }
+
+      const grp = groups.find(item => item.id === grpId);
+      if (!grp) return;
+
+      const currentMembers = Array.isArray(grp.memberIds) ? grp.memberIds : [];
+      if (currentMembers.includes(memberId)) {
+        showToast("Karyawan sudah menjadi anggota grup ini.");
         return;
       }
 
       btn.disabled = true;
       try {
-        const grpId = `${businessId}_GRP_${Date.now()}`;
-        await setDoc(doc(db, "absen_grup", grpId), {
-          id: grpId,
-          businessId,
-          name,
-          description,
-          memberIds: [],
-          createdAt: new Date().toISOString()
-        });
-
-        document.getElementById("grupNameInput").value = "";
-        document.getElementById("grupDescInput").value = "";
-        showToast(`Grup "${name}" dibuat untuk bisnis ${businessId}.`);
-      } catch (err) {
-        console.error(err);
-        showToast("Gagal membuat grup.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    document.getElementById("assignUserForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const empId = document.getElementById("userTargetSelect").value;
-      const businessId = document.getElementById("userBisnisSelect").value;
-      const isAdmin = document.getElementById("userIsAdminCheck").checked;
-      const btn = document.getElementById("saveAssignBtn");
-
-      if (!empId || !businessId) {
-        showToast("Pilih karyawan dan bisnis.");
-        return;
-      }
-
-      btn.disabled = true;
-      try {
-        await updateDoc(doc(db, "absen_karyawan", empId), {
-          businessId,
-          isAbsenAdmin: isAdmin,
-          role: isAdmin ? "admin_absen" : "karyawan",
+        await updateDoc(doc(db, "absen_grup", grpId), {
+          memberIds: [...currentMembers, memberId],
           updatedAt: new Date().toISOString()
         });
-        showToast(`Pengaturan ${empId} tersimpan.`);
+        showToast(`${memberId} ditambahkan ke ${grp.name}.`);
       } catch (err) {
         console.error(err);
-        showToast("Gagal memperbarui karyawan.");
+        showToast("Gagal menambahkan anggota grup.");
       } finally {
         btn.disabled = false;
       }
     });
 
-    onSnapshot(collection(db, "absen_bisnis"), (snap) => {
-      businesses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      refreshSelectOptions();
-      renderBusinesses();
-      renderGroups();
-      renderUsers();
-    });
+    function startBusinessListeners(bizId) {
+      if (unsubEmp) { unsubEmp(); unsubEmp = null; }
+      if (unsubRec) { unsubRec(); unsubRec = null; }
+      if (unsubGrp) { unsubGrp(); unsubGrp = null; }
 
-    onSnapshot(collection(db, "absen_grup"), (snap) => {
-      groups = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderBusinesses();
-      renderGroups();
-    });
+      adminBusinessId = bizId;
+      document.getElementById("newEmpBizInput").value = bizId || "-";
 
-    onSnapshot(collection(db, "absen_karyawan"), (snap) => {
-      users = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
-      refreshSelectOptions();
-      renderUsers();
-    });
+      if (!bizId) {
+        employees = [];
+        businessRecords = [];
+        groups = [];
+        refreshAllCustomPickers();
+        renderMonitorChartAndList();
+        renderEmployeesManage();
+        renderGroupMembers();
+        return;
+      }
+
+      const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", bizId));
+      unsubEmp = onSnapshot(qEmp, (snap) => {
+        employees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        refreshAllCustomPickers();
+        renderMonitorChartAndList();
+        renderEmployeesManage();
+        renderGroupMembers();
+      });
+
+      unsubRec = onSnapshot(collection(db, "absen_riwayat"), (snap) => {
+        businessRecords = snap.docs.map(d => d.data());
+        renderMonitorChartAndList();
+      });
+
+      const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", bizId));
+      unsubGrp = onSnapshot(qGrp, (snap) => {
+        groups = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(g => g.businessId === bizId);
+        refreshAllCustomPickers();
+        renderGroupMembers();
+      });
+    }
+
+    (function init() {
+      refreshAllCustomPickers();
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (!saved || !saved.id) {
+          window.location.href = "index.html";
+          return;
+        }
+        currentUser = saved;
+      } catch {
+        window.location.href = "index.html";
+        return;
+      }
+
+      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
+        if (!snap.exists()) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "index.html";
+          return;
+        }
+
+        const data = snap.data();
+        currentUser = { ...currentUser, ...data };
+        const displayName = currentUser.username || currentUser.id;
+        document.getElementById("adminName").textContent = displayName;
+        document.getElementById("adminAvatar").textContent = displayName.charAt(0);
+
+        if (!hasAdminAuthority(data)) {
+          document.getElementById("adminRoleSub").textContent = "Bukan Admin • saya";
+          document.getElementById("adminPanel").classList.add("hidden");
+          document.getElementById("deniedPanel").classList.remove("hidden");
+          return;
+        }
+
+        const bizId = (data.businessId || "").trim().toUpperCase();
+        document.getElementById("adminRoleSub").textContent = bizId
+          ? `Admin (saya) • Bisnis: ${bizId}`
+          : "Admin (saya) • Bisnis belum diatur";
+        document.getElementById("deniedPanel").classList.add("hidden");
+        document.getElementById("adminPanel").classList.remove("hidden");
+
+        if (bizId !== adminBusinessId) {
+          startBusinessListeners(bizId);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
