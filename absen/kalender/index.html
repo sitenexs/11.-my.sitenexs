@@ -147,6 +147,14 @@
       justify-content: center;
       text-transform: uppercase;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .app-container.is-admin-mode .avatar {
@@ -234,10 +242,10 @@
       background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
       color: #ffffff;
       border-radius: 16px;
-      padding: 11px 13px;
+      padding: 12px 13px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 9px;
       box-shadow: 0 8px 20px -4px rgba(30, 58, 138, 0.28);
     }
 
@@ -257,6 +265,114 @@
       font-size: 10.5px;
       color: #bfdbfe;
       font-weight: 600;
+    }
+
+    .picker-caption {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #dbeafe;
+      margin-bottom: -4px;
+    }
+
+    /* ================= CUSTOM DROPDOWN PICKER ================= */
+    .custom-select-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .custom-select-trigger.open,
+    .custom-select-trigger:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.35);
+      outline: none;
+    }
+
+    .custom-select-val {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select-val.muted-opt {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .custom-select-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.16s ease;
+    }
+
+    .custom-select-trigger.open .custom-select-chevron {
+      transform: rotate(180deg);
+      color: var(--admin-accent);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
+      padding: 5px;
+      max-height: 215px;
+      overflow-y: auto;
+      z-index: 45;
+      animation: itemEnter 0.16s ease;
+    }
+
+    .custom-select-option {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      transition: background-color 0.12s, color 0.12s;
+    }
+
+    .custom-select-option:hover {
+      background: var(--surface-soft);
+    }
+
+    .custom-select-option.selected {
+      background: var(--admin-bg);
+      color: var(--admin-dark);
+      font-weight: 800;
     }
 
     .card {
@@ -279,20 +395,6 @@
       justify-content: space-between;
       gap: 6px;
       flex-wrap: wrap;
-    }
-
-    .form-select {
-      width: 100%;
-      max-width: 100%;
-      padding: 9px 11px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 11px;
-      font-size: 12.5px;
-      font-weight: 700;
-      font-family: inherit;
-      color: var(--text);
-      background: #ffffff;
-      outline: none;
     }
 
     /* ================= CALENDAR ================= */
@@ -1003,7 +1105,7 @@
     </header>
 
     <main class="content-area">
-      <!-- Banner & Filter Karyawan Saat Mode Admin Aktif di index.html -->
+      <!-- Banner & Pilihan Aktivitas Karyawan Saat Mode Admin Aktif di index.html -->
       <section class="admin-mode-bar hidden" id="adminModeBar">
         <div class="admin-mode-top">
           <div>
@@ -1012,9 +1114,17 @@
           </div>
           <span class="badge badge-success" id="adminEmpCountBadge">0 Karyawan</span>
         </div>
-        <select id="adminEmpSelect" class="form-select">
-          <option value="ALL">Semua Karyawan Bisnis Ini</option>
-        </select>
+
+        <div class="picker-caption">Pilih aktivitas karyawan</div>
+        <div class="custom-select-wrap" id="adminEmpPicker">
+          <button type="button" class="custom-select-trigger" id="adminEmpPickerTrigger">
+            <span class="custom-select-val muted-opt" id="adminEmpPickerLabel">Tidak ada karyawan yang dipilih</span>
+            <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="custom-select-menu hidden" id="adminEmpPickerMenu"></div>
+        </div>
       </section>
 
       <!-- Bagian Kalender -->
@@ -1157,6 +1267,7 @@
     const VIEW_MODE_KEY = "absen_active_view_mode";
     let currentUser = null;
     let activeMode = "user";
+    let selectedAdminEmp = "NONE";
     let myRecords = [];
     let myTargets = [];
     let businessEmployees = [];
@@ -1177,7 +1288,6 @@
 
     const filterDateInput = document.getElementById("filterHistoryDate");
     const filterDateDisplay = document.getElementById("filterDateDisplay");
-    const adminEmpSelectEl = document.getElementById("adminEmpSelect");
 
     const FIXED_HOLIDAYS = {
       "01-01": { name: "Tahun Baru Masehi", isHoliday: true },
@@ -1300,6 +1410,16 @@
         .replace(/'/g, "&#39;");
     }
 
+    function renderTopbarAvatar(userObj) {
+      const avatarEl = document.getElementById("userAvatar");
+      const initial = (userObj?.username || userObj?.id || "K").charAt(0);
+      if (userObj && userObj.photoURL) {
+        avatarEl.innerHTML = `<img src="${escapeHtml(userObj.photoURL)}" alt="${escapeHtml(userObj.username || "Profil")}">`;
+      } else {
+        avatarEl.textContent = initial;
+      }
+    }
+
     function cleanNoteLines(rawNote) {
       return String(rawNote || "")
         .split("\n")
@@ -1319,38 +1439,83 @@
 
     function getActiveRecordsScope() {
       if (!isAdminModeActive()) return myRecords;
+      if (selectedAdminEmp === "NONE") return [];
       const empIdSet = new Set(businessEmployees.map(e => e.id || e.docId));
-      const pickedEmp = adminEmpSelectEl.value || "ALL";
       return businessAllRecords.filter(r => {
         if (!r.empId || !empIdSet.has(r.empId)) return false;
-        if (pickedEmp !== "ALL" && r.empId !== pickedEmp) return false;
+        if (selectedAdminEmp !== "ALL" && r.empId !== selectedAdminEmp) return false;
         return true;
       });
     }
 
     function getActiveTargetsScope() {
       if (!isAdminModeActive()) return myTargets;
+      if (selectedAdminEmp === "NONE") return [];
       const empIdSet = new Set(businessEmployees.map(e => e.id || e.docId));
-      const pickedEmp = adminEmpSelectEl.value || "ALL";
       return businessAllTargets.filter(t => {
         if (!t.empId || !empIdSet.has(t.empId)) return false;
-        if (pickedEmp !== "ALL" && t.empId !== pickedEmp) return false;
+        if (selectedAdminEmp !== "ALL" && t.empId !== selectedAdminEmp) return false;
         return true;
       });
     }
 
     function refreshAdminEmpDropdown() {
-      const prev = adminEmpSelectEl.value || "ALL";
-      const opts = [`<option value="ALL">Semua Karyawan Bisnis Ini (${businessEmployees.length})</option>`].concat(
-        businessEmployees.map(e => {
+      const trigger = document.getElementById("adminEmpPickerTrigger");
+      const menu = document.getElementById("adminEmpPickerMenu");
+      const labelEl = document.getElementById("adminEmpPickerLabel");
+
+      const options = [
+        { value: "NONE", label: "Tidak ada karyawan yang dipilih", sub: "" },
+        { value: "ALL", label: "Semua Karyawan Bisnis Ini", sub: `${businessEmployees.length}` },
+        ...businessEmployees.map(e => {
           const idVal = e.id || e.docId;
-          return `<option value="${escapeHtml(idVal)}">${escapeHtml(e.username || idVal)} (${escapeHtml(idVal)})</option>`;
+          return { value: idVal, label: e.username || idVal, sub: idVal };
         })
-      );
-      adminEmpSelectEl.innerHTML = opts.join("");
-      adminEmpSelectEl.value = Array.from(adminEmpSelectEl.options).some(o => o.value === prev) ? prev : "ALL";
+      ];
+
+      if (!options.some(o => o.value === selectedAdminEmp)) {
+        selectedAdminEmp = "NONE";
+      }
+
+      const activeOpt = options.find(o => o.value === selectedAdminEmp) || options[0];
+      labelEl.textContent = activeOpt.label;
+      labelEl.classList.toggle("muted-opt", selectedAdminEmp === "NONE");
+
+      menu.innerHTML = options.map(opt => `
+        <button type="button" class="custom-select-option ${opt.value === selectedAdminEmp ? "selected" : ""}" data-emp-opt="${escapeHtml(opt.value)}">
+          <span>${escapeHtml(opt.label)}</span>
+          ${opt.sub ? `<span class="badge badge-ok">${escapeHtml(opt.sub)}</span>` : ""}
+        </button>
+      `).join("");
+
+      trigger.onclick = (e) => {
+        e.stopPropagation();
+        const willOpen = menu.classList.contains("hidden");
+        menu.classList.toggle("hidden", !willOpen);
+        trigger.classList.toggle("open", willOpen);
+      };
+
+      menu.querySelectorAll("[data-emp-opt]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectedAdminEmp = btn.dataset.empOpt;
+          menu.classList.add("hidden");
+          trigger.classList.remove("open");
+          refreshAdminEmpDropdown();
+          renderCalendar();
+          renderHistory();
+        });
+      });
+
       document.getElementById("adminEmpCountBadge").textContent = `${businessEmployees.length} Karyawan`;
     }
+
+    document.addEventListener("click", () => {
+      const menu = document.getElementById("adminEmpPickerMenu");
+      const trigger = document.getElementById("adminEmpPickerTrigger");
+      if (menu) menu.classList.add("hidden");
+      if (trigger) trigger.classList.remove("open");
+    });
 
     function startAdminBusinessListeners(bizId) {
       if (bizId === activeBizId && unsubBizEmp && unsubBizRec && unsubBizRem) return;
@@ -1412,14 +1577,10 @@
         startAdminBusinessListeners(bizId);
       }
 
+      refreshAdminEmpDropdown();
       renderCalendar();
       renderHistory();
     }
-
-    adminEmpSelectEl.addEventListener("change", () => {
-      renderCalendar();
-      renderHistory();
-    });
 
     window.addEventListener("storage", (e) => {
       if (e.key === VIEW_MODE_KEY && currentUser) {
@@ -1739,6 +1900,12 @@
 
       renderSelectedDateTargets(filterVal);
 
+      if (isAdminModeActive() && selectedAdminEmp === "NONE") {
+        countLabel.textContent = "0 Data";
+        container.innerHTML = `<div class="empty-state">Tidak ada karyawan yang dipilih. Pilih aktivitas karyawan di atas untuk melihat riwayat.</div>`;
+        return;
+      }
+
       const empNameMap = {};
       businessEmployees.forEach(e => {
         const idVal = e.id || e.docId;
@@ -1859,6 +2026,7 @@
     // ================= INIT =================
     (function init() {
       updateFilterDateDisplay();
+      refreshAdminEmpDropdown();
 
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
@@ -1866,7 +2034,7 @@
           currentUser = saved;
           document.getElementById("displayUserName").textContent = saved.username;
           document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
-          document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+          renderTopbarAvatar(saved);
           syncModeFromIndex();
         } else {
           window.location.href = "https://my.sitenexs.com/absen";
@@ -1888,7 +2056,7 @@
         }
         currentUser = { ...currentUser, ...snap.data() };
         document.getElementById("displayUserName").textContent = currentUser.username || currentUser.id;
-        document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
+        renderTopbarAvatar(currentUser);
         syncModeFromIndex();
       });
 
@@ -1919,3 +2087,6 @@
   </script>
 </body>
 </html>
+<ElicitationsGroup message="Bicarakan hal ini dengan Gemini Live">
+<Elicitation label="Coba percakapan suara real-time" query="Coba percakapan suara real-time" query_intent="OPEN_LIVE_MODE" />
+</ElicitationsGroup>
