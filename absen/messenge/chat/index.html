@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Chat Tim Karyawan</title>
+  <title>Grup Chat Bisnis - Absensi Karyawan</title>
   <style>
     :root {
       --bg: #f3f6f8;
@@ -19,7 +19,6 @@
       --primary-bg: #f0fdfa;
       --success: #059669;
       --danger: #e11d48;
-      --danger-bg: #ffe4e6;
       --warning: #d97706;
       --warning-bg: #fef3c7;
     }
@@ -45,14 +44,8 @@
     }
 
     @keyframes msgPop {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .chat-app {
@@ -68,25 +61,24 @@
       border-right: 1px solid var(--border);
     }
 
-    /* ================= HEADER ================= */
     .chat-header {
       flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 12px;
+      padding: 9px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      z-https://my.sitenexs.com/absen: 20;
+      gap: 8px;
+      z-index: 20;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       min-width: 0;
       flex: 1;
     }
@@ -103,12 +95,6 @@
       justify-content: center;
       text-decoration: none;
       flex-shrink: 0;
-      transition: transform 0.12s, background-color 0.15s;
-    }
-
-    .back-btn:active {
-      transform: scale(0.93);
-      background: #e2e8f0;
     }
 
     .room-avatar {
@@ -130,7 +116,7 @@
     }
 
     .room-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: var(--text);
       letter-spacing: -0.2px;
@@ -140,7 +126,7 @@
     }
 
     .room-sub {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
       color: var(--success);
       display: flex;
@@ -168,13 +154,50 @@
       border-radius: 999px;
       font-size: 10.5px;
       font-weight: 800;
-      max-width: 110px;
+      max-width: 105px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* ================= MESSAGES STREAM ================= */
+    /* Bar daftar grup khusus bisnis pengguna */
+    .group-bar {
+      flex-shrink: 0;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .group-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .group-chip {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.14s ease;
+    }
+
+    .group-chip.active {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(15, 118, 110, 0.22);
+    }
+
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -335,12 +358,6 @@
       padding: 0;
     }
 
-    .msg-action-link:active {
-      opacity: 1;
-      text-decoration: underline;
-    }
-
-    /* ================= COMPOSER BAR ================= */
     .composer-wrap {
       flex-shrink: 0;
       background: rgba(255, 255, 255, 0.96);
@@ -351,7 +368,7 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      z-https://my.sitenexs.com/absen: 20;
+      z-index: 20;
     }
 
     .preview-strip {
@@ -428,12 +445,6 @@
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
-      transition: transform 0.12s, background-color 0.15s;
-    }
-
-    .attach-btn:active {
-      transform: scale(0.93);
-      background: #e2e8f0;
     }
 
     .chat-input-box {
@@ -445,7 +456,6 @@
       padding: 8px 11px;
       display: flex;
       align-items: center;
-      transition: border-color 0.15s, background-color 0.15s;
     }
 
     .chat-input-box:focus-within {
@@ -479,25 +489,20 @@
       cursor: pointer;
       flex-shrink: 0;
       box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
-      transition: transform 0.12s, opacity 0.15s;
     }
 
-    .send-btn:active:not(:disabled) {
-      transform: scale(0.93);
-    }
-
-    .send-btn:disabled {
+    .send-btn:disabled, .attach-btn:disabled {
       background: #cbd5e1;
+      color: #64748b;
       box-shadow: none;
       cursor: not-allowed;
     }
 
-    /* ================= FULLSCREEN PHOTO MODAL ================= */
     .img-modal {
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.95);
-      z-https://my.sitenexs.com/absen: 200;
+      z-index: 200;
       max-width: 440px;
       margin: 0 auto;
       display: flex;
@@ -544,13 +549,13 @@
       color: var(--muted);
       padding: 20px;
       font-size: 12.5px;
+      max-width: 280px;
     }
 
     .hidden {
       display: none !important;
     }
 
-    /* ================= TOAST ================= */
     .toast {
       position: fixed;
       left: 50%;
@@ -567,7 +572,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s, transform 0.2s;
-      z-https://my.sitenexs.com/absen: 300;
+      z-index: 300;
       text-align: center;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
     }
@@ -580,7 +585,6 @@
 </head>
 <body>
   <div class="chat-app">
-    <!-- Top Header -->
     <header class="chat-header">
       <div class="header-left">
         <a href="https://my.sitenexs.com/absen.html" class="back-btn" id="backToAbsenBtn" aria-label="Kembali ke Absensi">
@@ -590,28 +594,33 @@
         </a>
         <div class="room-avatar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
         </div>
         <div class="room-info">
-          <div class="room-title">Ruang Diskusi Tim</div>
+          <div class="room-title" id="activeGroupTitle">Grup Bisnis</div>
           <div class="room-sub">
             <span class="online-dot"></span>
-            <span id="chatStatusText">Sinkronisasi real-time</span>
+            <span id="businessSubLabel">Memeriksa bisnis...</span>
           </div>
         </div>
       </div>
       <div class="user-badge" id="currentUserBadge">-</div>
     </header>
 
-    <!-- Stream Pesan -->
+    <!-- Daftar Grup Khusus Bisnis yang Sama -->
+    <div class="group-bar" id="groupBar">
+      <span class="group-chip active">Memuat grup...</span>
+    </div>
+
     <main class="chat-messages" id="chatMessages">
-      <div class="empty-chat">Memuat percakapan...</div>
+      <div class="empty-chat">Memuat grup &amp; percakapan bisnis Anda...</div>
     </main>
 
-    <!-- Composer Input -->
     <footer class="composer-wrap">
-      <!-- Reply Banner -->
       <div id="replyStrip" class="preview-strip hidden">
         <div class="preview-strip-info">
           <div style="min-width:0;">
@@ -622,20 +631,19 @@
         <button type="button" class="strip-close-btn" id="cancelReplyBtn" aria-label="Batal balas">&times;</button>
       </div>
 
-      <!-- Photo Attachment Banner -->
       <div id="photoStrip" class="preview-strip hidden">
         <div class="preview-strip-info">
           <img id="photoStripThumb" class="preview-strip-thumb" alt="Lampiran">
           <div style="min-width:0;">
             <div class="preview-strip-title">Lampiran Foto</div>
-            <div class="preview-strip-desc">Siap dikirim bersama pesan</div>
+            <div class="preview-strip-desc">Siap dikirim ke grup</div>
           </div>
         </div>
         <button type="button" class="strip-close-btn" id="cancelPhotoBtn" aria-label="Hapus foto">&times;</button>
       </div>
 
       <div class="composer-row">
-        <button type="button" class="attach-btn" id="pickPhotoBtn" aria-label="Kirim Foto" title="Kirim Foto">
+        <button type="button" class="attach-btn" id="pickPhotoBtn" aria-label="Kirim Foto" title="Kirim Foto" disabled>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -645,10 +653,10 @@
         <input type="file" id="chatPhotoInput" accept="image/*" class="hidden">
 
         <div class="chat-input-box">
-          <textarea id="chatInput" class="chat-textarea" rows="1" placeholder="Tulis pesan untuk tim..."></textarea>
+          <textarea id="chatInput" class="chat-textarea" rows="1" placeholder="Tulis pesan untuk grup bisnis..." disabled></textarea>
         </div>
 
-        <button type="button" class="send-btn" id="sendMsgBtn" aria-label="Kirim">
+        <button type="button" class="send-btn" id="sendMsgBtn" aria-label="Kirim" disabled>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -658,7 +666,6 @@
     </footer>
   </div>
 
-  <!-- Fullscreen Image Preview -->
   <div id="imgModal" class="img-modal hidden">
     <div class="img-modal-top">
       <span style="font-weight:700; font-size:13px;" id="imgModalSender">Foto</span>
@@ -680,13 +687,12 @@
       setDoc,
       deleteDoc,
       query,
-      orderBy,
+      where,
       limit,
       onSnapshot
     } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    // ================= FIREBASE CONFIG =================
     const firebaseConfig = {
       apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
       authDomain: "sitenexs-62919.firebaseapp.com",
@@ -700,7 +706,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ================= SUPABASE CONFIG =================
     const SUPABASE_URL = "https://xqcbyamxiekdxytntlno.supabase.co";
     const SUPABASE_KEY = "sb_publishable_XKHXYrEw2EDdfYH17Uyx6w_k_BtGLQa";
     const SUPABASE_BUCKET = "absensi-foto";
@@ -708,15 +713,22 @@
 
     const SESSION_KEY = "absen_firebase_user_permanent";
     let currentUser = null;
+    let currentBusinessId = "";
+    let currentBusinessName = "";
+    let businessGroups = [];
+    let activeGroupId = "";
     let allMessages = [];
     let replyData = null;
     let pendingPhoto = null;
     let toastTimer = null;
+    let unsubscribeMessages = null;
 
     const chatMessagesEl = document.getElementById("chatMessages");
     const chatInputEl = document.getElementById("chatInput");
     const sendMsgBtn = document.getElementById("sendMsgBtn");
+    const pickPhotoBtn = document.getElementById("pickPhotoBtn");
     const chatPhotoInput = document.getElementById("chatPhotoInput");
+    const groupBarEl = document.getElementById("groupBar");
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -753,8 +765,7 @@
 
     function formatDateDivider(dateKey) {
       if (!dateKey) return "";
-      const today = getTodayKey();
-      if (dateKey === today) return "Hari Ini";
+      if (dateKey === getTodayKey()) return "Hari Ini";
       const [y, m, d] = dateKey.split("-").map(Number);
       const dt = new Date(y, m - 1, d);
       return dt.toLocaleDateString("id-ID", {
@@ -765,7 +776,13 @@
       });
     }
 
-    // Back button fallback jika dibuka dari nama file berbeda
+    function setComposerEnabled(enabled, placeholderText = "Tulis pesan untuk grup bisnis...") {
+      chatInputEl.disabled = !enabled;
+      sendMsgBtn.disabled = !enabled;
+      pickPhotoBtn.disabled = !enabled;
+      chatInputEl.placeholder = placeholderText;
+    }
+
     document.getElementById("backToAbsenBtn").addEventListener("click", (e) => {
       if (window.history.length > 1 && document.referrer) {
         e.preventDefault();
@@ -773,13 +790,11 @@
       }
     });
 
-    // Auto-resize textarea
     chatInputEl.addEventListener("input", () => {
       chatInputEl.style.height = "auto";
       chatInputEl.style.height = Math.min(chatInputEl.scrollHeight, 92) + "px";
     });
 
-    // Kirim dengan Enter (Shift+Enter untuk baris baru)
     chatInputEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -787,9 +802,8 @@
       }
     });
 
-    // ================= FOTO LAMPIRAN =================
-    document.getElementById("pickPhotoBtn").addEventListener("click", () => {
-      chatPhotoInput.click();
+    pickPhotoBtn.addEventListener("click", () => {
+      if (!pickPhotoBtn.disabled) chatPhotoInput.click();
     });
 
     function compressImage(file) {
@@ -844,7 +858,7 @@
     async function uploadChatPhoto(blob) {
       const todayKey = getTodayKey();
       const rand = Math.random().toString(36).slice(2, 6);
-      const path = `chat/${todayKey}/${currentUser.id}_${Date.now()}_${rand}.jpg`;
+      const path = `chat/${currentBusinessId}/${todayKey}/${currentUser.id}_${Date.now()}_${rand}.jpg`;
 
       const { error } = await supabase.storage
         .from(SUPABASE_BUCKET)
@@ -855,7 +869,6 @@
       return data.publicUrl;
     }
 
-    // ================= REPLY HANDLING =================
     function setReply(msg) {
       replyData = {
         id: msg.id,
@@ -875,10 +888,92 @@
 
     document.getElementById("cancelReplyBtn").addEventListener("click", clearReply);
 
-    // ================= RENDER MESSAGES =================
+    function renderGroupBar() {
+      if (!currentBusinessId) {
+        groupBarEl.innerHTML = `<span class="group-chip">Belum terhubung ke bisnis</span>`;
+        document.getElementById("activeGroupTitle").textContent = "Akses Terbatas";
+        document.getElementById("businessSubLabel").textContent = "Bisnis belum ditetapkan admin";
+        setComposerEnabled(false, "Bisnis belum ditetapkan admin...");
+        chatMessagesEl.innerHTML = `<div class="empty-chat">Akun Anda belum terdaftar pada bisnis manapun.<br>Hubungi admin untuk mengatur bisnis Anda.</div>`;
+        return;
+      }
+
+      const bizLabel = currentBusinessName ? `${currentBusinessName} (${currentBusinessId})` : currentBusinessId;
+      document.getElementById("businessSubLabel").textContent = `Bisnis: ${bizLabel}`;
+
+      if (businessGroups.length === 0) {
+        activeGroupId = "";
+        groupBarEl.innerHTML = `<span class="group-chip">Tidak ada grup untuk bisnis ini</span>`;
+        document.getElementById("activeGroupTitle").textContent = "Belum Ada Grup";
+        setComposerEnabled(false, "Belum ada grup di bisnis ini...");
+        chatMessagesEl.innerHTML = `<div class="empty-chat">Belum ada grup chat untuk bisnis <b>${escapeHtml(bizLabel)}</b>.<br>Grup dari bisnis lain tidak ditampilkan.</div>`;
+        return;
+      }
+
+      if (!businessGroups.some(g => g.id === activeGroupId)) {
+        activeGroupId = businessGroups[0].id;
+        subscribeGroupMessages(currentBusinessId, activeGroupId);
+      }
+
+      const activeGrp = businessGroups.find(g => g.id === activeGroupId);
+      document.getElementById("activeGroupTitle").textContent = activeGrp ? activeGrp.name : "Grup Bisnis";
+      setComposerEnabled(true, `Kirim ke ${activeGrp ? activeGrp.name : "grup"}...`);
+
+      groupBarEl.innerHTML = businessGroups.map(g => `
+        <button type="button" class="group-chip ${g.id === activeGroupId ? "active" : ""}" data-grp-id="${escapeHtml(g.id)}">
+          ${escapeHtml(g.name)}
+        </button>
+      `).join("");
+
+      groupBarEl.querySelectorAll("[data-grp-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const nextId = btn.dataset.grpId;
+          if (nextId === activeGroupId) return;
+          activeGroupId = nextId;
+          clearReply();
+          renderGroupBar();
+          subscribeGroupMessages(currentBusinessId, activeGroupId);
+        });
+      });
+    }
+
+    function subscribeGroupMessages(businessId, groupId) {
+      if (unsubscribeMessages) {
+        unsubscribeMessages();
+        unsubscribeMessages = null;
+      }
+
+      allMessages = [];
+      chatMessagesEl.innerHTML = `<div class="empty-chat">Memuat pesan grup...</div>`;
+
+      // Filter ketat hanya untuk businessId dan groupId yang sama
+      const q = query(
+        collection(db, "absen_chat"),
+        where("businessId", "==", businessId),
+        where("groupId", "==", groupId),
+        limit(120)
+      );
+
+      unsubscribeMessages = onSnapshot(q, (snapshot) => {
+        const list = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          // Pengaman ganda agar lintas bisnis tidak pernah bocor
+          .filter(m => m.businessId === businessId && m.groupId === groupId)
+          .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
+
+        allMessages = list;
+        renderMessages();
+      }, (err) => {
+        console.error(err);
+        showToast("Gagal memuat pesan grup.");
+      });
+    }
+
     function renderMessages() {
+      if (!currentBusinessId || !activeGroupId) return;
+
       if (allMessages.length === 0) {
-        chatMessagesEl.innerHTML = `<div class="empty-chat">Belum ada pesan di ruang diskusi.<br>Mulai percakapan sekarang!</div>`;
+        chatMessagesEl.innerHTML = `<div class="empty-chat">Belum ada pesan di grup ini.<br>Mulai diskusi bersama tim bisnis Anda!</div>`;
         return;
       }
 
@@ -974,10 +1069,9 @@
       document.getElementById("imgModal").classList.add("hidden");
     });
 
-    // ================= SEND MESSAGE =================
     async function sendMessage() {
-      if (!currentUser) {
-        showToast("Silakan login di halaman absensi terlebih dahulu.");
+      if (!currentUser || !currentBusinessId || !activeGroupId) {
+        showToast("Pilih grup bisnis yang aktif terlebih dahulu.");
         return;
       }
 
@@ -996,6 +1090,8 @@
         const msgId = `${Date.now()}_${currentUser.id}`;
 
         await setDoc(doc(db, "absen_chat", msgId), {
+          businessId: currentBusinessId,
+          groupId: activeGroupId,
           empId: currentUser.id,
           username: currentUser.username,
           text,
@@ -1021,7 +1117,28 @@
 
     sendMsgBtn.addEventListener("click", sendMessage);
 
-    // ================= INIT =================
+    function subscribeBusinessGroups(bizId) {
+      if (!bizId) {
+        businessGroups = [];
+        renderGroupBar();
+        return;
+      }
+
+      const qGrp = query(
+        collection(db, "absen_grup"),
+        where("businessId", "==", bizId)
+      );
+
+      onSnapshot(qGrp, (snap) => {
+        businessGroups = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(g => g.businessId === bizId)
+          .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
+
+        renderGroupBar();
+      });
+    }
+
     (function init() {
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
@@ -1040,19 +1157,54 @@
         return;
       }
 
-      const q = query(
-        collection(db, "absen_chat"),
-        orderBy("createdAt", "asc"),
-        limit(120)
-      );
+      let activeGroupSub = null;
 
-      onSnapshot(q, (snapshot) => {
-        allMessages = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderMessages();
-      }, (err) => {
-        console.error(err);
-        document.getElementById("chatStatusText").textContent = "Gangguan koneksi";
-        showToast("Gagal memuat pesan.");
+      // Pantau businessId karyawan secara real-time dari Firestore
+      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
+        if (!snap.exists()) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "https://my.sitenexs.com/absen.html";
+          return;
+        }
+
+        const userDoc = snap.data();
+        currentUser = { ...currentUser, ...userDoc };
+        document.getElementById("currentUserBadge").textContent = currentUser.username || currentUser.id;
+
+        const nextBizId = (userDoc.businessId || "").trim().toUpperCase();
+        if (nextBizId !== currentBusinessId) {
+          currentBusinessId = nextBizId;
+          currentBusinessName = "";
+          activeGroupId = "";
+          if (unsubscribeMessages) {
+            unsubscribeMessages();
+            unsubscribeMessages = null;
+          }
+
+          if (currentBusinessId) {
+            onSnapshot(doc(db, "absen_bisnis", currentBusinessId), (bizSnap) => {
+              currentBusinessName = bizSnap.exists() ? (bizSnap.data().name || "") : "";
+              renderGroupBar();
+            });
+
+            if (activeGroupSub) activeGroupSub();
+            const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", currentBusinessId));
+            activeGroupSub = onSnapshot(qGrp, (gSnap) => {
+              businessGroups = gSnap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(g => g.businessId === currentBusinessId)
+                .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")));
+              renderGroupBar();
+            });
+          } else {
+            if (activeGroupSub) {
+              activeGroupSub();
+              activeGroupSub = null;
+            }
+            businessGroups = [];
+            renderGroupBar();
+          }
+        }
       });
     })();
   </script>
