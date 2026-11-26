@@ -179,10 +179,50 @@
       animation: tabFadeSlide 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    /* ================= BANNER LANGGANAN MAU HABIS ================= */
+    .sub-alert-banner {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1px solid #f59e0b;
+      border-left: 4px solid var(--warning);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12);
+      animation: itemEnter 0.22s ease;
+    }
+
+    .sub-alert-banner.expired {
+      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+      border-color: #f43f5e;
+      border-left-color: var(--danger);
+    }
+
+    .sub-alert-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #92400e;
+    }
+
+    .sub-alert-banner.expired .sub-alert-title {
+      color: #9f1239;
+    }
+
+    .sub-alert-desc {
+      font-size: 11px;
+      font-weight: 600;
+      color: #b45309;
+    }
+
+    .sub-alert-banner.expired .sub-alert-desc {
+      color: #be123c;
+    }
+
     .sub-segment {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
       background: #e2e8f0;
       padding: 4px;
       border-radius: 14px;
@@ -192,15 +232,15 @@
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      padding: 8px 6px;
+      padding: 8px 4px;
       border-radius: 10px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       transition: all 0.16s ease;
     }
 
@@ -211,9 +251,9 @@
     }
 
     .seg-count {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 999px;
       background: var(--primary-bg);
       color: var(--primary);
@@ -277,6 +317,105 @@
       background: #e2e8f0;
       color: var(--muted);
       cursor: not-allowed;
+    }
+
+    .picker-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .custom-picker-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 10px;
+      min-height: 38px;
+      cursor: pointer;
+    }
+
+    .custom-picker-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-picker-text.placeholder {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .native-overlay-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cat-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .cat-pill-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 7px 6px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .cat-pill-btn.active {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .note-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .note-box:focus-within {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+    }
+
+    .note-textarea {
+      width: 100%;
+      min-height: 56px;
+      padding: 10px 11px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      line-height: 1.45;
+      display: block;
     }
 
     .add-emp-form-box {
@@ -495,13 +634,6 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      transition: background-color 0.12s, border-color 0.12s, color 0.12s;
-    }
-
-    .copy-chip-btn:active {
-      background: var(--primary-bg);
-      border-color: var(--primary);
-      color: var(--primary);
     }
 
     .copy-actions-row {
@@ -729,7 +861,6 @@
       overflow-wrap: anywhere;
     }
 
-    /* ================= TERPISAH: FOTO PRESENSI & FOTO CATATAN ================= */
     .photo-section-box {
       background: #ffffff;
       border: 1px solid var(--border);
@@ -1004,6 +1135,12 @@
 
     <!-- Panel Utama Admin yang Ditunjuk -->
     <main class="content-area hidden" id="adminPanel">
+      <!-- Notifikasi Paket Langganan Akan Habis dari Admin Sitenexs -->
+      <section class="sub-alert-banner hidden" id="subExpiryBanner">
+        <div class="sub-alert-title" id="subExpiryTitle">Paket langganan kamu akan habis</div>
+        <div class="sub-alert-desc" id="subExpiryDesc">-</div>
+      </section>
+
       <div class="sub-segment">
         <button type="button" class="sub-seg-btn active" data-tab="tabPantau">
           <span>Pantau</span>
@@ -1012,6 +1149,10 @@
         <button type="button" class="sub-seg-btn" data-tab="tabTambah">
           <span>Karyawan</span>
           <span class="seg-count" id="countKaryawan">0</span>
+        </button>
+        <button type="button" class="sub-seg-btn" data-tab="tabTargetPengingat">
+          <span>Target</span>
+          <span class="seg-count" id="countTarget">0</span>
         </button>
         <button type="button" class="sub-seg-btn" data-tab="tabAnggotaGrup">
           <span>Grup</span>
@@ -1079,7 +1220,7 @@
             <span class="badge badge-ok" id="monitorRecCount">Pilih Karyawan</span>
           </div>
           <div id="monitorList" class="item-list">
-            <div class="empty-state">Pilih karyawan pada grafik di atas untuk melihat catatan dan foto.</div>
+            <div class="empty-state">Pilih nama karyawan pada filter di atas untuk menampilkan catatan dan foto.</div>
           </div>
         </section>
       </div>
@@ -1126,7 +1267,78 @@
         </section>
       </div>
 
-      <!-- TAB 3: BUAT GRUP, TAMBAH & HAPUS ANGGOTA GRUP -->
+      <!-- TAB 3: BUAT TARGET & PENGINGAT KARYAWAN -->
+      <div id="tabTargetPengingat" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+        <section class="card">
+          <div class="card-title">
+            <span>Buat Target / Pengingat Karyawan</span>
+            <span class="badge badge-success">absen_pengingat</span>
+          </div>
+          <form id="adminAssignReminderForm">
+            <div class="form-group">
+              <label class="form-label">Karyawan Penerima</label>
+              <div class="custom-select-wrap" id="remEmpPicker">
+                <button type="button" class="custom-select-trigger" id="remEmpPickerTrigger">
+                  <span class="custom-select-val" id="remEmpPickerLabel">Semua Karyawan Bisnis Ini</span>
+                  <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <div class="custom-select-menu hidden" id="remEmpPickerMenu"></div>
+              </div>
+            </div>
+
+            <div class="cat-pills" id="admRemCatPills">
+              <button type="button" class="cat-pill-btn active" data-rem-cat="Target">Target</button>
+              <button type="button" class="cat-pill-btn" data-rem-cat="Pengingat">Pengingat</button>
+              <button type="button" class="cat-pill-btn" data-rem-cat="Penting">Penting</button>
+            </div>
+
+            <div class="form-group">
+              <input type="text" id="admRemTitleInput" class="form-input" placeholder="Judul target atau pengingat karyawan..." required>
+            </div>
+
+            <div class="picker-row" id="admTargetMetricRow">
+              <div>
+                <input type="number" id="admRemGoalInput" class="form-input" min="1" placeholder="Angka target (opsional)">
+              </div>
+              <div>
+                <input type="text" id="admRemUnitInput" class="form-input" placeholder="Satuan (Klien / Tugas)">
+              </div>
+            </div>
+
+            <div class="picker-row">
+              <label class="custom-picker-box">
+                <span class="custom-picker-text" id="admRemDateDisplay">Hari ini</span>
+                <input type="date" id="admRemDateInput" class="native-overlay-input" required>
+              </label>
+
+              <label class="custom-picker-box">
+                <span class="custom-picker-text placeholder" id="admRemTimeDisplay">Jam (opsional)</span>
+                <input type="time" id="admRemTimeInput" class="native-overlay-input">
+              </label>
+            </div>
+
+            <div class="note-box">
+              <textarea id="admRemNoteInput" class="note-textarea" placeholder="Catatan instruksi atau detail pengingat..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="saveAdmRemBtn">Kirim Target / Pengingat</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span>Daftar Target &amp; Pengingat Karyawan</span>
+            <span class="badge badge-ok" id="admRemListBadge">0 Item</span>
+          </div>
+          <div id="admRemList" class="item-list">
+            <div class="empty-state">Memuat target dan pengingat...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 4: BUAT GRUP, TAMBAH & HAPUS ANGGOTA GRUP -->
       <div id="tabAnggotaGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
@@ -1259,16 +1471,21 @@
     let employees = [];
     let businessRecords = [];
     let groups = [];
+    let businessReminders = [];
     let toastTimer = null;
+    let notifiedSubWarning = false;
 
     let selectedMonitorEmp = "ALL";
     let showMonitorDetails = false;
     let selectedGroupId = "";
     let selectedMemberEmpId = "";
+    let selectedRemTargetEmp = "ALL";
+    let selectedAdmRemCategory = "Target";
 
     let unsubEmp = null;
     let unsubRec = null;
     let unsubGrp = null;
+    let unsubRem = null;
 
     let lightboxPhotos = [];
     let lightboxIndex = 0;
@@ -1278,7 +1495,7 @@
       el.textContent = msg;
       el.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
     }
 
     async function copyTextValue(text, label) {
@@ -1345,9 +1562,81 @@
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     }
 
+    function formatShortDateKey(dateKey) {
+      if (!dateKey) return "-";
+      const [y, m, d] = dateKey.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
     function hasAdminAuthority(docData) {
       if (!docData) return false;
       return Boolean(docData.isAbsenAdmin) || docData.role === "admin_absen";
+    }
+
+    // ================= NOTIFIKASI PAKET LANGGANAN MAU HABIS =================
+    function checkSubscriptionExpiring(userData) {
+      const banner = document.getElementById("subExpiryBanner");
+      const titleEl = document.getElementById("subExpiryTitle");
+      const descEl = document.getElementById("subExpiryDesc");
+      if (!banner || !userData) return;
+
+      if (userData.subscriptionActive === false) {
+        banner.classList.remove("hidden");
+        banner.classList.add("expired");
+        titleEl.textContent = "Paket langganan admin tidak aktif";
+        descEl.textContent = "Hubungi Admin Sitenexs untuk mengaktifkan kembali paket langganan Anda.";
+        if (!notifiedSubWarning) {
+          notifiedSubWarning = true;
+          showToast("Paket langganan admin kamu tidak aktif!");
+        }
+        return;
+      }
+
+      if (userData.subscriptionExpiresAt) {
+        const expMs = new Date(userData.subscriptionExpiresAt).getTime();
+        if (!isNaN(expMs)) {
+          const diffMs = expMs - Date.now();
+          const daysLeft = Math.ceil(diffMs / (24 * 60 * 60 * 1000));
+          const expDateStr = new Date(expMs).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+          });
+
+          if (diffMs <= 0) {
+            banner.classList.remove("hidden");
+            banner.classList.add("expired");
+            titleEl.textContent = "Paket langganan kamu sudah habis";
+            descEl.textContent = `Berakhir pada ${expDateStr}. Silakan hubungi Admin Sitenexs untuk perpanjangan.`;
+            if (!notifiedSubWarning) {
+              notifiedSubWarning = true;
+              showToast("Paket langganan kamu sudah habis!");
+            }
+            return;
+          }
+
+          if (daysLeft <= 7) {
+            banner.classList.remove("hidden");
+            banner.classList.remove("expired");
+            titleEl.textContent = `Paket langganan kamu akan habis (${daysLeft} hari lagi)`;
+            descEl.textContent = `Masa aktif berakhir pada ${expDateStr}. Segera perpanjang melalui Admin Sitenexs.`;
+            if (!notifiedSubWarning) {
+              notifiedSubWarning = true;
+              showToast(`Paket langganan kamu akan habis (${daysLeft} hari lagi)!`);
+            }
+            return;
+          }
+        }
+      }
+
+      banner.classList.add("hidden");
+      banner.classList.remove("expired");
     }
 
     // Input ID karyawan 6 angka saja
@@ -1364,6 +1653,45 @@
       if (willShow) {
         document.getElementById("newEmpNameInput").focus();
       }
+    });
+
+    // Picker Target & Pengingat
+    const admRemDateInput = document.getElementById("admRemDateInput");
+    const admRemDateDisplay = document.getElementById("admRemDateDisplay");
+    const admRemTimeInput = document.getElementById("admRemTimeInput");
+    const admRemTimeDisplay = document.getElementById("admRemTimeDisplay");
+    const admTargetMetricRow = document.getElementById("admTargetMetricRow");
+
+    function initAdmReminderPickers() {
+      const todayKey = getTodayKey();
+      admRemDateInput.value = todayKey;
+      admRemDateDisplay.textContent = formatShortDateKey(todayKey);
+      admRemTimeInput.value = "";
+      admRemTimeDisplay.textContent = "Jam (opsional)";
+      admRemTimeDisplay.classList.add("placeholder");
+    }
+
+    admRemDateInput.addEventListener("change", () => {
+      admRemDateDisplay.textContent = admRemDateInput.value ? formatShortDateKey(admRemDateInput.value) : "Pilih tanggal";
+    });
+
+    admRemTimeInput.addEventListener("change", () => {
+      if (admRemTimeInput.value) {
+        admRemTimeDisplay.textContent = admRemTimeInput.value;
+        admRemTimeDisplay.classList.remove("placeholder");
+      } else {
+        admRemTimeDisplay.textContent = "Jam (opsional)";
+        admRemTimeDisplay.classList.add("placeholder");
+      }
+    });
+
+    document.querySelectorAll("#admRemCatPills .cat-pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#admRemCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedAdmRemCategory = btn.dataset.remCat;
+        admTargetMetricRow.classList.toggle("hidden", selectedAdmRemCategory !== "Target");
+      });
     });
 
     // ================= CUSTOM DROPDOWN PICKERS =================
@@ -1443,6 +1771,29 @@
           showMonitorDetails = (val !== "ALL");
           refreshAllCustomPickers();
           renderMonitorChartAndList();
+        }
+      });
+
+      const remEmpOpts = [
+        { value: "ALL", label: "Semua Karyawan Bisnis Ini", sub: `${employees.length}` },
+        ...employees.map(emp => {
+          const idVal = emp.id || emp.docId;
+          return { value: idVal, label: emp.username || idVal, sub: idVal };
+        })
+      ];
+      if (!remEmpOpts.some(o => o.value === selectedRemTargetEmp)) {
+        selectedRemTargetEmp = "ALL";
+      }
+      setupCustomDropdown({
+        triggerId: "remEmpPickerTrigger",
+        menuId: "remEmpPickerMenu",
+        labelId: "remEmpPickerLabel",
+        options: remEmpOpts,
+        currentValue: selectedRemTargetEmp,
+        placeholderText: "Semua Karyawan Bisnis Ini",
+        onSelect: (val) => {
+          selectedRemTargetEmp = val;
+          refreshAllCustomPickers();
         }
       });
 
@@ -1574,7 +1925,7 @@
         document.querySelectorAll(".sub-seg-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         const tabId = btn.dataset.tab;
-        ["tabPantau", "tabTambah", "tabAnggotaGrup"].forEach(id => {
+        ["tabPantau", "tabTambah", "tabTargetPengingat", "tabAnggotaGrup"].forEach(id => {
           document.getElementById(id).classList.toggle("hidden", id !== tabId);
         });
       });
@@ -1833,6 +2184,63 @@
       });
     }
 
+    function renderAdminRemindersList() {
+      document.getElementById("countTarget").textContent = businessReminders.length;
+      document.getElementById("admRemListBadge").textContent = `${businessReminders.length} Item`;
+
+      const empNameMap = {};
+      employees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empNameMap[idVal] = e.username || idVal;
+      });
+
+      const container = document.getElementById("admRemList");
+      if (businessReminders.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat karyawan.</div>`;
+        return;
+      }
+
+      const sorted = [...businessReminders].sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+
+      container.innerHTML = sorted.map(rem => {
+        const targetLabel = empNameMap[rem.empId] || rem.username || rem.empId || "-";
+        const goalNum = Number(rem.targetGoal) || 0;
+        const curNum = Number(rem.targetCurrent) || 0;
+        const goalHtml = goalNum > 0
+          ? `<span class="badge badge-success">Target: ${curNum}/${goalNum} ${escapeHtml(rem.targetUnit || "")}</span>`
+          : "";
+
+        return `
+          <div class="list-card">
+            <div class="list-card-row">
+              <div class="list-card-body">
+                <div class="list-card-title">
+                  <span>${escapeHtml(rem.title || "-")}</span>
+                  <span class="badge badge-ok">${escapeHtml(rem.category || "Target")}</span>
+                  ${goalHtml}
+                </div>
+                <div class="list-card-sub">Karyawan: ${escapeHtml(targetLabel)} (${escapeHtml(rem.empId || "-")}) • ${escapeHtml(formatShortDateKey(rem.date))}${rem.time ? ` ${escapeHtml(rem.time)}` : ""}</div>
+                ${rem.note ? `<div class="note-box-preview" style="margin-top:5px;">${escapeHtml(cleanNoteLines(rem.note))}</div>` : ""}
+              </div>
+              <button type="button" class="btn-danger-sm" data-del-adm-rem="${escapeHtml(rem.docId)}">Hapus</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll("[data-del-adm-rem]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.delAdmRem;
+          try {
+            await deleteDoc(doc(db, "absen_pengingat", id));
+            showToast("Target / pengingat dihapus.");
+          } catch {
+            showToast("Gagal menghapus item.");
+          }
+        });
+      });
+    }
+
     function renderGroupMembers() {
       document.getElementById("countGrup").textContent = groups.length;
       document.getElementById("groupMemberBadge").textContent = `${groups.length} Grup`;
@@ -1900,6 +2308,77 @@
         });
       });
     }
+
+    // Submit Target / Pengingat Karyawan
+    document.getElementById("adminAssignReminderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!adminBusinessId) {
+        showToast("Bisnis admin belum diatur.");
+        return;
+      }
+
+      const title = document.getElementById("admRemTitleInput").value.trim();
+      const date = admRemDateInput.value;
+      const time = admRemTimeInput.value;
+      const note = document.getElementById("admRemNoteInput").value.trim();
+      const goalRaw = document.getElementById("admRemGoalInput").value.trim();
+      const unit = document.getElementById("admRemUnitInput").value.trim();
+      const btn = document.getElementById("saveAdmRemBtn");
+
+      if (!title || !date) {
+        showToast("Isi judul dan tanggal.");
+        return;
+      }
+
+      const targetGoal = (selectedAdmRemCategory === "Target" && goalRaw) ? Math.max(0, Number(goalRaw)) : 0;
+      const targetEmps = selectedRemTargetEmp === "ALL"
+        ? employees.map(emp => ({ id: emp.id || emp.docId, username: emp.username || (emp.id || emp.docId) }))
+        : employees
+            .filter(emp => (emp.id || emp.docId) === selectedRemTargetEmp)
+            .map(emp => ({ id: emp.id || emp.docId, username: emp.username || (emp.id || emp.docId) }));
+
+      if (targetEmps.length === 0) {
+        showToast("Belum ada karyawan pada bisnis ini.");
+        return;
+      }
+
+      btn.disabled = true;
+      try {
+        const nowIso = new Date().toISOString();
+        for (let i = 0; i < targetEmps.length; i++) {
+          const targetEmp = targetEmps[i];
+          const docId = `${targetEmp.id}_${Date.now()}_${i}`;
+          await setDoc(doc(db, "absen_pengingat", docId), {
+            empId: targetEmp.id,
+            username: targetEmp.username,
+            businessId: adminBusinessId,
+            assignedBy: currentUser?.id || "",
+            category: selectedAdmRemCategory,
+            title,
+            targetGoal,
+            targetCurrent: 0,
+            targetUnit: targetGoal > 0 ? unit : "",
+            date,
+            time: time || "",
+            note,
+            completed: false,
+            createdAt: nowIso
+          });
+        }
+
+        document.getElementById("admRemTitleInput").value = "";
+        document.getElementById("admRemGoalInput").value = "";
+        document.getElementById("admRemUnitInput").value = "";
+        document.getElementById("admRemNoteInput").value = "";
+        initAdmReminderPickers();
+        showToast(`Target/pengingat dikirim ke ${targetEmps.length} karyawan.`);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan target/pengingat.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     // Buat Grup Baru
     document.getElementById("createGroupForm").addEventListener("submit", async (e) => {
@@ -2012,6 +2491,7 @@
       if (unsubEmp) { unsubEmp(); unsubEmp = null; }
       if (unsubRec) { unsubRec(); unsubRec = null; }
       if (unsubGrp) { unsubGrp(); unsubGrp = null; }
+      if (unsubRem) { unsubRem(); unsubRem = null; }
 
       adminBusinessId = bizId;
       document.getElementById("newEmpBizInput").value = bizId || "-";
@@ -2020,9 +2500,11 @@
         employees = [];
         businessRecords = [];
         groups = [];
+        businessReminders = [];
         refreshAllCustomPickers();
         renderMonitorChartAndList();
         renderEmployeesManage();
+        renderAdminRemindersList();
         renderGroupMembers();
         return;
       }
@@ -2033,6 +2515,7 @@
         refreshAllCustomPickers();
         renderMonitorChartAndList();
         renderEmployeesManage();
+        renderAdminRemindersList();
         renderGroupMembers();
       });
 
@@ -2049,9 +2532,16 @@
         refreshAllCustomPickers();
         renderGroupMembers();
       });
+
+      const qRem = query(collection(db, "absen_pengingat"), where("businessId", "==", bizId));
+      unsubRem = onSnapshot(qRem, (snap) => {
+        businessReminders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderAdminRemindersList();
+      });
     }
 
     (function init() {
+      initAdmReminderPickers();
       refreshAllCustomPickers();
 
       try {
@@ -2078,6 +2568,8 @@
         const displayName = currentUser.username || currentUser.id;
         document.getElementById("adminName").textContent = displayName;
         document.getElementById("adminAvatar").textContent = displayName.charAt(0);
+
+        checkSubscriptionExpiring(data);
 
         if (!hasAdminAuthority(data)) {
           document.getElementById("adminRoleSub").textContent = "Bukan Admin • saya";
