@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kalender &amp; Riwayat - Absensi Karyawan</title>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #64748b;
+      --border: rgba(203, 213, 225, 0.72);
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #14b8a6;
+      --primary-bg: #f0fdfa;
+      --success: #059669;
+      --success-bg: #d1fae5;
+      --danger: #e11d48;
+      --danger-bg: #ffe4e6;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 13px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    @keyframes tabFadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes calSlideNext {
+      from { opacity: 0; transform: translateX(14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes calSlidePrev {
+      from { opacity: 0; transform: translateX(-14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes itemEnter {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cal-anim-next { animation: calSlideNext 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+    .cal-anim-prev { animation: calSlidePrev 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding-top: 54px;
+      padding-bottom: 76px;
+    }
+
+    /* Fixed Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .avatar-dot {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--success);
+      border: 2px solid #ffffff;
+    }
+
+    .topbar-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .user-id {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-logout {
+      flex-shrink: 0;
+      border: 1px solid #fecdd3;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .content-area {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--clay-shadow);
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+      margin-bottom: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* ================= CALENDAR ================= */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 11px;
+    }
+
+    .cal-month-label {
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cal-nav-btn {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+      width: 100%;
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      padding-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .cal-dow.sun { color: var(--danger); }
+
+    .cal-cell {
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      min-width: 0;
+      transition: transform 0.12s, border-color 0.15s, background-color 0.15s;
+    }
+
+    .cal-cell:active:not(.empty) { transform: scale(0.93); }
+    .cal-cell.empty { border: none; background: transparent; cursor: default; }
+    .cal-cell.has-record { background: #ffffff; border-color: #cbd5e1; }
+    .cal-cell.sunday { background: #fff8f9; }
+    .cal-cell.holiday { background: #fff1f2; border-color: #fecdd3; }
+    .cal-cell.today { border-color: var(--primary); background: var(--primary-bg); }
+    .cal-cell.selected {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.25);
+    }
+
+    .cal-num {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .cal-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .cal-dot.full { background: var(--success); }
+    .cal-dot.partial { background: var(--warning); }
+    .cal-cell.selected .cal-dot.full,
+    .cal-cell.selected .cal-dot.partial { background: #ffffff; }
+
+    .cal-cell.sunday .cal-num,
+    .cal-cell.holiday .cal-num { color: var(--danger); }
+    .cal-cell.today .cal-num { color: var(--primary); font-weight: 800; }
+    .cal-cell.selected .cal-num { color: #ffffff; font-weight: 800; }
+
+    .cal-holidays-box {
+      margin-top: 11px;
+      padding-top: 9px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .cal-holiday-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 5px 8px;
+      border-radius: 8px;
+      background: #fff1f2;
+      cursor: pointer;
+    }
+
+    .cal-holiday-date {
+      font-weight: 800;
+      color: var(--danger);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-holiday-name {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= FILTER & HISTORY ================= */
+    .filter-row {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 11px;
+      align-items: stretch;
+    }
+
+    .custom-picker-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      min-height: 38px;
+      cursor: pointer;
+    }
+
+    .custom-picker-box svg {
+      width: 15px;
+      height: 15px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .custom-picker-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-picker-text.placeholder {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .native-overlay-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-outline-sm {
+      flex-shrink: 0;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 13px;
+      border-radius: 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-keluar {
+      background: linear-gradient(135deg, #e11d48, #f43f5e);
+      color: #ffffff;
+      border: none;
+      border-radius: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .history-item {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: itemEnter 0.22s ease;
+    }
+
+    .history-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .history-date {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .history-badges {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3.5px 8px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      border: none;
+      cursor: pointer;
+    }
+
+    .time-chip.in { background: var(--success-bg); color: var(--success); }
+    .time-chip.out { background: var(--danger-bg); color: var(--danger); }
+    .time-chip.late { background: var(--warning-bg); color: var(--warning); }
+    .time-chip.empty { background: #e2e8f0; color: var(--muted); cursor: default; }
+
+    .chip-cam {
+      font-size: 9.5px;
+      opacity: 0.9;
+      text-decoration: underline;
+    }
+
+    .chip-late-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(217, 119, 6, 0.16);
+      color: #b45309;
+      text-transform: uppercase;
+    }
+
+    .history-note-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 10px;
+    }
+
+    .history-note-text {
+      font-size: 12px;
+      color: var(--text);
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.45;
+    }
+
+    .photo-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .photo-thumb-btn {
+      display: block;
+      width: 46px;
+      height: 46px;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .photo-thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3.5px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge-ok { background: var(--primary-bg); color: var(--primary); }
+
+    .empty-state {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 20px 10px;
+      background: var(--surface-soft);
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    /* ================= FIXED BOTTOM NAVIGATION ================= */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 6px 10px calc(7px + env(safe-area-inset-bottom, 0px));
+      z-index: 60;
+      touch-action: none;
+    }
+
+    .nav-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-icon-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 26px;
+      border-radius: 999px;
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-btn.active .nav-icon-pill {
+      background: #ccfbf1;
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 2px;
+      right: 25%;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--warning);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #ffffff;
+    }
+
+    /* ================= FLOATING CHAT BUTTON ================= */
+    .fab-chat-wrap {
+      position: fixed;
+      left: 50%;
+      bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      pointer-events: none;
+      z-index: 58;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 14px;
+    }
+
+    .fab-chat-btn {
+      pointer-events: auto;
+      width: 50px;
+      height: 50px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(15, 118, 110, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+    }
+
+    /* ================= PHOTO GALLERY LIGHTBOX MODAL ================= */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.96);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      max-width: 440px;
+      margin: 0 auto;
+      color: #ffffff;
+      animation: tabFadeSlide 0.2s ease;
+    }
+
+    .lb-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lb-info { min-width: 0; }
+    .lb-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-counter { font-size: 11px; color: #94a3b8; }
+
+    .cam-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lb-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .lb-main-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: modalPop 0.2s ease;
+    }
+
+    .lb-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .lb-nav-btn.prev { left: 10px; }
+    .lb-nav-btn.next { right: 10px; }
+
+    .lb-thumbs-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+    }
+
+    .lb-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 9px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      opacity: 0.55;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .lb-thumb.active { border-color: var(--primary-light); opacity: 1; }
+    .lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ================= CONFIRM & TOAST ================= */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-card {
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+      text-align: center;
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .confirm-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .confirm-msg { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 15px; }
+    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+    .hidden { display: none !important; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%) translateY(16px);
+      width: calc(100% - 24px);
+      max-width: 416px;
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      padding: 11px 14px;
+      border-radius: 13px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease, transform 0.24s ease;
+      z-index: 999;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.13);
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--primary); display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Fixed Topbar -->
+    <header class="topbar">
+      <div class="topbar-user">
+        <div class="avatar-wrap">
+          <div class="avatar" id="userAvatar">K</div>
+          <span class="avatar-dot"></span>
+        </div>
+        <div class="topbar-info">
+          <div class="user-name" id="displayUserName">-</div>
+          <div class="user-id" id="displayUserId">-</div>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" id="logoutBtn">Keluar</button>
+    </header>
+
+    <main class="content-area">
+      <!-- Bagian Kalender -->
+      <section class="card">
+        <div class="cal-header">
+          <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Bulan sebelumnya">&lsaquo;</button>
+          <div class="cal-month-label" id="calMonthLabel">-</div>
+          <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Bulan berikutnya">&rsaquo;</button>
+        </div>
+        <div class="cal-grid" id="calendarGrid"></div>
+        <div class="cal-holidays-box hidden" id="calHolidaysBox"></div>
+      </section>
+
+      <!-- Bagian Riwayat Kerja -->
+      <section class="card" id="riwayatSectionCard">
+        <div class="card-title">
+          <span>Riwayat Kerja</span>
+          <span class="badge badge-ok" id="historyCountLabel">0 Data</span>
+        </div>
+        <div class="filter-row">
+          <label class="custom-picker-box" style="flex:1; min-width:0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span class="custom-picker-text placeholder" id="filterDateDisplay">Semua tanggal</span>
+            <input type="date" id="filterHistoryDate" class="native-overlay-input" aria-label="Filter tanggal">
+          </label>
+          <button type="button" class="btn-outline-sm" id="resetFilterDateBtn">Semua</button>
+        </div>
+        <div id="historyList">
+          <div class="empty-state">Memuat...</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Floating Round Chat Button -->
+    <div class="fab-chat-wrap">
+      <a href="messange/chat/" class="fab-chat-btn" aria-label="Buka Chat Tim" title="Chat Tim">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Fixed Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-btn">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </span>
+        <span>Presensi</span>
+      </a>
+      <a href="target.html" class="nav-btn">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+        </span>
+        <span>Target &amp; Klien</span>
+        <span class="nav-badge hidden" id="navTargetBadge">0</span>
+      </a>
+      <a href="kalender.html" class="nav-btn active">
+        <span class="nav-icon-pill">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        <span>Kalender</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- PHOTO GALLERY LIGHTBOX MODAL -->
+  <div id="lightboxModal" class="lightbox-modal hidden">
+    <div class="lb-topbar">
+      <div class="lb-info">
+        <div class="lb-title" id="lbTitle">Galeri Foto</div>
+        <div class="lb-counter" id="lbCounter">1 / 1</div>
+      </div>
+      <button type="button" class="cam-close-btn" id="lbCloseBtn">Tutup</button>
+    </div>
+    <div class="lb-stage" id="lbStage">
+      <button type="button" class="lb-nav-btn prev" id="lbPrevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+      <img id="lbMainImg" class="lb-main-img" alt="Pratinjau Foto">
+      <button type="button" class="lb-nav-btn next" id="lbNextBtn" aria-label="Berikutnya">&rsaquo;</button>
+    </div>
+    <div class="lb-thumbs-bar" id="lbThumbsBar"></div>
+  </div>
+
+  <!-- CUSTOM CONFIRM DIALOG -->
+  <div id="confirmOverlay" class="confirm-overlay hidden">
+    <div class="confirm-card">
+      <div class="confirm-title" id="confirmTitle">Konfirmasi</div>
+      <div class="confirm-msg" id="confirmMsg">-</div>
+      <div class="confirm-actions">
+        <button type="button" class="btn-outline-sm" id="confirmCancelBtn">Batal</button>
+        <button type="button" class="btn-keluar" style="padding:8px;" id="confirmOkBtn">Ya, Lanjut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon" id="toastIcon"></span>
+    <span id="toastText"></span>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      collection,
+      query,
+      where,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
+      authDomain: "sitenexs-62919.firebaseapp.com",
+      projectId: "sitenexs-62919",
+      storageBucket: "sitenexs-62919.firebasestorage.app",
+      messagingSenderId: "1060348110644",
+      appId: "1:1060348110644:web:e45af14d5f26a9cf8e6761",
+      measurementId: "G-C7YL0Q7YRQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    let currentUser = null;
+    let myRecords = [];
+    let toastTimer = null;
+
+    const initNow = new Date();
+    let calYear = initNow.getFullYear();
+    let calMonth = initNow.getMonth();
+
+    let lightboxPhotos = [];
+    let lightboxIndex = 0;
+
+    const filterDateInput = document.getElementById("filterHistoryDate");
+    const filterDateDisplay = document.getElementById("filterDateDisplay");
+
+    const FIXED_HOLIDAYS = {
+      "01-01": { name: "Tahun Baru Masehi", isHoliday: true },
+      "02-14": { name: "Hari Kasih Sayang", isHoliday: false },
+      "03-08": { name: "Hari Perempuan Internasional", isHoliday: false },
+      "04-21": { name: "Hari Kartini", isHoliday: false },
+      "05-01": { name: "Hari Buruh Internasional", isHoliday: true },
+      "05-02": { name: "Hari Pendidikan Nasional", isHoliday: false },
+      "05-20": { name: "Hari Kebangkitan Nasional", isHoliday: false },
+      "06-01": { name: "Hari Lahir Pancasila", isHoliday: true },
+      "08-17": { name: "Hari Kemerdekaan RI", isHoliday: true },
+      "10-01": { name: "Hari Kesaktian Pancasila", isHoliday: false },
+      "10-02": { name: "Hari Batik Nasional", isHoliday: false },
+      "10-28": { name: "Hari Sumpah Pemuda", isHoliday: false },
+      "11-10": { name: "Hari Pahlawan", isHoliday: false },
+      "11-25": { name: "Hari Guru Nasional", isHoliday: false },
+      "12-22": { name: "Hari Ibu", isHoliday: false },
+      "12-25": { name: "Hari Raya Natal", isHoliday: true },
+      "12-26": { name: "Cuti Bersama Natal", isHoliday: true }
+    };
+
+    const SPECIFIC_HOLIDAYS = {
+      "2025-01-27": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2025-01-29": { name: "Tahun Baru Imlek 2576", isHoliday: true },
+      "2025-03-29": { name: "Hari Suci Nyepi 1947", isHoliday: true },
+      "2025-03-31": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
+      "2025-04-01": { name: "Hari Raya Idul Fitri 1446 H", isHoliday: true },
+      "2025-04-18": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2025-05-12": { name: "Hari Raya Waisak 2569 BE", isHoliday: true },
+      "2025-05-29": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2025-06-06": { name: "Hari Raya Idul Adha 1446 H", isHoliday: true },
+      "2025-06-27": { name: "Tahun Baru Islam 1447 H", isHoliday: true },
+      "2025-09-05": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
+      "2026-01-16": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2026-02-17": { name: "Tahun Baru Imlek 2577", isHoliday: true },
+      "2026-03-19": { name: "Hari Suci Nyepi 1948", isHoliday: true },
+      "2026-03-20": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
+      "2026-03-21": { name: "Hari Raya Idul Fitri 1447 H", isHoliday: true },
+      "2026-04-03": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2026-05-14": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2026-05-27": { name: "Hari Raya Idul Adha 1447 H", isHoliday: true },
+      "2026-05-31": { name: "Hari Raya Waisak 2570 BE", isHoliday: true },
+      "2026-06-16": { name: "Tahun Baru Islam 1448 H", isHoliday: true },
+      "2026-08-25": { name: "Maulid Nabi Muhammad SAW", isHoliday: true },
+      "2027-01-05": { name: "Isra Mikraj Nabi Muhammad SAW", isHoliday: true },
+      "2027-02-06": { name: "Tahun Baru Imlek 2578", isHoliday: true },
+      "2027-03-08": { name: "Hari Suci Nyepi 1949", isHoliday: true },
+      "2027-03-09": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
+      "2027-03-10": { name: "Hari Raya Idul Fitri 1448 H", isHoliday: true },
+      "2027-03-26": { name: "Wafat Yesus Kristus", isHoliday: true },
+      "2027-05-06": { name: "Kenaikan Yesus Kristus", isHoliday: true },
+      "2027-05-16": { name: "Hari Raya Idul Adha 1448 H", isHoliday: true },
+      "2027-05-20": { name: "Hari Raya Waisak 2571 BE", isHoliday: true },
+      "2027-06-06": { name: "Tahun Baru Islam 1449 H", isHoliday: true },
+      "2027-08-14": { name: "Maulid Nabi Muhammad SAW", isHoliday: true }
+    };
+
+    function getImportantDayInfo(dateKey) {
+      if (SPECIFIC_HOLIDAYS[dateKey]) return SPECIFIC_HOLIDAYS[dateKey];
+      const mmdd = dateKey.slice(5);
+      if (FIXED_HOLIDAYS[mmdd]) return FIXED_HOLIDAYS[mmdd];
+      return null;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.className = "toast info";
+      document.getElementById("toastIcon").innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      document.getElementById("toastText").textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 3000);
+    }
+
+    function showCustomConfirm(title, message, okLabel = "Ya, Lanjut") {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById("confirmOverlay");
+        document.getElementById("confirmTitle").textContent = title;
+        document.getElementById("confirmMsg").textContent = message;
+        const okBtn = document.getElementById("confirmOkBtn");
+        const cancelBtn = document.getElementById("confirmCancelBtn");
+        okBtn.textContent = okLabel;
+        overlay.classList.remove("hidden");
+
+        const cleanup = (res) => {
+          overlay.classList.add("hidden");
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(res);
+        };
+
+        okBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+      });
+    }
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatShortDateKey(dateKey) {
+      if (!dateKey) return "-";
+      const [y, m, d] = dateKey.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function cleanNoteLines(rawNote) {
+      return String(rawNote || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join("\n");
+    }
+
+    function updateFilterDateDisplay() {
+      if (filterDateInput.value) {
+        filterDateDisplay.textContent = formatShortDateKey(filterDateInput.value);
+        filterDateDisplay.classList.remove("placeholder");
+      } else {
+        filterDateDisplay.textContent = "Semua tanggal";
+        filterDateDisplay.classList.add("placeholder");
+      }
+    }
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      if (!currentUser) return;
+      const ok = await showCustomConfirm(
+        "Keluar Akun",
+        `Keluar dari sesi ${currentUser.username} (${currentUser.id})?`,
+        "Keluar"
+      );
+      if (!ok) return;
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = "index.html";
+    });
+
+    // ================= LIGHTBOX GALLERY =================
+    function openPhotoGallery(photosList, startIndex = 0, title = "Galeri Foto") {
+      if (!Array.isArray(photosList) || photosList.length === 0) return;
+      lightboxPhotos = photosList;
+      lightboxIndex = Math.max(0, Math.min(startIndex, photosList.length - 1));
+      document.getElementById("lbTitle").textContent = title;
+      renderLightboxSlide();
+      document.getElementById("lightboxModal").classList.remove("hidden");
+    }
+
+    function renderLightboxSlide() {
+      const total = lightboxPhotos.length;
+      const item = lightboxPhotos[lightboxIndex];
+      const mainImg = document.getElementById("lbMainImg");
+      mainImg.style.animation = "none";
+      void mainImg.offsetWidth;
+      mainImg.style.animation = "";
+      mainImg.src = item.url;
+      document.getElementById("lbCounter").textContent = `${lightboxIndex + 1} / ${total} • ${item.label || "Foto"}`;
+
+      document.getElementById("lbPrevBtn").classList.toggle("hidden", total <= 1);
+      document.getElementById("lbNextBtn").classList.toggle("hidden", total <= 1);
+
+      const thumbsBar = document.getElementById("lbThumbsBar");
+      thumbsBar.innerHTML = lightboxPhotos.map((p, idx) => `
+        <button type="button" class="lb-thumb ${idx === lightboxIndex ? "active" : ""}" data-lb-idx="${idx}">
+          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.label || "Foto")}">
+        </button>
+      `).join("");
+
+      thumbsBar.querySelectorAll("[data-lb-idx]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          lightboxIndex = Number(btn.dataset.lbIdx);
+          renderLightboxSlide();
+        });
+      });
+    }
+
+    document.getElementById("lbCloseBtn").addEventListener("click", () => {
+      document.getElementById("lightboxModal").classList.add("hidden");
+      lightboxPhotos = [];
+    });
+
+    document.getElementById("lbPrevBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
+
+    document.getElementById("lbNextBtn").addEventListener("click", () => {
+      if (lightboxPhotos.length <= 1) return;
+      lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+      renderLightboxSlide();
+    });
+
+    let touchStartX = 0;
+    const lbStage = document.getElementById("lbStage");
+    lbStage.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    lbStage.addEventListener("touchend", (e) => {
+      const diff = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(diff) > 40 && lightboxPhotos.length > 1) {
+        if (diff < 0) {
+          lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+        } else {
+          lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+        }
+        renderLightboxSlide();
+      }
+    }, { passive: true });
+
+    function collectRecordPhotos(rec) {
+      const list = [];
+      if (rec.checkInPhoto) {
+        const lateTxt = rec.checkInLate ? " - Telat" : "";
+        list.push({ url: rec.checkInPhoto, label: `Masuk (${rec.checkIn ? rec.checkIn.slice(0, 5) : "-"}${lateTxt})` });
+      }
+      if (rec.checkOutPhoto) {
+        const lateTxt = rec.checkOutLate ? " - Telat" : "";
+        list.push({ url: rec.checkOutPhoto, label: `Keluar (${rec.checkOut ? rec.checkOut.slice(0, 5) : "-"}${lateTxt})` });
+      }
+      const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
+      notePhotos.forEach((u, i) => {
+        list.push({ url: u, label: `Dokumentasi #${i + 1}` });
+      });
+      return list;
+    }
+
+    // ================= RENDER CALENDAR & HISTORY =================
+    function renderCalendar(animDir = "") {
+      const grid = document.getElementById("calendarGrid");
+      const label = document.getElementById("calMonthLabel");
+      const holidaysBox = document.getElementById("calHolidaysBox");
+      const monthDate = new Date(calYear, calMonth, 1);
+
+      label.textContent = monthDate.toLocaleDateString("id-ID", {
+        month: "long",
+        year: "numeric"
+      });
+
+      const firstDayIndex = monthDate.getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayKey = getTodayKey();
+      const selectedDate = filterDateInput.value;
+
+      const recordMap = {};
+      myRecords.forEach(r => {
+        if (r.date) recordMap[r.date] = r;
+      });
+
+      const dows = [
+        { name: "Min", isSun: true },
+        { name: "Sen", isSun: false },
+        { name: "Sel", isSun: false },
+        { name: "Rab", isSun: false },
+        { name: "Kam", isSun: false },
+        { name: "Jum", isSun: false },
+        { name: "Sab", isSun: false }
+      ];
+
+      let html = dows.map(d => `<div class="cal-dow ${d.isSun ? "sun" : ""}">${d.name}</div>`).join("");
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        html += `<div class="cal-cell empty"></div>`;
+      }
+
+      const monthImportantDays = [];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const mStr = String(calMonth + 1).padStart(2, "0");
+        const dStr = String(day).padStart(2, "0");
+        const dateKey = `${calYear}-${mStr}-${dStr}`;
+        const rec = recordMap[dateKey];
+        const dowIndex = (firstDayIndex + day - 1) % 7;
+        const isSunday = dowIndex === 0;
+        const importantInfo = getImportantDayInfo(dateKey);
+
+        if (importantInfo) {
+          monthImportantDays.push({ day, dateKey, ...importantInfo });
+        }
+
+        const classes = ["cal-cell"];
+        if (rec) classes.push("has-record");
+        if (isSunday) classes.push("sunday");
+        if (importantInfo && importantInfo.isHoliday) classes.push("holiday");
+        if (dateKey === todayKey) classes.push("today");
+        if (dateKey === selectedDate) classes.push("selected");
+
+        let dotClass = "";
+        if (rec) {
+          dotClass = (rec.checkIn && rec.checkOut) ? "full" : "partial";
+        }
+
+        html += `
+          <div class="${classes.join(" ")}" data-cal-date="${dateKey}" ${importantInfo ? `title="${escapeHtml(importantInfo.name)}"` : ""}>
+            <span class="cal-num">${day}</span>
+            <span class="cal-dot ${dotClass}"></span>
+          </div>
+        `;
+      }
+
+      grid.classList.remove("cal-anim-next", "cal-anim-prev");
+      if (animDir) {
+        void grid.offsetWidth;
+        grid.classList.add(animDir === "next" ? "cal-anim-next" : "cal-anim-prev");
+      }
+      grid.innerHTML = html;
+
+      if (monthImportantDays.length > 0) {
+        holidaysBox.classList.remove("hidden");
+        holidaysBox.innerHTML = monthImportantDays.map(item => `
+          <div class="cal-holiday-item" data-hol-date="${item.dateKey}">
+            <span class="cal-holiday-date">${item.day} ${monthDate.toLocaleDateString("id-ID", { month: "short" })}</span>
+            <span class="cal-holiday-name">• ${escapeHtml(item.name)}</span>
+          </div>
+        `).join("");
+
+        holidaysBox.querySelectorAll("[data-hol-date]").forEach(el => {
+          el.addEventListener("click", () => {
+            const picked = el.dataset.holDate;
+            filterDateInput.value = picked;
+            updateFilterDateDisplay();
+            renderCalendar();
+            renderHistory();
+            document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        });
+      } else {
+        holidaysBox.classList.add("hidden");
+        holidaysBox.innerHTML = "";
+      }
+
+      grid.querySelectorAll("[data-cal-date]").forEach(cell => {
+        cell.addEventListener("click", () => {
+          const picked = cell.dataset.calDate;
+          if (filterDateInput.value === picked) {
+            filterDateInput.value = "";
+          } else {
+            filterDateInput.value = picked;
+            const info = getImportantDayInfo(picked);
+            if (info) {
+              showToast(`${formatShortDateKey(picked)}: ${info.name}`);
+            }
+          }
+          updateFilterDateDisplay();
+          renderCalendar();
+          renderHistory();
+          document.getElementById("riwayatSectionCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      });
+    }
+
+    function renderHistory() {
+      const container = document.getElementById("historyList");
+      const countLabel = document.getElementById("historyCountLabel");
+      const filterVal = filterDateInput.value;
+
+      let sorted = [...myRecords].sort((a, b) => b.date.localeCompare(a.date));
+      if (filterVal) {
+        sorted = sorted.filter(r => r.date === filterVal);
+      }
+
+      countLabel.textContent = `${sorted.length} Data`;
+
+      if (sorted.length === 0) {
+        const msg = filterVal
+          ? `Tidak ada data pada ${formatShortDateKey(filterVal)}`
+          : "Belum ada riwayat kerja.";
+        container.innerHTML = `<div class="empty-state">${msg}</div>`;
+        return;
+      }
+
+      const cardsHtml = sorted.map((rec, rIdx) => {
+        const allPhotos = collectRecordPhotos(rec);
+        const inIdx = allPhotos.findIndex(p => p.url === rec.checkInPhoto);
+        const outIdx = allPhotos.findIndex(p => p.url === rec.checkOutPhoto);
+
+        const inLateBadge = rec.checkInLate ? `<span class="chip-late-pill">Telat</span>` : "";
+        const outLateBadge = rec.checkOutLate ? `<span class="chip-late-pill">Telat</span>` : "";
+
+        const inChip = rec.checkIn
+          ? (rec.checkInPhoto
+              ? `<button type="button" class="time-chip ${rec.checkInLate ? "late" : "in"}" data-rec-idx="${rIdx}" data-photo-idx="${inIdx}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip ${rec.checkInLate ? "late" : "in"}">M ${rec.checkIn.slice(0, 5)} ${inLateBadge}</span>`)
+          : `<span class="time-chip empty">M --:--</span>`;
+
+        const outChip = rec.checkOut
+          ? (rec.checkOutPhoto
+              ? `<button type="button" class="time-chip ${rec.checkOutLate ? "late" : "out"}" data-rec-idx="${rIdx}" data-photo-idx="${outIdx}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge} <span class="chip-cam">Foto</span></button>`
+              : `<span class="time-chip ${rec.checkOutLate ? "late" : "out"}">K ${rec.checkOut.slice(0, 5)} ${outLateBadge}</span>`)
+          : `<span class="time-chip empty">K --:--</span>`;
+
+        const cleanedNote = cleanNoteLines(rec.note);
+        const notePhotos = Array.isArray(rec.notePhotos) ? rec.notePhotos : [];
+        const thumbsHtml = notePhotos.length > 0
+          ? `<div class="photo-thumbs">${notePhotos.map(u => {
+              const pIdx = allPhotos.findIndex(p => p.url === u);
+              return `<button type="button" class="photo-thumb-btn" data-rec-idx="${rIdx}" data-photo-idx="${pIdx >= 0 ? pIdx : 0}"><img src="${escapeHtml(u)}" alt="Doc"></button>`;
+            }).join("")}</div>`
+          : "";
+
+        const noteSection = (cleanedNote || notePhotos.length > 0)
+          ? `<div class="history-note-box">${cleanedNote ? `<div class="history-note-text">${escapeHtml(cleanedNote)}</div>` : ""}${thumbsHtml}</div>`
+          : "";
+
+        return `<div class="history-item"><div class="history-top"><div class="history-date-wrap"><span class="history-date">${formatShortDateKey(rec.date)}</span></div><div class="history-badges">${inChip}${outChip}</div></div>${noteSection}</div>`;
+      }).join("");
+
+      container.innerHTML = `<div class="history-list">${cardsHtml}</div>`;
+
+      container.querySelectorAll("[data-rec-idx]").forEach(el => {
+        el.addEventListener("click", () => {
+          const rec = sorted[Number(el.dataset.recIdx)];
+          const startIdx = Number(el.dataset.photoIdx) || 0;
+          if (!rec) return;
+          const allPhotos = collectRecordPhotos(rec);
+          openPhotoGallery(allPhotos, startIdx, formatShortDateKey(rec.date));
+        });
+      });
+    }
+
+    document.getElementById("calPrevBtn").addEventListener("click", () => {
+      calMonth--;
+      if (calMonth < 0) {
+        calMonth = 11;
+        calYear--;
+      }
+      renderCalendar("prev");
+    });
+
+    document.getElementById("calNextBtn").addEventListener("click", () => {
+      calMonth++;
+      if (calMonth > 11) {
+        calMonth = 0;
+        calYear++;
+      }
+      renderCalendar("next");
+    });
+
+    filterDateInput.addEventListener("change", (e) => {
+      const val = e.target.value;
+      updateFilterDateDisplay();
+      if (val) {
+        const [y, m] = val.split("-").map(Number);
+        calYear = y;
+        calMonth = m - 1;
+      }
+      renderCalendar();
+      renderHistory();
+    });
+
+    document.getElementById("resetFilterDateBtn").addEventListener("click", () => {
+      filterDateInput.value = "";
+      updateFilterDateDisplay();
+      renderCalendar();
+      renderHistory();
+    });
+
+    // ================= INIT =================
+    (function init() {
+      updateFilterDateDisplay();
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (saved && saved.id && saved.username) {
+          currentUser = saved;
+          document.getElementById("displayUserName").textContent = saved.username;
+          document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
+          document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+        } else {
+          window.location.href = "index.html";
+          return;
+        }
+      } catch {
+        window.location.href = "index.html";
+        return;
+      }
+
+      renderCalendar();
+
+      // Pantau status akun
+      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
+        if (!snap.exists()) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "index.html";
+        }
+      });
+
+      // Listen Riwayat Absensi
+      const qRec = query(collection(db, "absen_riwayat"), where("empId", "==", currentUser.id));
+      onSnapshot(qRec, (snapshot) => {
+        myRecords = snapshot.docs.map(d => d.data());
+        renderCalendar();
+        renderHistory();
+      });
+
+      // Listen Badge Target Aktif
+      const qRem = query(collection(db, "absen_pengingat"), where("empId", "==", currentUser.id));
+      onSnapshot(qRem, (snapshot) => {
+        const activeCount = snapshot.docs.map(d => d.data()).filter(r => !r.completed).length;
+        const navBadge = document.getElementById("navTargetBadge");
+        if (activeCount > 0) {
+          navBadge.textContent = activeCount;
+          navBadge.classList.remove("hidden");
+        } else {
+          navBadge.classList.add("hidden");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
