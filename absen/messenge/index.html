@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Inbox Grup Chat - Absensi Karyawan</title>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #64748b;
+      --border: rgba(203, 213, 225, 0.72);
+      --primary: #1d4ed8;
+      --primary-dark: #1e3a8a;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+      --success: #059669;
+      --success-bg: #d1fae5;
+      --danger: #e11d48;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 13px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    @keyframes tabFadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes itemEnter {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding-top: 56px;
+      padding-bottom: 32px;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      z-index: 50;
+      background: rgba(248, 250, 252, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(147, 197, 253, 0.7);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .topbar-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .topbar-sub {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-pill {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .content-area {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      animation: tabFadeSlide 0.24s ease;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--clay-shadow);
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge-ok { background: var(--primary-bg); color: var(--primary); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface-soft);
+      outline: none;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.12s, opacity 0.15s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      background: #e2e8f0 !important;
+      color: #64748b !important;
+      cursor: not-allowed;
+    }
+
+    .btn-masuk {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(5, 150, 105, 0.22);
+    }
+
+    .inbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inbox-item {
+      text-decoration: none;
+      color: inherit;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.12s;
+      animation: itemEnter 0.2s ease;
+    }
+
+    .inbox-item:active {
+      transform: scale(0.98);
+      background: var(--primary-bg);
+      border-color: var(--primary);
+    }
+
+    .inbox-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .group-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .inbox-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .inbox-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .inbox-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .inbox-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .inbox-preview {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .inbox-meta {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .inbox-arrow {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 18px 10px;
+      background: var(--surface-soft);
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(14px);
+      width: calc(100% - 24px);
+      max-width: 416px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="topbar">
+      <div class="topbar-left">
+        <a href="https://my.sitenexs.com/absen" class="back-btn" id="backBtn" aria-label="Kembali">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <div class="avatar" id="adminAvatar">A</div>
+        <div class="topbar-info">
+          <div class="topbar-title" id="adminTitle">Inbox Grup Chat</div>
+          <div class="topbar-sub" id="adminBizSub">Memverifikasi bisnis...</div>
+        </div>
+      </div>
+      <span class="admin-pill">Mode Admin</span>
+    </header>
+
+    <main class="content-area" id="inboxContent">
+      <!-- Inbox Grup Chat Bisnis -->
+      <section class="card">
+        <div class="card-title">
+          <span>Inbox Grup Chat</span>
+          <span class="badge badge-ok" id="inboxGroupCount">0 Grup</span>
+        </div>
+        <div id="inboxGroupList" class="inbox-list">
+          <div class="empty-state">Memuat daftar grup chat bisnis...</div>
+        </div>
+      </section>
+
+      <!-- Buat Grup Baru Sesuai Bisnis (Seperti adminAbsen.html) -->
+      <section class="card">
+        <div class="card-title">
+          <span>Buat Grup Baru</span>
+          <span class="badge badge-success">absen_grup</span>
+        </div>
+        <form id="createGroupForm">
+          <div class="form-group">
+            <label class="form-label" for="newGroupNameInput">Nama Grup</label>
+            <input type="text" id="newGroupNameInput" class="form-input" placeholder="Contoh: Tim Lapangan, Sales, Kasir" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newGroupDescInput">Deskripsi Grup (Opsional)</label>
+            <input type="text" id="newGroupDescInput" class="form-input" placeholder="Keterangan singkat grup">
+          </div>
+          <button type="submit" class="btn btn-masuk" id="createGroupBtn">Buat Grup</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      collection,
+      query,
+      where,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
+      authDomain: "sitenexs-62919.firebaseapp.com",
+      projectId: "sitenexs-62919",
+      storageBucket: "sitenexs-62919.firebasestorage.app",
+      messagingSenderId: "1060348110644",
+      appId: "1:1060348110644:web:e45af14d5f26a9cf8e6761",
+      measurementId: "G-C7YL0Q7YRQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    const VIEW_MODE_KEY = "absen_active_view_mode";
+    let currentUser = null;
+    let businessId = "";
+    let groups = [];
+    let messages = [];
+    let unsubGroups = null;
+    let unsubMessages = null;
+    let toastTimer = null;
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function isAdminAccount(userObj) {
+      if (!userObj) return false;
+      return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
+    }
+
+    function shouldStayInAdminInbox(userObj) {
+      if (!isAdminAccount(userObj)) return false;
+      const mode = localStorage.getItem(VIEW_MODE_KEY);
+      return mode !== "user";
+    }
+
+    function renderAdminAvatar(userObj) {
+      const av = document.getElementById("adminAvatar");
+      const initial = (userObj?.username || userObj?.id || "A").charAt(0);
+      if (userObj && userObj.photoURL) {
+        av.innerHTML = `<img src="${escapeHtml(userObj.photoURL)}" alt="${escapeHtml(userObj.username || "Admin")}">`;
+      } else {
+        av.textContent = initial;
+      }
+    }
+
+    function formatClockShort(isoStr) {
+      if (!isoStr) return "";
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).replace(/\./g, ":");
+    }
+
+    function renderInboxList() {
+      const listEl = document.getElementById("inboxGroupList");
+      const countBadge = document.getElementById("inboxGroupCount");
+
+      countBadge.textContent = `${groups.length} Grup`;
+
+      if (!businessId) {
+        listEl.innerHTML = `<div class="empty-state">Bisnis admin belum diatur.</div>`;
+        return;
+      }
+
+      if (groups.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">Belum ada grup chat untuk bisnis ${escapeHtml(businessId)}. Buat grup di bawah.</div>`;
+        return;
+      }
+
+      const latestByGroup = {};
+      messages.forEach(m => {
+        if (!m.groupId) return;
+        const prev = latestByGroup[m.groupId];
+        if (!prev || String(m.createdAt || "") > String(prev.createdAt || "")) {
+          latestByGroup[m.groupId] = m;
+        }
+      });
+
+      const sortedGroups = [...groups].sort((a, b) => {
+        const lastA = latestByGroup[a.id]?.createdAt || a.createdAt || "";
+        const lastB = latestByGroup[b.id]?.createdAt || b.createdAt || "";
+        return String(lastB).localeCompare(String(lastA));
+      });
+
+      listEl.innerHTML = sortedGroups.map(g => {
+        const lastMsg = latestByGroup[g.id];
+        const memberCount = Array.isArray(g.memberIds) ? g.memberIds.length : 0;
+        const previewText = lastMsg
+          ? `${lastMsg.username || lastMsg.empId || "User"}: ${lastMsg.text || (lastMsg.photoUrl ? "[Foto]" : "")}`
+          : (g.description || "Belum ada pesan di grup ini");
+        const timeText = lastMsg ? formatClockShort(lastMsg.createdAt) : "";
+        const href = `chat/?groupId=${encodeURIComponent(g.id)}`;
+
+        return `
+          <a href="${escapeHtml(href)}" class="inbox-item">
+            <div class="inbox-left">
+              <div class="group-icon-box">${escapeHtml((g.name || "G").charAt(0).toUpperCase())}</div>
+              <div class="inbox-body">
+                <div class="inbox-top-row">
+                  <span class="inbox-name">${escapeHtml(g.name)}</span>
+                  ${timeText ? `<span class="inbox-time">${escapeHtml(timeText)}</span>` : ""}
+                </div>
+                <div class="inbox-preview">${escapeHtml(previewText)}</div>
+                <div class="inbox-meta">${memberCount} Anggota • Ketuk untuk buka chat</div>
+              </div>
+            </div>
+            <span class="inbox-arrow">&rsaquo;</span>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function startBusinessSubscriptions(bizId) {
+      if (bizId === businessId && unsubGroups && unsubMessages) return;
+      if (unsubGroups) { unsubGroups(); unsubGroups = null; }
+      if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+
+      businessId = bizId || "";
+      groups = [];
+      messages = [];
+
+      document.getElementById("adminBizSub").textContent = businessId
+        ? `Bisnis: ${businessId}`
+        : "Bisnis belum diatur";
+
+      if (!businessId) {
+        renderInboxList();
+        return;
+      }
+
+      const qGrp = query(collection(db, "absen_grup"), where("businessId", "==", businessId));
+      unsubGroups = onSnapshot(qGrp, (snap) => {
+        groups = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(g => g.businessId === businessId);
+        renderInboxList();
+      });
+
+      const qMsg = query(collection(db, "absen_chat"), where("businessId", "==", businessId));
+      unsubMessages = onSnapshot(qMsg, (snap) => {
+        messages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderInboxList();
+      });
+    }
+
+    document.getElementById("createGroupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!businessId) {
+        showToast("Bisnis admin belum diatur.");
+        return;
+      }
+
+      const name = document.getElementById("newGroupNameInput").value.trim();
+      const description = document.getElementById("newGroupDescInput").value.trim();
+      const btn = document.getElementById("createGroupBtn");
+      if (!name) return;
+
+      btn.disabled = true;
+      try {
+        const grpId = `${businessId}_GRP_${Date.now()}`;
+        await setDoc(doc(db, "absen_grup", grpId), {
+          id: grpId,
+          businessId,
+          name,
+          description,
+          memberIds: [],
+          createdAt: new Date().toISOString()
+        });
+
+        document.getElementById("newGroupNameInput").value = "";
+        document.getElementById("newGroupDescInput").value = "";
+        showToast(`Grup "${name}" berhasil dibuat.`);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal membuat grup.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    (function init() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (!saved || !saved.id) {
+          window.location.href = "https://my.sitenexs.com/absen";
+          return;
+        }
+        currentUser = saved;
+        renderAdminAvatar(saved);
+      } catch {
+        window.location.href = "https://my.sitenexs.com/absen";
+        return;
+      }
+
+      onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
+        if (!snap.exists()) {
+          localStorage.removeItem(SESSION_KEY);
+          window.location.href = "https://my.sitenexs.com/absen";
+          return;
+        }
+
+        const data = snap.data();
+        currentUser = { ...currentUser, ...data };
+        renderAdminAvatar(currentUser);
+
+        if (!shouldStayInAdminInbox(currentUser)) {
+          window.location.replace("chat/");
+          return;
+        }
+
+        const nextBiz = (data.businessId || "").trim().toUpperCase();
+        startBusinessSubscriptions(nextBiz);
+      });
+    })();
+  </script>
+</body>
+</html>
