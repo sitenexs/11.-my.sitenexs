@@ -150,17 +150,39 @@
       background: var(--primary-bg);
       border: 1px solid rgba(15, 118, 110, 0.2);
       color: var(--primary);
-      padding: 4px 9px;
+      padding: 3px 8px 3px 4px;
       border-radius: 999px;
       font-size: 10.5px;
       font-weight: 800;
-      max-width: 115px;
+      max-width: 125px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+    }
+
+    .badge-mini-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #ccfbf1;
+      color: var(--primary-dark);
+      font-size: 9.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .badge-mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* Bar daftar grup khusus bisnis pengguna */
@@ -240,9 +262,9 @@
     }
 
     .msg-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 9px;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
       background: #ccfbf1;
       color: var(--primary-dark);
       font-size: 11px;
@@ -252,6 +274,16 @@
       justify-content: center;
       text-transform: uppercase;
       flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .msg-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .msg-bubble {
@@ -596,7 +628,7 @@
   <div class="chat-app">
     <header class="chat-header">
       <div class="header-left">
-        <a href="https://my.sitenexs.com/absen.html" class="back-btn" id="backToAbsenBtn" aria-label="Kembali ke Absensi">
+        <a href="https://my.sitenexs.com/absen.html" class="back-btn" id="backToAbsenBtn" aria-label="Kembali">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
@@ -722,13 +754,18 @@
 
     const VERIFIED_ICON_URL = "https://sitenexs.com/assets/logo/verified.png";
     const SESSION_KEY = "absen_firebase_user_permanent";
+    const VIEW_MODE_KEY = "absen_active_view_mode";
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedGroupId = (urlParams.get("groupId") || "").trim();
+
     let currentUser = null;
     let currentBusinessId = "";
     let currentBusinessName = "";
     let businessGroups = [];
-    let activeGroupId = "";
+    let activeGroupId = requestedGroupId;
     let allMessages = [];
     let adminEmpIds = new Set();
+    let memberProfileMap = {}; // empId -> { username, photoURL }
     let replyData = null;
     let pendingPhoto = null;
     let toastTimer = null;
@@ -759,6 +796,38 @@
         .replace(/'/g, "&#39;");
     }
 
+    function isAdminAccount(userObj) {
+      if (!userObj) return false;
+      return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
+    }
+
+    function getBackUrl() {
+      if (isAdminAccount(currentUser) && localStorage.getItem(VIEW_MODE_KEY) !== "user") {
+        return "../";
+      }
+      return "https://my.sitenexs.com/absen.html";
+    }
+
+    function getUserPhotoUrl(empId, msgData = null) {
+      if (empId && memberProfileMap[empId] && memberProfileMap[empId].photoURL) {
+        return memberProfileMap[empId].photoURL;
+      }
+      if (currentUser && empId === currentUser.id && currentUser.photoURL) {
+        return currentUser.photoURL;
+      }
+      if (msgData && msgData.senderPhotoURL) {
+        return msgData.senderPhotoURL;
+      }
+      return "";
+    }
+
+    function renderAvatarContent(initial, photoUrl) {
+      if (photoUrl) {
+        return `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(initial)}">`;
+      }
+      return escapeHtml(initial);
+    }
+
     function isAdminUser(empId, msgData = null) {
       if (empId && adminEmpIds.has(empId)) return true;
       if (msgData && (Boolean(msgData.isAbsenAdmin) || msgData.role === "admin_absen")) return true;
@@ -774,8 +843,13 @@
     function renderCurrentUserBadge() {
       const badgeEl = document.getElementById("currentUserBadge");
       const name = currentUser?.username || currentUser?.id || "-";
+      const initial = name.charAt(0);
+      const photoUrl = currentUser ? getUserPhotoUrl(currentUser.id, currentUser) : "";
       const vBadge = currentUser ? getVerifiedBadgeHtml(currentUser.id, currentUser) : "";
-      badgeEl.innerHTML = `<span>${escapeHtml(name)}</span>${vBadge}`;
+      badgeEl.innerHTML = `
+        <span class="badge-mini-avatar">${renderAvatarContent(initial, photoUrl)}</span>
+        <span>${escapeHtml(name)}</span>${vBadge}
+      `;
     }
 
     function getTodayKey() {
@@ -815,7 +889,11 @@
     }
 
     document.getElementById("backToAbsenBtn").addEventListener("click", (e) => {
-      if (window.history.length > 1 && document.referrer) {
+      const dest = getBackUrl();
+      if (dest === "../") {
+        e.preventDefault();
+        window.location.href = "../";
+      } else if (window.history.length > 1 && document.referrer) {
         e.preventDefault();
         window.history.back();
       }
@@ -999,6 +1077,13 @@
       });
     }
 
+    function openPreviewModal(title, url) {
+      if (!url) return;
+      document.getElementById("imgModalSender").textContent = title;
+      document.getElementById("imgModalTarget").src = url;
+      document.getElementById("imgModal").classList.remove("hidden");
+    }
+
     function renderMessages() {
       if (!currentBusinessId || !activeGroupId) return;
 
@@ -1020,6 +1105,7 @@
 
         const isMine = currentUser && msg.empId === currentUser.id;
         const initial = (msg.username || "K").charAt(0);
+        const senderPhoto = getUserPhotoUrl(msg.empId, msg);
         const timeStr = formatTimeHHMM(msg.createdAt);
         const senderVerified = getVerifiedBadgeHtml(msg.empId, msg);
 
@@ -1044,7 +1130,7 @@
 
         html += `
           <div class="msg-row ${isMine ? "mine" : "other"}">
-            ${!isMine ? `<div class="msg-avatar">${escapeHtml(initial)}</div>` : ""}
+            <div class="msg-avatar" data-view-avatar="${idx}" title="Lihat foto profil ${escapeHtml(msg.username || "User")}">${renderAvatarContent(initial, senderPhoto)}</div>
             <div class="msg-bubble">
               ${!isMine ? `<div class="msg-sender"><span>${escapeHtml(msg.username)}</span>${senderVerified}</div>` : ""}
               ${replyHtml}
@@ -1061,6 +1147,19 @@
       });
 
       chatMessagesEl.innerHTML = html;
+
+      chatMessagesEl.querySelectorAll("[data-view-avatar]").forEach(avEl => {
+        avEl.addEventListener("click", () => {
+          const m = allMessages[Number(avEl.dataset.viewAvatar)];
+          if (!m) return;
+          const pUrl = getUserPhotoUrl(m.empId, m);
+          if (pUrl) {
+            openPreviewModal(`Foto Profil • ${m.username || m.empId}`, pUrl);
+          } else {
+            showToast(`${m.username || "User"} belum memasang foto profil.`);
+          }
+        });
+      });
 
       chatMessagesEl.querySelectorAll("[data-reply-idx]").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1085,9 +1184,7 @@
         img.addEventListener("click", () => {
           const m = allMessages[Number(img.dataset.viewImg)];
           if (!m || !m.photoUrl) return;
-          document.getElementById("imgModalSender").textContent = `${m.username} • ${formatTimeHHMM(m.createdAt)}`;
-          document.getElementById("imgModalTarget").src = m.photoUrl;
-          document.getElementById("imgModal").classList.remove("hidden");
+          openPreviewModal(`${m.username} • ${formatTimeHHMM(m.createdAt)}`, m.photoUrl);
         });
       });
 
@@ -1119,12 +1216,14 @@
 
         const nowIso = new Date().toISOString();
         const msgId = `${Date.now()}_${currentUser.id}`;
+        const myPhoto = getUserPhotoUrl(currentUser.id, currentUser);
 
         await setDoc(doc(db, "absen_chat", msgId), {
           businessId: currentBusinessId,
           groupId: activeGroupId,
           empId: currentUser.id,
           username: currentUser.username,
+          senderPhotoURL: myPhoto,
           isAbsenAdmin: isAdminUser(currentUser.id, currentUser),
           text,
           photoUrl,
@@ -1184,8 +1283,9 @@
         if (nextBizId !== currentBusinessId) {
           currentBusinessId = nextBizId;
           currentBusinessName = "";
-          activeGroupId = "";
+          activeGroupId = requestedGroupId;
           adminEmpIds = new Set();
+          memberProfileMap = {};
 
           if (unsubscribeMessages) {
             unsubscribeMessages();
@@ -1202,17 +1302,24 @@
               renderGroupBar();
             });
 
-            // Deteksi admin pada bisnis yang sama untuk lencana centang biru
+            // Muat foto profil & status admin seluruh anggota di bisnis yang sama
             const qMembers = query(collection(db, "absen_karyawan"), where("businessId", "==", currentBusinessId));
             unsubscribeBizMembers = onSnapshot(qMembers, (mSnap) => {
               const nextAdmins = new Set();
+              const nextProfiles = {};
               mSnap.docs.forEach(d => {
                 const u = d.data();
+                const uId = u.id || d.id;
+                nextProfiles[uId] = {
+                  username: u.username || uId,
+                  photoURL: u.photoURL || ""
+                };
                 if (Boolean(u.isAbsenAdmin) || u.role === "admin_absen") {
-                  nextAdmins.add(u.id || d.id);
+                  nextAdmins.add(uId);
                 }
               });
               adminEmpIds = nextAdmins;
+              memberProfileMap = nextProfiles;
               renderCurrentUserBadge();
               renderMessages();
             });
