@@ -27,6 +27,8 @@
       --purple-bg: #ede9fe;
       --blue: #0284c7;
       --blue-bg: #e0f2fe;
+      --admin-accent: #1d4ed8;
+      --admin-dark: #1e3a8a;
       --radius: 18px;
       --radius-sm: 12px;
       --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
@@ -97,6 +99,11 @@
       gap: 10px;
     }
 
+    .app-container.is-admin-mode .topbar {
+      background: rgba(248, 250, 252, 0.94);
+      border-bottom-color: rgba(147, 197, 253, 0.7);
+    }
+
     .topbar-user {
       display: flex;
       align-items: center;
@@ -125,6 +132,11 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
+    .app-container.is-admin-mode .avatar {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+    }
+
     .avatar-dot {
       position: absolute;
       bottom: -1px;
@@ -141,6 +153,13 @@
       flex: 1;
     }
 
+    .user-name-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
     .user-name {
       font-size: 13.5px;
       font-weight: 800;
@@ -150,6 +169,18 @@
       text-overflow: ellipsis;
       line-height: 1.2;
       letter-spacing: -0.2px;
+    }
+
+    .admin-role-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 800;
+      flex-shrink: 0;
     }
 
     .user-id {
@@ -180,6 +211,29 @@
       gap: 12px;
       width: 100%;
       animation: tabFadeSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .admin-header-banner {
+      background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 8px 20px -4px rgba(30, 58, 138, 0.28);
+    }
+
+    .admin-banner-title {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .admin-banner-sub {
+      font-size: 10.5px;
+      color: #bfdbfe;
+      font-weight: 600;
     }
 
     /* ================= SUB-SEGMENT SWITCHER ================= */
@@ -257,7 +311,7 @@
       margin-bottom: 5px;
     }
 
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       max-width: 100%;
       padding: 10px 12px;
@@ -271,7 +325,7 @@
       transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
     }
 
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       border-color: var(--primary);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
@@ -313,6 +367,11 @@
       text-overflow: ellipsis;
     }
 
+    .custom-picker-text.placeholder {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
     .native-overlay-input {
       position: absolute;
       inset: 0;
@@ -321,6 +380,44 @@
       opacity: 0;
       cursor: pointer;
       border: none;
+    }
+
+    .cat-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .cat-pill-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      padding: 7px 6px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .cat-pill-btn.active[data-cat="Target"] {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .cat-pill-btn.active[data-cat="Jadwal"] {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .cat-pill-btn.active[data-cat="Penting"] {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+      color: var(--warning);
     }
 
     .note-box {
@@ -378,6 +475,12 @@
       color: #64748b !important;
       box-shadow: none !important;
       cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(29, 78, 216, 0.24);
     }
 
     .btn-masuk {
@@ -907,7 +1010,7 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- Fixed Topbar -->
     <header class="topbar">
       <div class="topbar-user">
@@ -916,7 +1019,10 @@
           <span class="avatar-dot"></span>
         </div>
         <div class="topbar-info">
-          <div class="user-name" id="displayUserName">-</div>
+          <div class="user-name-row">
+            <div class="user-name" id="displayUserName">-</div>
+            <span class="admin-role-pill hidden" id="adminRoleBadge">Admin</span>
+          </div>
           <div class="user-id" id="displayUserId">-</div>
         </div>
       </div>
@@ -924,8 +1030,81 @@
     </header>
 
     <main class="content-area">
-      <!-- Sub-Switch antara Target & Klien Bergabung -->
-      <div class="sub-segment">
+      <!-- Banner Mode Admin Aktif (Otomatis mengikuti mode di index.html) -->
+      <section class="admin-header-banner hidden" id="adminModeBanner">
+        <div>
+          <div class="admin-banner-title">Mode Admin • Target &amp; Pengingat User</div>
+          <div class="admin-banner-sub" id="adminBizLabel">Bisnis: -</div>
+        </div>
+        <span class="badge badge-success" id="adminBizTeamCount">0 User</span>
+      </section>
+
+      <!-- Form Tambah Target & Pengingat untuk User (Saat Mode Admin Aktif di index.html) -->
+      <section class="card hidden" id="adminCreateTargetCard">
+        <div class="card-title">
+          <span>Tambah Target / Pengingat untuk User</span>
+          <span class="badge badge-ok">absen_pengingat</span>
+        </div>
+
+        <form id="adminCreateTargetForm">
+          <div class="form-group">
+            <label class="form-label" for="targetUserSelect">Pilih User / Karyawan</label>
+            <select id="targetUserSelect" class="form-select" required>
+              <option value="ALL">Semua User di Bisnis Ini</option>
+            </select>
+          </div>
+
+          <div class="cat-pills" id="admCatPills">
+            <button type="button" class="cat-pill-btn active" data-cat="Target">Target</button>
+            <button type="button" class="cat-pill-btn" data-cat="Jadwal">Jadwal</button>
+            <button type="button" class="cat-pill-btn" data-cat="Penting">Penting</button>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="admTitleInput" class="form-input" placeholder="Judul target atau pengingat untuk user..." required>
+          </div>
+
+          <div class="picker-row" id="admTargetMetricRow">
+            <div>
+              <input type="number" id="admTargetNumInput" class="form-input" min="1" placeholder="Angka target (opsional)">
+            </div>
+            <div>
+              <input type="text" id="admTargetUnitInput" class="form-input" placeholder="Satuan (Klien / Tugas)">
+            </div>
+          </div>
+
+          <div class="picker-row">
+            <label class="custom-picker-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span class="custom-picker-text" id="admDateDisplay">Hari ini</span>
+              <input type="date" id="admDateInput" class="native-overlay-input" required>
+            </label>
+
+            <label class="custom-picker-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span class="custom-picker-text placeholder" id="admTimeDisplay">Jam (opsional)</span>
+              <input type="time" id="admTimeInput" class="native-overlay-input">
+            </label>
+          </div>
+
+          <div class="note-box">
+            <textarea id="admNoteInput" class="note-textarea" placeholder="Catatan detail target atau pengingat untuk user..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="saveAdmTargetBtn">Simpan Target / Pengingat User</button>
+        </form>
+      </section>
+
+      <!-- Sub-Switch antara Target & Klien Bergabung (Mode Biasa) -->
+      <div class="sub-segment" id="userSubSegment">
         <button type="button" class="sub-seg-btn active" data-subview="subTargetSection">
           <span>Target &amp; Jadwal</span>
           <span class="seg-count" id="segTargetCount">0</span>
@@ -936,7 +1115,7 @@
         </button>
       </div>
 
-      <!-- BAGIAN A: DAFTAR TARGET & PENGINGAT DARI ADMIN -->
+      <!-- BAGIAN A: DAFTAR TARGET & PENGINGAT -->
       <div id="subTargetSection" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
@@ -1101,9 +1280,17 @@
     const db = getFirestore(app);
 
     const SESSION_KEY = "absen_firebase_user_permanent";
+    const VIEW_MODE_KEY = "absen_active_view_mode";
     let currentUser = null;
+    let activeMode = "user";
     let myReminders = [];
+    let adminManagedReminders = [];
+    let businessUsers = [];
+    let selectedAdmCategory = "Target";
     let myClients = [];
+    let unsubBizUsers = null;
+    let unsubBizReminders = null;
+    let activeBizId = "";
     let toastTimer = null;
 
     const TOAST_ICONS = {
@@ -1183,6 +1370,216 @@
       return Boolean(rem.assignedBy) || Boolean(rem.businessId);
     }
 
+    function isUserAdmin(userObj) {
+      if (!userObj) return false;
+      return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
+    }
+
+    // ================= MENGIKUTI MODE DARI INDEX.HTML =================
+    function syncModeFromIndex() {
+      const canUseAdmin = isUserAdmin(currentUser);
+      if (!canUseAdmin) {
+        activeMode = "user";
+      } else {
+        const indexMode = localStorage.getItem(VIEW_MODE_KEY);
+        activeMode = (indexMode === "user") ? "user" : "admin";
+      }
+
+      const isAdminView = canUseAdmin && activeMode === "admin";
+      document.getElementById("appContainer").classList.toggle("is-admin-mode", isAdminView);
+      document.getElementById("adminRoleBadge").classList.toggle("hidden", !isAdminView);
+
+      document.getElementById("adminModeBanner").classList.toggle("hidden", !isAdminView);
+      document.getElementById("adminCreateTargetCard").classList.toggle("hidden", !isAdminView);
+      document.getElementById("userSubSegment").classList.toggle("hidden", isAdminView);
+
+      if (isAdminView) {
+        document.getElementById("subTargetSection").classList.remove("hidden");
+        document.getElementById("subClientSection").classList.add("hidden");
+        const bizId = (currentUser?.businessId || "").trim().toUpperCase();
+        document.getElementById("adminBizLabel").textContent = bizId ? `Bisnis: ${bizId}` : "Bisnis belum diatur";
+        startAdminBusinessData(bizId);
+      } else {
+        document.getElementById("subTargetSection").classList.remove("hidden");
+        document.getElementById("subClientSection").classList.add("hidden");
+        document.querySelectorAll(".sub-seg-btn").forEach((b, i) => b.classList.toggle("active", i === 0));
+      }
+
+      renderRemindersUI();
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === VIEW_MODE_KEY && currentUser) {
+        syncModeFromIndex();
+      }
+    });
+
+    window.addEventListener("pageshow", () => {
+      if (currentUser) {
+        syncModeFromIndex();
+      }
+    });
+
+    function refreshTargetUserDropdown() {
+      const sel = document.getElementById("targetUserSelect");
+      const prev = sel.value || "ALL";
+      const opts = [`<option value="ALL">Semua User di Bisnis Ini (${businessUsers.length})</option>`].concat(
+        businessUsers.map(u => {
+          const idVal = u.id || u.docId;
+          return `<option value="${escapeHtml(idVal)}">${escapeHtml(u.username || idVal)} (${escapeHtml(idVal)})</option>`;
+        })
+      );
+      sel.innerHTML = opts.join("");
+      sel.value = Array.from(sel.options).some(o => o.value === prev) ? prev : "ALL";
+      document.getElementById("adminBizTeamCount").textContent = `${businessUsers.length} User`;
+    }
+
+    function startAdminBusinessData(bizId) {
+      if (bizId === activeBizId && unsubBizUsers && unsubBizReminders) return;
+      if (unsubBizUsers) { unsubBizUsers(); unsubBizUsers = null; }
+      if (unsubBizReminders) { unsubBizReminders(); unsubBizReminders = null; }
+
+      activeBizId = bizId || "";
+      businessUsers = [];
+      adminManagedReminders = [];
+
+      if (!activeBizId) {
+        refreshTargetUserDropdown();
+        renderRemindersUI();
+        return;
+      }
+
+      const qUsers = query(collection(db, "absen_karyawan"), where("businessId", "==", activeBizId));
+      unsubBizUsers = onSnapshot(qUsers, (snap) => {
+        businessUsers = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        refreshTargetUserDropdown();
+      });
+
+      const qBizRem = query(collection(db, "absen_pengingat"), where("businessId", "==", activeBizId));
+      unsubBizReminders = onSnapshot(qBizRem, (snap) => {
+        adminManagedReminders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        if (isUserAdmin(currentUser) && activeMode === "admin") {
+          renderRemindersUI();
+        }
+      });
+    }
+
+    // Picker Target & Pengingat untuk Admin
+    const admDateInput = document.getElementById("admDateInput");
+    const admDateDisplay = document.getElementById("admDateDisplay");
+    const admTimeInput = document.getElementById("admTimeInput");
+    const admTimeDisplay = document.getElementById("admTimeDisplay");
+    const admTargetMetricRow = document.getElementById("admTargetMetricRow");
+
+    function initAdmPickers() {
+      const todayKey = getTodayKey();
+      admDateInput.value = todayKey;
+      admDateDisplay.textContent = formatShortDateKey(todayKey);
+      admTimeInput.value = "";
+      admTimeDisplay.textContent = "Jam (opsional)";
+      admTimeDisplay.classList.add("placeholder");
+    }
+
+    admDateInput.addEventListener("change", () => {
+      admDateDisplay.textContent = admDateInput.value ? formatShortDateKey(admDateInput.value) : "Pilih tanggal";
+    });
+
+    admTimeInput.addEventListener("change", () => {
+      if (admTimeInput.value) {
+        admTimeDisplay.textContent = admTimeInput.value;
+        admTimeDisplay.classList.remove("placeholder");
+      } else {
+        admTimeDisplay.textContent = "Jam (opsional)";
+        admTimeDisplay.classList.add("placeholder");
+      }
+    });
+
+    document.querySelectorAll("#admCatPills .cat-pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#admCatPills .cat-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedAdmCategory = btn.dataset.cat;
+        admTargetMetricRow.classList.toggle("hidden", selectedAdmCategory !== "Target");
+      });
+    });
+
+    document.getElementById("adminCreateTargetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isUserAdmin(currentUser) || activeMode !== "admin") return;
+      const bizId = (currentUser.businessId || "").trim().toUpperCase();
+      if (!bizId) {
+        showToast("Bisnis admin belum diatur.", "warn");
+        return;
+      }
+
+      const selectedUserId = document.getElementById("targetUserSelect").value;
+      const title = document.getElementById("admTitleInput").value.trim();
+      const date = admDateInput.value;
+      const time = admTimeInput.value;
+      const note = document.getElementById("admNoteInput").value.trim();
+      const goalRaw = document.getElementById("admTargetNumInput").value.trim();
+      const unit = document.getElementById("admTargetUnitInput").value.trim();
+      const saveBtn = document.getElementById("saveAdmTargetBtn");
+
+      if (!title || !date) {
+        showToast("Isi judul dan tanggal.", "warn");
+        return;
+      }
+
+      const recipients = selectedUserId === "ALL"
+        ? businessUsers.map(u => ({ id: u.id || u.docId, username: u.username || (u.id || u.docId) }))
+        : businessUsers
+            .filter(u => (u.id || u.docId) === selectedUserId)
+            .map(u => ({ id: u.id || u.docId, username: u.username || (u.id || u.docId) }));
+
+      if (recipients.length === 0) {
+        showToast("Tidak ada user pada bisnis ini.", "warn");
+        return;
+      }
+
+      const targetGoal = (selectedAdmCategory === "Target" && goalRaw) ? Math.max(0, Number(goalRaw)) : 0;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Menyimpan...";
+
+      try {
+        const nowIso = new Date().toISOString();
+        for (let i = 0; i < recipients.length; i++) {
+          const recUser = recipients[i];
+          const docId = `${recUser.id}_${Date.now()}_${i}`;
+          await setDoc(doc(db, "absen_pengingat", docId), {
+            empId: recUser.id,
+            username: recUser.username,
+            businessId: bizId,
+            assignedBy: currentUser.id,
+            category: selectedAdmCategory,
+            title,
+            targetGoal,
+            targetCurrent: 0,
+            targetUnit: targetGoal > 0 ? unit : "",
+            date,
+            time: time || "",
+            note,
+            completed: false,
+            createdAt: nowIso
+          });
+        }
+
+        document.getElementById("admTitleInput").value = "";
+        document.getElementById("admTargetNumInput").value = "";
+        document.getElementById("admTargetUnitInput").value = "";
+        document.getElementById("admNoteInput").value = "";
+        initAdmPickers();
+        showToast(`${selectedAdmCategory} ditambahkan untuk ${recipients.length} user.`, "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menyimpan target/pengingat.", "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Simpan Target / Pengingat User";
+      }
+    });
+
     // Sub-segment switcher
     document.querySelectorAll(".sub-seg-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -1204,6 +1601,7 @@
       );
       if (!ok) return;
       localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(VIEW_MODE_KEY);
       window.location.href = "https://my.sitenexs.com/absen";
     });
 
@@ -1214,7 +1612,10 @@
       const segTargetCount = document.getElementById("segTargetCount");
       const navBadge = document.getElementById("navTargetBadge");
 
-      const sorted = [...myReminders].sort((a, b) => {
+      const isAdminView = isUserAdmin(currentUser) && activeMode === "admin";
+      const sourceList = isAdminView ? adminManagedReminders : myReminders;
+
+      const sorted = [...sourceList].sort((a, b) => {
         if (Boolean(a.completed) !== Boolean(b.completed)) {
           return a.completed ? 1 : -1;
         }
@@ -1227,15 +1628,16 @@
       pendingBadge.textContent = `${activeList.length} Aktif`;
       segTargetCount.textContent = activeList.length;
 
-      if (activeList.length > 0) {
-        navBadge.textContent = activeList.length;
+      const myActiveCount = myReminders.filter(r => !r.completed).length;
+      if (myActiveCount > 0) {
+        navBadge.textContent = myActiveCount;
         navBadge.classList.remove("hidden");
       } else {
         navBadge.classList.add("hidden");
       }
 
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada target atau pengingat dari admin.</div>`;
+        container.innerHTML = `<div class="empty-state">${isAdminView ? "Belum ada target atau pengingat yang dibuat untuk user." : "Belum ada target atau pengingat dari admin."}</div>`;
         return;
       }
 
@@ -1245,6 +1647,7 @@
         const whenLabel = `${formatShortDateKey(rem.date)}${rem.time ? ` • ${rem.time}` : ""}`;
         const cat = rem.category || "Target";
         const fromAdmin = isAssignedByAdmin(rem);
+        const canDeleteItem = isAdminView || !fromAdmin;
 
         const targetGoal = Number(rem.targetGoal) || 0;
         const targetCurrent = Number(rem.targetCurrent) || 0;
@@ -1266,7 +1669,11 @@
           </div>
         ` : "";
 
-        const deleteBtnHtml = !fromAdmin ? `
+        const userTagHtml = isAdminView
+          ? `<span class="badge badge-ok">${escapeHtml(rem.username || rem.empId || "-")}</span>`
+          : "";
+
+        const deleteBtnHtml = canDeleteItem ? `
           <button type="button" class="reminder-del-btn" data-del-rem="${escapeHtml(rem.docId)}" aria-label="Hapus">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
@@ -1285,6 +1692,7 @@
             <div class="reminder-body">
               <div class="reminder-head">
                 <span class="cat-tag ${escapeHtml(cat)}">${escapeHtml(cat)}</span>
+                ${userTagHtml}
                 <span class="reminder-when ${isOverdue ? "overdue" : ""}">${whenLabel}</span>
               </div>
               <div class="reminder-title">${escapeHtml(rem.title)}</div>
@@ -1300,7 +1708,7 @@
         btn.addEventListener("click", async () => {
           const id = btn.dataset.stepRem;
           const delta = Number(btn.dataset.delta);
-          const target = myReminders.find(r => r.docId === id);
+          const target = sourceList.find(r => r.docId === id);
           if (!target) return;
 
           const goal = Number(target.targetGoal) || 0;
@@ -1326,7 +1734,7 @@
       container.querySelectorAll("[data-toggle-rem]").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.toggleRem;
-          const target = myReminders.find(r => r.docId === id);
+          const target = sourceList.find(r => r.docId === id);
           if (!target) return;
           try {
             await updateDoc(doc(db, "absen_pengingat", id), {
@@ -1344,8 +1752,8 @@
       container.querySelectorAll("[data-del-rem]").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.delRem;
-          const target = myReminders.find(r => r.docId === id);
-          if (!target || isAssignedByAdmin(target)) {
+          const target = sourceList.find(r => r.docId === id);
+          if (!target || (!isAdminView && isAssignedByAdmin(target))) {
             showToast("Target dari admin tidak bisa dihapus.", "warn");
             return;
           }
@@ -1495,6 +1903,9 @@
 
     // ================= INIT =================
     (function init() {
+      initAdmPickers();
+      initClientPicker();
+
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
         if (saved && saved.id && saved.username) {
@@ -1502,6 +1913,7 @@
           document.getElementById("displayUserName").textContent = saved.username;
           document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
           document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+          syncModeFromIndex();
         } else {
           window.location.href = "https://my.sitenexs.com/absen";
           return;
@@ -1511,17 +1923,20 @@
         return;
       }
 
-      initClientPicker();
-
-      // Pantau status akun
+      // Pantau status akun secara real-time
       onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
         if (!snap.exists()) {
           localStorage.removeItem(SESSION_KEY);
           window.location.href = "https://my.sitenexs.com/absen";
+          return;
         }
+        currentUser = { ...currentUser, ...snap.data() };
+        document.getElementById("displayUserName").textContent = currentUser.username || currentUser.id;
+        document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
+        syncModeFromIndex();
       });
 
-      // Listen Target & Pengingat
+      // Listen Target & Pengingat pribadi user
       const qRem = query(collection(db, "absen_pengingat"), where("empId", "==", currentUser.id));
       onSnapshot(qRem, (snapshot) => {
         myReminders = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
