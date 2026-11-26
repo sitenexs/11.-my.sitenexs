@@ -223,7 +223,7 @@
       margin-bottom: 5px;
     }
 
-    .form-input, .form-select {
+    .form-input {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border);
@@ -236,10 +236,167 @@
       transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
     }
 
-    .form-input:focus, .form-select:focus {
+    .form-input:focus {
       border-color: var(--primary);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    /* ================= CUSTOM DROPDOWN PICKER ================= */
+    .custom-select-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+
+    .custom-select-trigger.open,
+    .custom-select-trigger:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+      outline: none;
+    }
+
+    .custom-select-val {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select-val.placeholder {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .custom-select-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.16s ease;
+    }
+
+    .custom-select-trigger.open .custom-select-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+      padding: 5px;
+      max-height: 190px;
+      overflow-y: auto;
+      z-index: 60;
+      animation: itemEnter 0.16s ease;
+    }
+
+    .custom-select-option {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      transition: background-color 0.12s, color 0.12s;
+    }
+
+    .custom-select-option:hover {
+      background: var(--surface-soft);
+    }
+
+    .custom-select-option.selected {
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* ================= CHECKLIST KARYAWAN DI POP-UP ================= */
+    .emp-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 210px;
+      overflow-y: auto;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      margin-bottom: 12px;
+    }
+
+    .emp-check-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: border-color 0.14s, background-color 0.14s;
+    }
+
+    .emp-check-item.checked {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .emp-check-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .emp-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .emp-check-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .btn {
@@ -290,51 +447,38 @@
       cursor: pointer;
     }
 
-    .btn-danger-sm {
-      border: 1px solid #fecdd3;
-      background: var(--danger-bg);
-      color: var(--danger);
-      padding: 4px 8px;
-      border-radius: 7px;
-      font-size: 10.5px;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
     .inbox-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .inbox-item {
-      text-decoration: none;
-      color: inherit;
+    .inbox-row {
       background: var(--surface-soft);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 11px 12px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      transition: border-color 0.15s, background-color 0.15s, transform 0.12s;
+      gap: 8px;
+      transition: border-color 0.15s, background-color 0.15s;
       animation: itemEnter 0.2s ease;
     }
 
-    .inbox-item:active {
-      transform: scale(0.98);
-      background: var(--primary-bg);
-      border-color: var(--primary);
-    }
-
-    .inbox-left {
+    .inbox-item {
+      text-decoration: none;
+      color: inherit;
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
       flex: 1;
+    }
+
+    .inbox-row:active {
+      background: var(--primary-bg);
+      border-color: var(--primary);
     }
 
     .group-icon-box {
@@ -395,31 +539,30 @@
       margin-top: 2px;
     }
 
+    .inbox-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-del-grp {
+      border: 1px solid #fecdd3;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .inbox-arrow {
       font-size: 15px;
       font-weight: 800;
       color: var(--primary);
-      flex-shrink: 0;
-    }
-
-    .member-group-box {
-      margin-top: 12px;
-      padding-top: 11px;
-      border-top: 1px dashed var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .member-row-card {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 8px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      text-decoration: none;
+      padding: 2px 4px;
     }
 
     .empty-state {
@@ -432,7 +575,7 @@
       border-radius: 12px;
     }
 
-    /* ================= MODAL POP-UP BUAT GRUP ================= */
+    /* ================= MODAL POP-UP ================= */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -448,7 +591,7 @@
 
     .modal-card {
       width: 100%;
-      max-width: 360px;
+      max-width: 364px;
       background: #ffffff;
       border-radius: 18px;
       padding: 16px;
@@ -519,7 +662,7 @@
     </header>
 
     <main class="content-area" id="inboxContent">
-      <!-- Inbox Grup Chat Bisnis -->
+      <!-- Card 1: Inbox Grup Chat Bisnis -->
       <section class="card">
         <div class="card-title">
           <span>Inbox Grup Chat</span>
@@ -530,40 +673,22 @@
         </div>
       </section>
 
-      <!-- Tombol + Buat Grup & Tambah Anggota ke Grup -->
-      <section class="card">
+      <!-- Card 2: Buat Grup (Tombol + Buat Grup Membuka Pop-up) -->
+      <section class="card" id="createGroupCard">
         <div class="card-title">
-          <span>Manajemen Grup &amp; Anggota</span>
+          <span>Buat Grup</span>
           <span class="badge badge-success">absen_grup</span>
         </div>
-
         <button type="button" class="btn btn-masuk" id="openCreateGroupModalBtn">+ Buat Grup</button>
+      </section>
 
-        <div class="member-group-box">
-          <div class="card-title" style="margin-bottom:4px;">
-            <span>Tambah Anggota ke Grup</span>
-            <span class="badge badge-ok" id="memberCountBadge">0 Anggota</span>
-          </div>
-          <form id="addMemberForm">
-            <div class="form-group">
-              <label class="form-label" for="targetGroupSelect">Pilih Grup</label>
-              <select id="targetGroupSelect" class="form-select" required>
-                <option value="">-- Pilih Grup --</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="targetEmployeeSelect">Pilih Karyawan</label>
-              <select id="targetEmployeeSelect" class="form-select" required>
-                <option value="">-- Pilih Karyawan --</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary" id="addMemberBtn">Tambah Anggota ke Grup</button>
-          </form>
-
-          <div id="selectedGroupMembersList" class="inbox-list" style="margin-top:6px;">
-            <div class="empty-state">Pilih grup untuk melihat atau mengatur anggota.</div>
-          </div>
+      <!-- Card 3: Tambahkan Anggota (Tombol Membuka Pop-up Pilih Grup & Centang Anggota) -->
+      <section class="card" id="addMemberCard">
+        <div class="card-title">
+          <span>Tambahkan Anggota</span>
+          <span class="badge badge-ok" id="memberCountBadge">0 Anggota</span>
         </div>
+        <button type="button" class="btn btn-primary" id="openAddMemberModalBtn">Tambahkan Anggota</button>
       </section>
     </main>
   </div>
@@ -589,6 +714,39 @@
     </div>
   </div>
 
+  <!-- POP-UP PILIH GRUP & CENTANG ANGGOTA -->
+  <div id="addMemberModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span class="modal-title">Tambahkan Anggota ke Grup</span>
+        <button type="button" class="btn-outline-sm" id="closeAddMemberModalBtn">Tutup</button>
+      </div>
+      <form id="addMemberForm">
+        <div class="form-group">
+          <label class="form-label">Pilih Grup</label>
+          <div class="custom-select-wrap" id="modalGroupPicker">
+            <button type="button" class="custom-select-trigger" id="modalGroupTrigger">
+              <span class="custom-select-val placeholder" id="modalGroupLabel">-- Pilih Grup --</span>
+              <svg class="custom-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="custom-select-menu hidden" id="modalGroupMenu"></div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:6px;">
+          <label class="form-label">Centang Anggota Karyawan</label>
+        </div>
+        <div class="emp-checklist" id="modalEmpChecklist">
+          <div class="empty-state" style="padding:10px;">Memuat karyawan...</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="saveCheckedMembersBtn">Simpan Anggota Terpilih</button>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script type="module">
@@ -598,6 +756,7 @@
       doc,
       setDoc,
       updateDoc,
+      deleteDoc,
       collection,
       query,
       where,
@@ -624,14 +783,15 @@
     let groups = [];
     let messages = [];
     let employees = [];
+    let selectedModalGroupId = "";
+    let checkedEmpSet = new Set();
     let unsubGroups = null;
     let unsubMessages = null;
     let unsubEmployees = null;
     let toastTimer = null;
 
     const createGroupModalEl = document.getElementById("createGroupModal");
-    const targetGroupSelectEl = document.getElementById("targetGroupSelect");
-    const targetEmployeeSelectEl = document.getElementById("targetEmployeeSelect");
+    const addMemberModalEl = document.getElementById("addMemberModal");
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -682,6 +842,13 @@
       }).replace(/\./g, ":");
     }
 
+    function updateMemberSummaryBadge() {
+      const badgeEl = document.getElementById("memberCountBadge");
+      const activeGrp = groups.find(g => g.id === selectedModalGroupId) || groups[0] || null;
+      const count = activeGrp && Array.isArray(activeGrp.memberIds) ? activeGrp.memberIds.length : 0;
+      badgeEl.textContent = `${count} Anggota`;
+    }
+
     // Pop-up Buat Grup
     document.getElementById("openCreateGroupModalBtn").addEventListener("click", () => {
       createGroupModalEl.classList.remove("hidden");
@@ -692,119 +859,155 @@
       createGroupModalEl.classList.add("hidden");
     });
 
-    function refreshMemberControls() {
-      const prevGrp = targetGroupSelectEl.value;
-      const prevEmp = targetEmployeeSelectEl.value;
-
-      targetGroupSelectEl.innerHTML = [`<option value="">-- Pilih Grup --</option>`].concat(
-        groups.map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name)}</option>`)
-      ).join("");
-
-      if (prevGrp && groups.some(g => g.id === prevGrp)) {
-        targetGroupSelectEl.value = prevGrp;
-      } else if (groups.length > 0) {
-        targetGroupSelectEl.value = groups[0].id;
-      }
-
-      targetEmployeeSelectEl.innerHTML = [`<option value="">-- Pilih Karyawan --</option>`].concat(
-        employees.map(emp => {
-          const idVal = emp.id || emp.docId;
-          return `<option value="${escapeHtml(idVal)}">${escapeHtml(emp.username || idVal)} (${escapeHtml(idVal)})</option>`;
-        })
-      ).join("");
-
-      if (prevEmp && employees.some(e => (e.id || e.docId) === prevEmp)) {
-        targetEmployeeSelectEl.value = prevEmp;
-      }
-
-      renderSelectedGroupMembers();
+    // Pop-up Tambahkan Anggota (Pilih Grup & Centang Anggota)
+    function syncCheckedFromGroup(grpId) {
+      const grp = groups.find(g => g.id === grpId);
+      const existing = Array.isArray(grp?.memberIds) ? grp.memberIds : [];
+      checkedEmpSet = new Set(existing);
     }
 
-    function renderSelectedGroupMembers() {
-      const listEl = document.getElementById("selectedGroupMembersList");
-      const badgeEl = document.getElementById("memberCountBadge");
-      const activeGrp = groups.find(g => g.id === targetGroupSelectEl.value);
+    function renderModalGroupDropdown() {
+      const trigger = document.getElementById("modalGroupTrigger");
+      const menu = document.getElementById("modalGroupMenu");
+      const labelEl = document.getElementById("modalGroupLabel");
 
-      if (!activeGrp) {
-        badgeEl.textContent = "0 Anggota";
-        listEl.innerHTML = `<div class="empty-state">Belum ada grup untuk dipilih.</div>`;
-        return;
+      if (!groups.some(g => g.id === selectedModalGroupId)) {
+        selectedModalGroupId = groups.length > 0 ? groups[0].id : "";
       }
 
-      const memberIds = Array.isArray(activeGrp.memberIds) ? activeGrp.memberIds : [];
-      badgeEl.textContent = `${memberIds.length} Anggota`;
-
-      if (memberIds.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">Belum ada anggota di grup <b>${escapeHtml(activeGrp.name)}</b>. Anggota yang belum ditambahkan tidak dapat masuk ke grup.</div>`;
-        return;
+      const activeGrp = groups.find(g => g.id === selectedModalGroupId);
+      if (activeGrp) {
+        labelEl.textContent = activeGrp.name;
+        labelEl.classList.remove("placeholder");
+      } else {
+        labelEl.textContent = "-- Belum ada grup --";
+        labelEl.classList.add("placeholder");
       }
 
-      const empNameMap = {};
-      employees.forEach(e => {
-        const idVal = e.id || e.docId;
-        empNameMap[idVal] = e.username || idVal;
-      });
+      if (groups.length === 0) {
+        menu.innerHTML = `<div class="empty-state" style="padding:10px;">Buat grup terlebih dahulu</div>`;
+      } else {
+        menu.innerHTML = groups.map(g => {
+          const count = Array.isArray(g.memberIds) ? g.memberIds.length : 0;
+          return `
+            <button type="button" class="custom-select-option ${g.id === selectedModalGroupId ? "selected" : ""}" data-pick-grp="${escapeHtml(g.id)}">
+              <span>${escapeHtml(g.name)}</span>
+              <span class="badge badge-ok">${count} Anggota</span>
+            </button>
+          `;
+        }).join("");
+      }
 
-      listEl.innerHTML = memberIds.map(mId => `
-        <div class="member-row-card">
-          <div>
-            <div style="font-weight:800; font-size:12px;">${escapeHtml(empNameMap[mId] || mId)}</div>
-            <div style="font-size:10.5px; color:var(--muted);">ID: ${escapeHtml(mId)}</div>
-          </div>
-          <button type="button" class="btn-danger-sm" data-remove-member="${escapeHtml(mId)}">Keluarkan</button>
-        </div>
-      `).join("");
+      trigger.onclick = (e) => {
+        e.stopPropagation();
+        const willOpen = menu.classList.contains("hidden");
+        menu.classList.toggle("hidden", !willOpen);
+        trigger.classList.toggle("open", willOpen);
+      };
 
-      listEl.querySelectorAll("[data-remove-member]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const mId = btn.dataset.removeMember;
-          const nextMembers = memberIds.filter(id => id !== mId);
-          try {
-            await updateDoc(doc(db, "absen_grup", activeGrp.id), {
-              memberIds: nextMembers,
-              updatedAt: new Date().toISOString()
-            });
-            showToast(`${mId} dikeluarkan dari grup.`);
-          } catch (err) {
-            console.error(err);
-            showToast("Gagal mengeluarkan anggota.");
-          }
+      menu.querySelectorAll("[data-pick-grp]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectedModalGroupId = btn.dataset.pickGrp;
+          menu.classList.add("hidden");
+          trigger.classList.remove("open");
+          syncCheckedFromGroup(selectedModalGroupId);
+          renderModalGroupDropdown();
+          renderModalChecklist();
+          updateMemberSummaryBadge();
         });
       });
     }
 
-    targetGroupSelectEl.addEventListener("change", renderSelectedGroupMembers);
+    function renderModalChecklist() {
+      const listEl = document.getElementById("modalEmpChecklist");
+      if (!selectedModalGroupId) {
+        listEl.innerHTML = `<div class="empty-state" style="padding:10px;">Pilih atau buat grup terlebih dahulu.</div>`;
+        return;
+      }
+
+      if (employees.length === 0) {
+        listEl.innerHTML = `<div class="empty-state" style="padding:10px;">Belum ada karyawan pada bisnis ini.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = employees.map(emp => {
+        const empId = String(emp.id || emp.docId || "");
+        const empName = String(emp.username || empId);
+        const isChecked = checkedEmpSet.has(empId);
+
+        return `
+          <label class="emp-check-item ${isChecked ? "checked" : ""}">
+            <span class="emp-check-left">
+              <input type="checkbox" class="emp-checkbox" data-emp-check="${escapeHtml(empId)}" ${isChecked ? "checked" : ""}>
+              <span class="emp-check-name">${escapeHtml(empName)}</span>
+            </span>
+            <span class="badge badge-ok">${escapeHtml(empId)}</span>
+          </label>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll("[data-emp-check]").forEach(cb => {
+        cb.addEventListener("change", () => {
+          const idVal = cb.dataset.empCheck;
+          if (cb.checked) {
+            checkedEmpSet.add(idVal);
+          } else {
+            checkedEmpSet.delete(idVal);
+          }
+          renderModalChecklist();
+        });
+      });
+    }
+
+    document.addEventListener("click", () => {
+      const menu = document.getElementById("modalGroupMenu");
+      const trigger = document.getElementById("modalGroupTrigger");
+      if (menu) menu.classList.add("hidden");
+      if (trigger) trigger.classList.remove("open");
+    });
+
+    document.getElementById("openAddMemberModalBtn").addEventListener("click", () => {
+      if (groups.length === 0) {
+        showToast("Buat grup terlebih dahulu sebelum menambah anggota.");
+        return;
+      }
+      if (!selectedModalGroupId) {
+        selectedModalGroupId = groups[0].id;
+      }
+      syncCheckedFromGroup(selectedModalGroupId);
+      renderModalGroupDropdown();
+      renderModalChecklist();
+      addMemberModalEl.classList.remove("hidden");
+    });
+
+    document.getElementById("closeAddMemberModalBtn").addEventListener("click", () => {
+      addMemberModalEl.classList.add("hidden");
+    });
 
     document.getElementById("addMemberForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const grpId = targetGroupSelectEl.value;
-      const empId = targetEmployeeSelectEl.value;
-      const btn = document.getElementById("addMemberBtn");
-
-      if (!grpId || !empId) {
-        showToast("Pilih grup dan karyawan terlebih dahulu.");
+      if (!selectedModalGroupId) {
+        showToast("Pilih grup terlebih dahulu.");
         return;
       }
-
-      const grp = groups.find(g => g.id === grpId);
+      const grp = groups.find(g => g.id === selectedModalGroupId);
       if (!grp) return;
 
-      const currentMembers = Array.isArray(grp.memberIds) ? grp.memberIds : [];
-      if (currentMembers.includes(empId)) {
-        showToast("Karyawan sudah menjadi anggota grup ini.");
-        return;
-      }
-
+      const btn = document.getElementById("saveCheckedMembersBtn");
       btn.disabled = true;
       try {
-        await updateDoc(doc(db, "absen_grup", grpId), {
-          memberIds: [...currentMembers, empId],
+        const nextMembers = Array.from(checkedEmpSet);
+        await updateDoc(doc(db, "absen_grup", grp.id), {
+          memberIds: nextMembers,
           updatedAt: new Date().toISOString()
         });
-        showToast(`${empId} ditambahkan ke grup ${grp.name}.`);
+        addMemberModalEl.classList.add("hidden");
+        updateMemberSummaryBadge();
+        showToast(`Anggota grup ${grp.name} diperbarui (${nextMembers.length} anggota).`);
       } catch (err) {
         console.error(err);
-        showToast("Gagal menambahkan anggota ke grup.");
+        showToast("Gagal menyimpan anggota grup.");
       } finally {
         btn.disabled = false;
       }
@@ -851,8 +1054,8 @@
         const href = `chat/?groupId=${encodeURIComponent(g.id)}`;
 
         return `
-          <a href="${escapeHtml(href)}" class="inbox-item">
-            <div class="inbox-left">
+          <div class="inbox-row">
+            <a href="${escapeHtml(href)}" class="inbox-item">
               <div class="group-icon-box">${escapeHtml((g.name || "G").charAt(0).toUpperCase())}</div>
               <div class="inbox-body">
                 <div class="inbox-top-row">
@@ -860,13 +1063,36 @@
                   ${timeText ? `<span class="inbox-time">${escapeHtml(timeText)}</span>` : ""}
                 </div>
                 <div class="inbox-preview">${escapeHtml(previewText)}</div>
-                <div class="inbox-meta">${memberCount} Anggota • Ketuk untuk buka chat</div>
+                <div class="inbox-meta">${memberCount} Anggota</div>
               </div>
+            </a>
+            <div class="inbox-actions">
+              <button type="button" class="btn-del-grp" data-del-group="${escapeHtml(g.id)}" data-del-name="${escapeHtml(g.name)}">Hapus</button>
+              <a href="${escapeHtml(href)}" class="inbox-arrow" aria-label="Buka chat">&rsaquo;</a>
             </div>
-            <span class="inbox-arrow">&rsaquo;</span>
-          </a>
+          </div>
         `;
       }).join("");
+
+      listEl.querySelectorAll("[data-del-group]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const grpId = btn.dataset.delGroup;
+          const grpName = btn.dataset.delName || grpId;
+          btn.disabled = true;
+          try {
+            await deleteDoc(doc(db, "absen_grup", grpId));
+            if (selectedModalGroupId === grpId) {
+              selectedModalGroupId = "";
+            }
+            showToast(`Grup "${grpName}" dihapus.`);
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal menghapus grup.");
+            btn.disabled = false;
+          }
+        });
+      });
     }
 
     function startBusinessSubscriptions(bizId) {
@@ -885,7 +1111,9 @@
         : "Bisnis belum diatur";
 
       if (!businessId) {
-        refreshMemberControls();
+        renderModalGroupDropdown();
+        renderModalChecklist();
+        updateMemberSummaryBadge();
         renderInboxList();
         return;
       }
@@ -895,14 +1123,19 @@
         groups = snap.docs
           .map(d => ({ id: d.id, ...d.data() }))
           .filter(g => g.businessId === businessId);
-        refreshMemberControls();
+        if (!selectedModalGroupId && groups.length > 0) {
+          selectedModalGroupId = groups[0].id;
+        }
+        renderModalGroupDropdown();
+        renderModalChecklist();
+        updateMemberSummaryBadge();
         renderInboxList();
       });
 
       const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", businessId));
       unsubEmployees = onSnapshot(qEmp, (snap) => {
         employees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
-        refreshMemberControls();
+        renderModalChecklist();
       });
 
       const qMsg = query(collection(db, "absen_chat"), where("businessId", "==", businessId));
@@ -936,7 +1169,7 @@
           createdAt: new Date().toISOString()
         });
 
-        targetGroupSelectEl.value = grpId;
+        selectedModalGroupId = grpId;
         document.getElementById("newGroupNameInput").value = "";
         document.getElementById("newGroupDescInput").value = "";
         createGroupModalEl.classList.add("hidden");
@@ -950,6 +1183,10 @@
     });
 
     (function init() {
+      renderModalGroupDropdown();
+      renderModalChecklist();
+      updateMemberSummaryBadge();
+
       try {
         const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
         if (!saved || !saved.id) {
