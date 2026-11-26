@@ -130,6 +130,14 @@
       justify-content: center;
       text-transform: uppercase;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .app-container.is-admin-mode .avatar {
@@ -1358,6 +1366,16 @@
         .replace(/'/g, "&#39;");
     }
 
+    function renderTopbarAvatar(userObj) {
+      const avatarEl = document.getElementById("userAvatar");
+      const initial = (userObj?.username || userObj?.id || "K").charAt(0);
+      if (userObj && userObj.photoURL) {
+        avatarEl.innerHTML = `<img src="${escapeHtml(userObj.photoURL)}" alt="${escapeHtml(userObj.username || "Profil")}">`;
+      } else {
+        avatarEl.textContent = initial;
+      }
+    }
+
     function cleanNoteLines(rawNote) {
       return String(rawNote || "")
         .split("\n")
@@ -1912,7 +1930,7 @@
           currentUser = saved;
           document.getElementById("displayUserName").textContent = saved.username;
           document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
-          document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
+          renderTopbarAvatar(saved);
           syncModeFromIndex();
         } else {
           window.location.href = "https://my.sitenexs.com/absen";
@@ -1932,7 +1950,7 @@
         }
         currentUser = { ...currentUser, ...snap.data() };
         document.getElementById("displayUserName").textContent = currentUser.username || currentUser.id;
-        document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
+        renderTopbarAvatar(currentUser);
         syncModeFromIndex();
       });
 
