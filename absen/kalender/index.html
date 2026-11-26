@@ -906,7 +906,7 @@
 
     <!-- Fixed Bottom Navigation -->
     <nav class="bottom-nav">
-      <a href="index.html" class="nav-btn">
+      <a href="https://my.sitenexs.com/absen" class="nav-btn">
         <span class="nav-icon-pill">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         </span>
@@ -1151,7 +1151,7 @@
       );
       if (!ok) return;
       localStorage.removeItem(SESSION_KEY);
-      window.location.href = "index.html";
+      window.location.href = "https://my.sitenexs.com/absen";
     });
 
     // ================= LIGHTBOX GALLERY =================
@@ -1485,11 +1485,11 @@
           document.getElementById("displayUserId").textContent = `ID: ${saved.id}`;
           document.getElementById("userAvatar").textContent = (saved.username || "K").charAt(0);
         } else {
-          window.location.href = "index.html";
+          window.location.href = "https://my.sitenexs.com/absen";
           return;
         }
       } catch {
-        window.location.href = "index.html";
+        window.location.href = "https://my.sitenexs.com/absen";
         return;
       }
 
@@ -1499,7 +1499,7 @@
       onSnapshot(doc(db, "absen_karyawan", currentUser.id), (snap) => {
         if (!snap.exists()) {
           localStorage.removeItem(SESSION_KEY);
-          window.location.href = "index.html";
+          window.location.href = "https://my.sitenexs.com/absen";
         }
       });
 
