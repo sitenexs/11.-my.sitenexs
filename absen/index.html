@@ -2052,6 +2052,15 @@
       return Boolean(userObj.isAbsenAdmin) || userObj.role === "admin_absen";
     }
 
+    function getSavedModeForSession(userObj) {
+      if (!isUserAdmin(userObj)) return "user";
+      const savedMode = localStorage.getItem(VIEW_MODE_KEY);
+      if (savedMode === "user" || savedMode === "admin") {
+        return savedMode;
+      }
+      return "admin";
+    }
+
     // ================= PENGATURAN MODE ADMIN VS MODE BIASA =================
     function switchAppMode(targetMode) {
       const isAdminAccount = isUserAdmin(currentUser);
@@ -2199,7 +2208,7 @@
       if (forceDefaultAdminLanding) {
         switchAppMode("admin");
       } else {
-        switchAppMode(activeViewMode);
+        switchAppMode(getSavedModeForSession(userObj));
       }
 
       const bizId = (userObj.businessId || "").trim().toUpperCase();
@@ -2707,7 +2716,7 @@
         document.getElementById("userAvatar").textContent = (currentUser.username || "K").charAt(0);
 
         const isAdminNow = isUserAdmin(currentUser);
-        const shouldLandAdmin = (!firstSnapHandled && isAdminNow) || (!wasAdmin && isAdminNow);
+        const shouldLandAdmin = (!firstSnapHandled && isAdminNow && !localStorage.getItem(VIEW_MODE_KEY)) || (!wasAdmin && isAdminNow);
         firstSnapHandled = true;
 
         applyAdminUIState(currentUser, shouldLandAdmin);
@@ -3007,14 +3016,17 @@
 
     function openDashboard(user, isFirstLogin = false) {
       currentUser = user;
-      activeViewMode = isUserAdmin(user) ? "admin" : "user";
+      const initialMode = isFirstLogin
+        ? (isUserAdmin(user) ? "admin" : "user")
+        : getSavedModeForSession(user);
+      activeViewMode = initialMode;
       localStorage.setItem(VIEW_MODE_KEY, activeViewMode);
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       document.getElementById("displayUserName").textContent = user.username;
       document.getElementById("displayUserId").textContent = `ID: ${user.id}`;
       document.getElementById("userAvatar").textContent = (user.username || "K").charAt(0);
-      applyAdminUIState(user, true);
+      applyAdminUIState(user, isFirstLogin);
       startListeningChatUnread(user);
       watchCurrentUserStatus(user.id);
       startListeningRecords(user.id);
