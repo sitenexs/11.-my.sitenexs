@@ -20,6 +20,7 @@
       --success: #059669;
       --success-bg: #d1fae5;
       --danger: #e11d48;
+      --danger-bg: #ffe4e6;
       --radius: 18px;
       --radius-sm: 12px;
       --clay-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.055), 0 2px 6px -1px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
@@ -47,6 +48,11 @@
     @keyframes tabFadeSlide {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @keyframes itemEnter {
@@ -217,7 +223,7 @@
       margin-bottom: 5px;
     }
 
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border);
@@ -230,7 +236,7 @@
       transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
     }
 
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       border-color: var(--primary);
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
@@ -261,10 +267,39 @@
       cursor: not-allowed;
     }
 
+    .btn-primary {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(29, 78, 216, 0.24);
+    }
+
     .btn-masuk {
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
       box-shadow: 0 5px 14px rgba(5, 150, 105, 0.22);
+    }
+
+    .btn-outline-sm {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 6px 11px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-danger-sm {
+      border: 1px solid #fecdd3;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 4px 8px;
+      border-radius: 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
     .inbox-list {
@@ -367,6 +402,26 @@
       flex-shrink: 0;
     }
 
+    .member-group-box {
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .member-row-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
     .empty-state {
       text-align: center;
       font-size: 12px;
@@ -375,6 +430,44 @@
       background: var(--surface-soft);
       border: 1px dashed #cbd5e1;
       border-radius: 12px;
+    }
+
+    /* ================= MODAL POP-UP BUAT GRUP ================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.56);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 20px 42px rgba(15, 23, 42, 0.24);
+      animation: modalPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text);
     }
 
     .hidden {
@@ -437,25 +530,63 @@
         </div>
       </section>
 
-      <!-- Buat Grup Baru Sesuai Bisnis (Seperti adminAbsen.html) -->
+      <!-- Tombol + Buat Grup & Tambah Anggota ke Grup -->
       <section class="card">
         <div class="card-title">
-          <span>Buat Grup Baru</span>
+          <span>Manajemen Grup &amp; Anggota</span>
           <span class="badge badge-success">absen_grup</span>
         </div>
-        <form id="createGroupForm">
-          <div class="form-group">
-            <label class="form-label" for="newGroupNameInput">Nama Grup</label>
-            <input type="text" id="newGroupNameInput" class="form-input" placeholder="Contoh: Tim Lapangan, Sales, Kasir" required>
+
+        <button type="button" class="btn btn-masuk" id="openCreateGroupModalBtn">+ Buat Grup</button>
+
+        <div class="member-group-box">
+          <div class="card-title" style="margin-bottom:4px;">
+            <span>Tambah Anggota ke Grup</span>
+            <span class="badge badge-ok" id="memberCountBadge">0 Anggota</span>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="newGroupDescInput">Deskripsi Grup (Opsional)</label>
-            <input type="text" id="newGroupDescInput" class="form-input" placeholder="Keterangan singkat grup">
+          <form id="addMemberForm">
+            <div class="form-group">
+              <label class="form-label" for="targetGroupSelect">Pilih Grup</label>
+              <select id="targetGroupSelect" class="form-select" required>
+                <option value="">-- Pilih Grup --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="targetEmployeeSelect">Pilih Karyawan</label>
+              <select id="targetEmployeeSelect" class="form-select" required>
+                <option value="">-- Pilih Karyawan --</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="addMemberBtn">Tambah Anggota ke Grup</button>
+          </form>
+
+          <div id="selectedGroupMembersList" class="inbox-list" style="margin-top:6px;">
+            <div class="empty-state">Pilih grup untuk melihat atau mengatur anggota.</div>
           </div>
-          <button type="submit" class="btn btn-masuk" id="createGroupBtn">Buat Grup</button>
-        </form>
+        </div>
       </section>
     </main>
+  </div>
+
+  <!-- POP-UP BUAT GRUP -->
+  <div id="createGroupModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span class="modal-title">Buat Grup Baru</span>
+        <button type="button" class="btn-outline-sm" id="closeCreateGroupModalBtn">Tutup</button>
+      </div>
+      <form id="createGroupForm">
+        <div class="form-group">
+          <label class="form-label" for="newGroupNameInput">Nama Grup</label>
+          <input type="text" id="newGroupNameInput" class="form-input" placeholder="Contoh: Tim Lapangan, Sales, Kasir" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newGroupDescInput">Deskripsi Grup (Opsional)</label>
+          <input type="text" id="newGroupDescInput" class="form-input" placeholder="Keterangan singkat grup">
+        </div>
+        <button type="submit" class="btn btn-masuk" id="createGroupBtn">Simpan Grup</button>
+      </form>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -466,6 +597,7 @@
       getFirestore,
       doc,
       setDoc,
+      updateDoc,
       collection,
       query,
       where,
@@ -491,9 +623,15 @@
     let businessId = "";
     let groups = [];
     let messages = [];
+    let employees = [];
     let unsubGroups = null;
     let unsubMessages = null;
+    let unsubEmployees = null;
     let toastTimer = null;
+
+    const createGroupModalEl = document.getElementById("createGroupModal");
+    const targetGroupSelectEl = document.getElementById("targetGroupSelect");
+    const targetEmployeeSelectEl = document.getElementById("targetEmployeeSelect");
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -544,6 +682,134 @@
       }).replace(/\./g, ":");
     }
 
+    // Pop-up Buat Grup
+    document.getElementById("openCreateGroupModalBtn").addEventListener("click", () => {
+      createGroupModalEl.classList.remove("hidden");
+      document.getElementById("newGroupNameInput").focus();
+    });
+
+    document.getElementById("closeCreateGroupModalBtn").addEventListener("click", () => {
+      createGroupModalEl.classList.add("hidden");
+    });
+
+    function refreshMemberControls() {
+      const prevGrp = targetGroupSelectEl.value;
+      const prevEmp = targetEmployeeSelectEl.value;
+
+      targetGroupSelectEl.innerHTML = [`<option value="">-- Pilih Grup --</option>`].concat(
+        groups.map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name)}</option>`)
+      ).join("");
+
+      if (prevGrp && groups.some(g => g.id === prevGrp)) {
+        targetGroupSelectEl.value = prevGrp;
+      } else if (groups.length > 0) {
+        targetGroupSelectEl.value = groups[0].id;
+      }
+
+      targetEmployeeSelectEl.innerHTML = [`<option value="">-- Pilih Karyawan --</option>`].concat(
+        employees.map(emp => {
+          const idVal = emp.id || emp.docId;
+          return `<option value="${escapeHtml(idVal)}">${escapeHtml(emp.username || idVal)} (${escapeHtml(idVal)})</option>`;
+        })
+      ).join("");
+
+      if (prevEmp && employees.some(e => (e.id || e.docId) === prevEmp)) {
+        targetEmployeeSelectEl.value = prevEmp;
+      }
+
+      renderSelectedGroupMembers();
+    }
+
+    function renderSelectedGroupMembers() {
+      const listEl = document.getElementById("selectedGroupMembersList");
+      const badgeEl = document.getElementById("memberCountBadge");
+      const activeGrp = groups.find(g => g.id === targetGroupSelectEl.value);
+
+      if (!activeGrp) {
+        badgeEl.textContent = "0 Anggota";
+        listEl.innerHTML = `<div class="empty-state">Belum ada grup untuk dipilih.</div>`;
+        return;
+      }
+
+      const memberIds = Array.isArray(activeGrp.memberIds) ? activeGrp.memberIds : [];
+      badgeEl.textContent = `${memberIds.length} Anggota`;
+
+      if (memberIds.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">Belum ada anggota di grup <b>${escapeHtml(activeGrp.name)}</b>. Anggota yang belum ditambahkan tidak dapat masuk ke grup.</div>`;
+        return;
+      }
+
+      const empNameMap = {};
+      employees.forEach(e => {
+        const idVal = e.id || e.docId;
+        empNameMap[idVal] = e.username || idVal;
+      });
+
+      listEl.innerHTML = memberIds.map(mId => `
+        <div class="member-row-card">
+          <div>
+            <div style="font-weight:800; font-size:12px;">${escapeHtml(empNameMap[mId] || mId)}</div>
+            <div style="font-size:10.5px; color:var(--muted);">ID: ${escapeHtml(mId)}</div>
+          </div>
+          <button type="button" class="btn-danger-sm" data-remove-member="${escapeHtml(mId)}">Keluarkan</button>
+        </div>
+      `).join("");
+
+      listEl.querySelectorAll("[data-remove-member]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const mId = btn.dataset.removeMember;
+          const nextMembers = memberIds.filter(id => id !== mId);
+          try {
+            await updateDoc(doc(db, "absen_grup", activeGrp.id), {
+              memberIds: nextMembers,
+              updatedAt: new Date().toISOString()
+            });
+            showToast(`${mId} dikeluarkan dari grup.`);
+          } catch (err) {
+            console.error(err);
+            showToast("Gagal mengeluarkan anggota.");
+          }
+        });
+      });
+    }
+
+    targetGroupSelectEl.addEventListener("change", renderSelectedGroupMembers);
+
+    document.getElementById("addMemberForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const grpId = targetGroupSelectEl.value;
+      const empId = targetEmployeeSelectEl.value;
+      const btn = document.getElementById("addMemberBtn");
+
+      if (!grpId || !empId) {
+        showToast("Pilih grup dan karyawan terlebih dahulu.");
+        return;
+      }
+
+      const grp = groups.find(g => g.id === grpId);
+      if (!grp) return;
+
+      const currentMembers = Array.isArray(grp.memberIds) ? grp.memberIds : [];
+      if (currentMembers.includes(empId)) {
+        showToast("Karyawan sudah menjadi anggota grup ini.");
+        return;
+      }
+
+      btn.disabled = true;
+      try {
+        await updateDoc(doc(db, "absen_grup", grpId), {
+          memberIds: [...currentMembers, empId],
+          updatedAt: new Date().toISOString()
+        });
+        showToast(`${empId} ditambahkan ke grup ${grp.name}.`);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal menambahkan anggota ke grup.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
     function renderInboxList() {
       const listEl = document.getElementById("inboxGroupList");
       const countBadge = document.getElementById("inboxGroupCount");
@@ -556,7 +822,7 @@
       }
 
       if (groups.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">Belum ada grup chat untuk bisnis ${escapeHtml(businessId)}. Buat grup di bawah.</div>`;
+        listEl.innerHTML = `<div class="empty-state">Belum ada grup chat untuk bisnis ${escapeHtml(businessId)}. Tekan tombol <b>+ Buat Grup</b> di bawah.</div>`;
         return;
       }
 
@@ -604,19 +870,22 @@
     }
 
     function startBusinessSubscriptions(bizId) {
-      if (bizId === businessId && unsubGroups && unsubMessages) return;
+      if (bizId === businessId && unsubGroups && unsubMessages && unsubEmployees) return;
       if (unsubGroups) { unsubGroups(); unsubGroups = null; }
       if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+      if (unsubEmployees) { unsubEmployees(); unsubEmployees = null; }
 
       businessId = bizId || "";
       groups = [];
       messages = [];
+      employees = [];
 
       document.getElementById("adminBizSub").textContent = businessId
         ? `Bisnis: ${businessId}`
         : "Bisnis belum diatur";
 
       if (!businessId) {
+        refreshMemberControls();
         renderInboxList();
         return;
       }
@@ -626,7 +895,14 @@
         groups = snap.docs
           .map(d => ({ id: d.id, ...d.data() }))
           .filter(g => g.businessId === businessId);
+        refreshMemberControls();
         renderInboxList();
+      });
+
+      const qEmp = query(collection(db, "absen_karyawan"), where("businessId", "==", businessId));
+      unsubEmployees = onSnapshot(qEmp, (snap) => {
+        employees = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+        refreshMemberControls();
       });
 
       const qMsg = query(collection(db, "absen_chat"), where("businessId", "==", businessId));
@@ -660,8 +936,10 @@
           createdAt: new Date().toISOString()
         });
 
+        targetGroupSelectEl.value = grpId;
         document.getElementById("newGroupNameInput").value = "";
         document.getElementById("newGroupDescInput").value = "";
+        createGroupModalEl.classList.add("hidden");
         showToast(`Grup "${name}" berhasil dibuat.`);
       } catch (err) {
         console.error(err);
