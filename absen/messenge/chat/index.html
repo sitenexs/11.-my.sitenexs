@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chat Tim Karyawan</title>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #64748b;
+      --border: rgba(203, 213, 225, 0.72);
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #14b8a6;
+      --primary-bg: #f0fdfa;
+      --success: #059669;
+      --danger: #e11d48;
+      --danger-bg: #ffe4e6;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      max-width: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.42;
+      font-size: 13px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    @keyframes msgPop {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-app {
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    /* ================= HEADER ================= */
+    .chat-header {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: transform 0.12s, background-color 0.15s;
+    }
+
+    .back-btn:active {
+      transform: scale(0.93);
+      background: #e2e8f0;
+    }
+
+    .room-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #115e59, #14b8a6);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.22);
+    }
+
+    .room-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .room-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .room-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .user-badge {
+      flex-shrink: 0;
+      background: var(--primary-bg);
+      border: 1px solid rgba(15, 118, 110, 0.2);
+      color: var(--primary);
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 800;
+      max-width: 110px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ================= MESSAGES STREAM ================= */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      scroll-behavior: smooth;
+    }
+
+    .date-divider {
+      align-self: center;
+      background: rgba(226, 232, 240, 0.85);
+      color: var(--text-secondary);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 999px;
+      margin: 4px 0;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      max-width: 84%;
+      animation: msgPop 0.18s ease;
+    }
+
+    .msg-row.mine {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-row.other {
+      align-self: flex-start;
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: #ccfbf1;
+      color: var(--primary-dark);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .msg-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 16px 4px;
+      padding: 8px 11px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      position: relative;
+      min-width: 72px;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .msg-row.mine .msg-bubble {
+      background: linear-gradient(135deg, #0f766e, #0d9488);
+      color: #ffffff;
+      border-color: transparent;
+      border-radius: 16px 16px 4px 16px;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
+    }
+
+    .msg-sender {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .msg-sender-id {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .reply-quote {
+      background: rgba(15, 23, 42, 0.05);
+      border-left: 3px solid var(--primary);
+      border-radius: 7px;
+      padding: 4px 7px;
+      margin-bottom: 5px;
+      font-size: 11px;
+    }
+
+    .msg-row.mine .reply-quote {
+      background: rgba(255, 255, 255, 0.16);
+      border-left-color: #ccfbf1;
+    }
+
+    .reply-quote-name {
+      font-weight: 800;
+      font-size: 10px;
+      margin-bottom: 1px;
+    }
+
+    .reply-quote-text {
+      opacity: 0.9;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .msg-photo {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .msg-text {
+      font-size: 13px;
+      line-height: 1.42;
+      white-space: pre-line;
+    }
+
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      margin-top: 3px;
+      font-size: 9.5px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .msg-row.mine .msg-meta {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .msg-action-link {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 9.5px;
+      font-weight: 700;
+      cursor: pointer;
+      opacity: 0.85;
+      padding: 0;
+    }
+
+    .msg-action-link:active {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    /* ================= COMPOSER BAR ================= */
+    .composer-wrap {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 8px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      z-index: 20;
+    }
+
+    .preview-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--primary-bg);
+      border: 1px solid rgba(15, 118, 110, 0.22);
+      border-left: 3.5px solid var(--primary);
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 11.5px;
+    }
+
+    .preview-strip-info {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-strip-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 7px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .preview-strip-title {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 11px;
+    }
+
+    .preview-strip-desc {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 11px;
+    }
+
+    .strip-close-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .composer-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+    }
+
+    .attach-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.12s, background-color 0.15s;
+    }
+
+    .attach-btn:active {
+      transform: scale(0.93);
+      background: #e2e8f0;
+    }
+
+    .chat-input-box {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 11px;
+      display: flex;
+      align-items: center;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .chat-input-box:focus-within {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .chat-textarea {
+      width: 100%;
+      max-height: 92px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      line-height: 1.38;
+    }
+
+    .send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+      transition: transform 0.12s, opacity 0.15s;
+    }
+
+    .send-btn:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+
+    .send-btn:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* ================= FULLSCREEN PHOTO MODAL ================= */
+    .img-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 200;
+      max-width: 440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .img-modal-top {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+    }
+
+    .img-modal-close {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .img-modal-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .img-modal-body img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .empty-chat {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+      font-size: 12.5px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ================= TOAST ================= */
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 62px;
+      transform: translateX(-50%) translateY(-10px);
+      width: calc(100% - 28px);
+      max-width: 412px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 13px;
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 300;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-app">
+    <!-- Top Header -->
+    <header class="chat-header">
+      <div class="header-left">
+        <a href="index.html" class="back-btn" id="backToAbsenBtn" aria-label="Kembali ke Absensi">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <div class="room-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+        </div>
+        <div class="room-info">
+          <div class="room-title">Ruang Diskusi Tim</div>
+          <div class="room-sub">
+            <span class="online-dot"></span>
+            <span id="chatStatusText">Sinkronisasi real-time</span>
+          </div>
+        </div>
+      </div>
+      <div class="user-badge" id="currentUserBadge">-</div>
+    </header>
+
+    <!-- Stream Pesan -->
+    <main class="chat-messages" id="chatMessages">
+      <div class="empty-chat">Memuat percakapan...</div>
+    </main>
+
+    <!-- Composer Input -->
+    <footer class="composer-wrap">
+      <!-- Reply Banner -->
+      <div id="replyStrip" class="preview-strip hidden">
+        <div class="preview-strip-info">
+          <div style="min-width:0;">
+            <div class="preview-strip-title" id="replyTargetName">Membalas -</div>
+            <div class="preview-strip-desc" id="replyTargetText">-</div>
+          </div>
+        </div>
+        <button type="button" class="strip-close-btn" id="cancelReplyBtn" aria-label="Batal balas">&times;</button>
+      </div>
+
+      <!-- Photo Attachment Banner -->
+      <div id="photoStrip" class="preview-strip hidden">
+        <div class="preview-strip-info">
+          <img id="photoStripThumb" class="preview-strip-thumb" alt="Lampiran">
+          <div style="min-width:0;">
+            <div class="preview-strip-title">Lampiran Foto</div>
+            <div class="preview-strip-desc">Siap dikirim bersama pesan</div>
+          </div>
+        </div>
+        <button type="button" class="strip-close-btn" id="cancelPhotoBtn" aria-label="Hapus foto">&times;</button>
+      </div>
+
+      <div class="composer-row">
+        <button type="button" class="attach-btn" id="pickPhotoBtn" aria-label="Kirim Foto" title="Kirim Foto">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </button>
+        <input type="file" id="chatPhotoInput" accept="image/*" class="hidden">
+
+        <div class="chat-input-box">
+          <textarea id="chatInput" class="chat-textarea" rows="1" placeholder="Tulis pesan untuk tim..."></textarea>
+        </div>
+
+        <button type="button" class="send-btn" id="sendMsgBtn" aria-label="Kirim">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Fullscreen Image Preview -->
+  <div id="imgModal" class="img-modal hidden">
+    <div class="img-modal-top">
+      <span style="font-weight:700; font-size:13px;" id="imgModalSender">Foto</span>
+      <button type="button" class="img-modal-close" id="closeImgModalBtn">Tutup</button>
+    </div>
+    <div class="img-modal-body">
+      <img id="imgModalTarget" alt="Pratinjau Foto">
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      deleteDoc,
+      query,
+      orderBy,
+      limit,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // ================= FIREBASE CONFIG =================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuN4zlRaSnmcUSuXE_E84IE7d3Mz8E-N4",
+      authDomain: "sitenexs-62919.firebaseapp.com",
+      projectId: "sitenexs-62919",
+      storageBucket: "sitenexs-62919.firebasestorage.app",
+      messagingSenderId: "1060348110644",
+      appId: "1:1060348110644:web:e45af14d5f26a9cf8e6761",
+      measurementId: "G-C7YL0Q7YRQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ================= SUPABASE CONFIG =================
+    const SUPABASE_URL = "https://xqcbyamxiekdxytntlno.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_XKHXYrEw2EDdfYH17Uyx6w_k_BtGLQa";
+    const SUPABASE_BUCKET = "absensi-foto";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const SESSION_KEY = "absen_firebase_user_permanent";
+    let currentUser = null;
+    let allMessages = [];
+    let replyData = null;
+    let pendingPhoto = null;
+    let toastTimer = null;
+
+    const chatMessagesEl = document.getElementById("chatMessages");
+    const chatInputEl = document.getElementById("chatInput");
+    const sendMsgBtn = document.getElementById("sendMsgBtn");
+    const chatPhotoInput = document.getElementById("chatPhotoInput");
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatTimeHHMM(isoStr) {
+      if (!isoStr) return "";
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).replace(/\./g, ":");
+    }
+
+    function formatDateDivider(dateKey) {
+      if (!dateKey) return "";
+      const today = getTodayKey();
+      if (dateKey === today) return "Hari Ini";
+      const [y, m, d] = dateKey.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    // Back button fallback jika dibuka dari nama file berbeda
+    document.getElementById("backToAbsenBtn").addEventListener("click", (e) => {
+      if (window.history.length > 1 && document.referrer) {
+        e.preventDefault();
+        window.history.back();
+      }
+    });
+
+    // Auto-resize textarea
+    chatInputEl.addEventListener("input", () => {
+      chatInputEl.style.height = "auto";
+      chatInputEl.style.height = Math.min(chatInputEl.scrollHeight, 92) + "px";
+    });
+
+    // Kirim dengan Enter (Shift+Enter untuk baris baru)
+    chatInputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // ================= FOTO LAMPIRAN =================
+    document.getElementById("pickPhotoBtn").addEventListener("click", () => {
+      chatPhotoInput.click();
+    });
+
+    function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        if (!file.type || !file.type.startsWith("image/")) {
+          reject(new Error("Bukan gambar"));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const maxWidth = 900;
+            const scale = Math.min(1, maxWidth / img.width);
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+            canvas.toBlob((blob) => {
+              if (!blob) return reject(new Error("Blob gagal"));
+              resolve({ blob, dataUrl });
+            }, "image/jpeg", 0.8);
+          };
+          img.onerror = () => reject(new Error("Gambar rusak"));
+          img.src = ev.target.result;
+        };
+        reader.onerror = () => reject(new Error("Gagal membaca file"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    chatPhotoInput.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      chatPhotoInput.value = "";
+      if (!file) return;
+      try {
+        pendingPhoto = await compressImage(file);
+        document.getElementById("photoStripThumb").src = pendingPhoto.dataUrl;
+        document.getElementById("photoStrip").classList.remove("hidden");
+      } catch {
+        showToast("Gagal memproses gambar.");
+      }
+    });
+
+    document.getElementById("cancelPhotoBtn").addEventListener("click", () => {
+      pendingPhoto = null;
+      document.getElementById("photoStrip").classList.add("hidden");
+    });
+
+    async function uploadChatPhoto(blob) {
+      const todayKey = getTodayKey();
+      const rand = Math.random().toString(36).slice(2, 6);
+      const path = `chat/${todayKey}/${currentUser.id}_${Date.now()}_${rand}.jpg`;
+
+      const { error } = await supabase.storage
+        .from(SUPABASE_BUCKET)
+        .upload(path, blob, { contentType: "image/jpeg", upsert: false });
+
+      if (error) throw error;
+      const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(path);
+      return data.publicUrl;
+    }
+
+    // ================= REPLY HANDLING =================
+    function setReply(msg) {
+      replyData = {
+        id: msg.id,
+        username: msg.username,
+        text: msg.text || (msg.photoUrl ? "[Foto]" : "")
+      };
+      document.getElementById("replyTargetName").textContent = `Membalas ${replyData.username}`;
+      document.getElementById("replyTargetText").textContent = replyData.text;
+      document.getElementById("replyStrip").classList.remove("hidden");
+      chatInputEl.focus();
+    }
+
+    function clearReply() {
+      replyData = null;
+      document.getElementById("replyStrip").classList.add("hidden");
+    }
+
+    document.getElementById("cancelReplyBtn").addEventListener("click", clearReply);
+
+    // ================= RENDER MESSAGES =================
+    function renderMessages() {
+      if (allMessages.length === 0) {
+        chatMessagesEl.innerHTML = `<div class="empty-chat">Belum ada pesan di ruang diskusi.<br>Mulai percakapan sekarang!</div>`;
+        return;
+      }
+
+      const wasAtBottom = (chatMessagesEl.scrollHeight - chatMessagesEl.scrollTop - chatMessagesEl.clientHeight) < 90;
+      let lastDate = "";
+      let html = "";
+
+      allMessages.forEach((msg, idx) => {
+        const msgDate = msg.date || (msg.createdAt ? msg.createdAt.slice(0, 10) : "");
+        if (msgDate && msgDate !== lastDate) {
+          lastDate = msgDate;
+          html += `<div class="date-divider">${formatDateDivider(msgDate)}</div>`;
+        }
+
+        const isMine = currentUser && msg.empId === currentUser.id;
+        const initial = (msg.username || "K").charAt(0);
+        const timeStr = formatTimeHHMM(msg.createdAt);
+
+        const replyHtml = msg.replyTo ? `
+          <div class="reply-quote">
+            <div class="reply-quote-name">${escapeHtml(msg.replyTo.username)}</div>
+            <div class="reply-quote-text">${escapeHtml(msg.replyTo.text)}</div>
+          </div>
+        ` : "";
+
+        const photoHtml = msg.photoUrl
+          ? `<img src="${escapeHtml(msg.photoUrl)}" class="msg-photo" data-view-img="${idx}" alt="Foto lampiran">`
+          : "";
+
+        const textHtml = msg.text
+          ? `<div class="msg-text">${escapeHtml(msg.text)}</div>`
+          : "";
+
+        const deleteBtnHtml = isMine
+          ? `<button type="button" class="msg-action-link" data-del-msg="${escapeHtml(msg.id)}">Hapus</button>`
+          : "";
+
+        html += `
+          <div class="msg-row ${isMine ? "mine" : "other"}">
+            ${!isMine ? `<div class="msg-avatar">${escapeHtml(initial)}</div>` : ""}
+            <div class="msg-bubble">
+              ${!isMine ? `<div class="msg-sender">${escapeHtml(msg.username)} <span class="msg-sender-id">(${escapeHtml(msg.empId)})</span></div>` : ""}
+              ${replyHtml}
+              ${photoHtml}
+              ${textHtml}
+              <div class="msg-meta">
+                <button type="button" class="msg-action-link" data-reply-idx="${idx}">Balas</button>
+                ${deleteBtnHtml}
+                <span>${timeStr}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      chatMessagesEl.innerHTML = html;
+
+      chatMessagesEl.querySelectorAll("[data-reply-idx]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const m = allMessages[Number(btn.dataset.replyIdx)];
+          if (m) setReply(m);
+        });
+      });
+
+      chatMessagesEl.querySelectorAll("[data-del-msg]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.delMsg;
+          try {
+            await deleteDoc(doc(db, "absen_chat", id));
+            showToast("Pesan dihapus.");
+          } catch {
+            showToast("Gagal menghapus pesan.");
+          }
+        });
+      });
+
+      chatMessagesEl.querySelectorAll("[data-view-img]").forEach(img => {
+        img.addEventListener("click", () => {
+          const m = allMessages[Number(img.dataset.viewImg)];
+          if (!m || !m.photoUrl) return;
+          document.getElementById("imgModalSender").textContent = `${m.username} • ${formatTimeHHMM(m.createdAt)}`;
+          document.getElementById("imgModalTarget").src = m.photoUrl;
+          document.getElementById("imgModal").classList.remove("hidden");
+        });
+      });
+
+      if (wasAtBottom || allMessages.length <= 15) {
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      }
+    }
+
+    document.getElementById("closeImgModalBtn").addEventListener("click", () => {
+      document.getElementById("imgModal").classList.add("hidden");
+    });
+
+    // ================= SEND MESSAGE =================
+    async function sendMessage() {
+      if (!currentUser) {
+        showToast("Silakan login di halaman absensi terlebih dahulu.");
+        return;
+      }
+
+      const text = chatInputEl.value.trim();
+      if (!text && !pendingPhoto) return;
+
+      sendMsgBtn.disabled = true;
+
+      try {
+        let photoUrl = "";
+        if (pendingPhoto) {
+          photoUrl = await uploadChatPhoto(pendingPhoto.blob);
+        }
+
+        const nowIso = new Date().toISOString();
+        const msgId = `${Date.now()}_${currentUser.id}`;
+
+        await setDoc(doc(db, "absen_chat", msgId), {
+          empId: currentUser.id,
+          username: currentUser.username,
+          text,
+          photoUrl,
+          replyTo: replyData ? { ...replyData } : null,
+          date: getTodayKey(),
+          createdAt: nowIso
+        });
+
+        chatInputEl.value = "";
+        chatInputEl.style.height = "auto";
+        pendingPhoto = null;
+        document.getElementById("photoStrip").classList.add("hidden");
+        clearReply();
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal mengirim pesan.");
+      } finally {
+        sendMsgBtn.disabled = false;
+      }
+    }
+
+    sendMsgBtn.addEventListener("click", sendMessage);
+
+    // ================= INIT =================
+    (function init() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+        if (saved && saved.id && saved.username) {
+          currentUser = saved;
+          document.getElementById("currentUserBadge").textContent = saved.username;
+        } else {
+          showToast("Sesi tidak ditemukan. Login di halaman utama.");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1200);
+          return;
+        }
+      } catch {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const q = query(
+        collection(db, "absen_chat"),
+        orderBy("createdAt", "asc"),
+        limit(120)
+      );
+
+      onSnapshot(q, (snapshot) => {
+        allMessages = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderMessages();
+      }, (err) => {
+        console.error(err);
+        document.getElementById("chatStatusText").textContent = "Gangguan koneksi";
+        showToast("Gagal memuat pesan.");
+      });
+    })();
+  </script>
+</body>
+</html>
