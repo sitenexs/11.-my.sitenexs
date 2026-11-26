@@ -710,6 +710,12 @@
       color: var(--success);
     }
 
+    .mini-chip.warn {
+      background: var(--warning-bg);
+      border-color: transparent;
+      color: var(--warning);
+    }
+
     .note-box-preview {
       background: #ffffff;
       border: 1px solid var(--border);
@@ -1120,12 +1126,30 @@
         </section>
       </div>
 
-      <!-- TAB 3: TAMBAH & HAPUS ANGGOTA GRUP -->
+      <!-- TAB 3: BUAT GRUP, TAMBAH & HAPUS ANGGOTA GRUP -->
       <div id="tabAnggotaGrup" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
         <section class="card">
           <div class="card-title">
+            <span>Buat Grup Baru</span>
+            <span class="badge badge-success">absen_grup</span>
+          </div>
+          <form id="createGroupForm">
+            <div class="form-group">
+              <label class="form-label" for="newGroupNameInput">Nama Grup</label>
+              <input type="text" id="newGroupNameInput" class="form-input" placeholder="Contoh: Tim Lapangan, Sales, Kasir" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newGroupDescInput">Deskripsi Grup (Opsional)</label>
+              <input type="text" id="newGroupDescInput" class="form-input" placeholder="Keterangan singkat grup">
+            </div>
+            <button type="submit" class="btn btn-masuk" id="createGroupBtn">Buat Grup</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
             <span>Tambah Anggota ke Grup</span>
-            <span class="badge badge-ok">absen_grup</span>
+            <span class="badge badge-ok">Anggota</span>
           </div>
           <form id="addMemberForm">
             <div class="form-group">
@@ -1616,7 +1640,6 @@
       const container = document.getElementById("monitorList");
       const recCountBadge = document.getElementById("monitorRecCount");
 
-      // Halaman pertama tidak langsung menampilkan semua catatan & foto karyawan
       if (!showMonitorDetails || selectedMonitorEmp === "ALL") {
         recCountBadge.textContent = "Grafik Utama";
         container.innerHTML = `<div class="empty-state">Pilih nama karyawan pada filter di atas untuk menampilkan catatan dan foto.</div>`;
@@ -1816,7 +1839,7 @@
 
       const container = document.getElementById("groupMembersList");
       if (groups.length === 0) {
-        container.innerHTML = `<div class="empty-state">Belum ada grup untuk bisnis ini. Buat grup di menu Admin Sitenexs.</div>`;
+        container.innerHTML = `<div class="empty-state">Belum ada grup untuk bisnis ini. Buat grup di atas.</div>`;
         return;
       }
 
@@ -1850,6 +1873,7 @@
               <span>${escapeHtml(g.name)}</span>
               <span class="badge badge-success">${members.length} Anggota</span>
             </div>
+            ${g.description ? `<div class="list-card-sub">${escapeHtml(g.description)}</div>` : ""}
             ${memberRowsHtml}
           </div>
         `;
@@ -1876,6 +1900,44 @@
         });
       });
     }
+
+    // Buat Grup Baru
+    document.getElementById("createGroupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!adminBusinessId) {
+        showToast("Bisnis admin belum diatur.");
+        return;
+      }
+
+      const name = document.getElementById("newGroupNameInput").value.trim();
+      const description = document.getElementById("newGroupDescInput").value.trim();
+      const btn = document.getElementById("createGroupBtn");
+
+      if (!name) return;
+
+      btn.disabled = true;
+      try {
+        const grpId = `${adminBusinessId}_GRP_${Date.now()}`;
+        await setDoc(doc(db, "absen_grup", grpId), {
+          id: grpId,
+          businessId: adminBusinessId,
+          name,
+          description,
+          memberIds: [],
+          createdAt: new Date().toISOString()
+        });
+
+        selectedGroupId = grpId;
+        document.getElementById("newGroupNameInput").value = "";
+        document.getElementById("newGroupDescInput").value = "";
+        showToast(`Grup "${name}" berhasil dibuat.`);
+      } catch (err) {
+        console.error(err);
+        showToast("Gagal membuat grup.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     document.getElementById("addEmpForm").addEventListener("submit", async (e) => {
       e.preventDefault();
