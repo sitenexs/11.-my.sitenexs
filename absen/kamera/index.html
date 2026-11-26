@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kamera Absensi</title>
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-light: #14b8a6;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #e11d48;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: #0f172a;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .camera-shell {
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+    }
+
+    .cam-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 13px 15px;
+      background: rgba(15, 23, 42, 0.94);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .cam-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .cam-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cam-stage {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .cam-video, .cam-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cam-video.mirror {
+      transform: scaleX(-1);
+    }
+
+    .cam-status-msg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .cam-controls {
+      padding: 14px 14px calc(16px + env(safe-area-inset-bottom, 0px));
+      background: #0f172a;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .cam-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.12s, opacity 0.15s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cam-btn-secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: #ffffff;
+    }
+
+    .btn-masuk {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="camera-shell">
+    <div class="cam-topbar">
+      <div class="cam-title" id="camModalTitle">Ambil Foto</div>
+      <button type="button" class="cam-close-btn" id="camCloseBtn">Tutup</button>
+    </div>
+
+    <div class="cam-stage">
+      <video id="camVideo" class="cam-video mirror" autoplay playsinline muted></video>
+      <img id="camPreview" class="cam-preview hidden" alt="Hasil foto">
+      <canvas id="camCanvas" class="hidden"></canvas>
+      <div id="camErrorBox" class="cam-status-msg hidden">
+        <div id="camErrorText">Memuat kamera...</div>
+      </div>
+    </div>
+
+    <div class="cam-controls">
+      <div id="camLiveControls" class="cam-btn-row">
+        <button type="button" class="btn cam-btn-secondary" id="camSwitchBtn">Ganti Kamera</button>
+        <button type="button" class="btn btn-primary" id="camCaptureBtn">Jepret</button>
+      </div>
+      <div id="camPreviewControls" class="cam-btn-row hidden">
+        <button type="button" class="btn cam-btn-secondary" id="camRetakeBtn">Ulangi</button>
+        <button type="button" class="btn btn-masuk" id="camConfirmBtn">Konfirmasi</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CAMERA_RESULT_KEY = "absen_camera_result_payload";
+    const params = new URLSearchParams(window.location.search);
+    const purpose = params.get("purpose") || "checkin";
+    const modalTitle = params.get("title") || "Ambil Foto";
+    let currentFacingMode = params.get("facing") || (purpose === "note" ? "environment" : "user");
+
+    let cameraStream = null;
+    let tempCapturedDataUrl = null;
+
+    const camVideo = document.getElementById("camVideo");
+    const camPreview = document.getElementById("camPreview");
+    const camCanvas = document.getElementById("camCanvas");
+    const camLiveControls = document.getElementById("camLiveControls");
+    const camPreviewControls = document.getElementById("camPreviewControls");
+    const camConfirmBtn = document.getElementById("camConfirmBtn");
+    const camErrorBox = document.getElementById("camErrorBox");
+    const camErrorText = document.getElementById("camErrorText");
+
+    document.getElementById("camModalTitle").textContent = modalTitle;
+    camConfirmBtn.textContent = (purpose === "note") ? "Gunakan" : "Konfirmasi";
+
+    function notifyParent(payload) {
+      try {
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage(payload, "*");
+        }
+      } catch {}
+
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(payload, "*");
+        }
+      } catch {}
+    }
+
+    function closeSelf() {
+      stopCameraStream();
+      notifyParent({ type: "CAMERA_CLOSED" });
+      window.close();
+    }
+
+    function stopCameraStream() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      camVideo.srcObject = null;
+    }
+
+    function updateCameraMirrorClass() {
+      if (currentFacingMode === "user") {
+        camVideo.classList.add("mirror");
+      } else {
+        camVideo.classList.remove("mirror");
+      }
+    }
+
+    async function startCameraStream() {
+      stopCameraStream();
+      updateCameraMirrorClass();
+      camErrorBox.classList.add("hidden");
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        camErrorText.textContent = "Browser tidak mendukung akses kamera.";
+        camErrorBox.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: currentFacingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+        camVideo.srcObject = cameraStream;
+      } catch (err) {
+        console.error(err);
+        camErrorText.textContent = "Izin kamera ditolak atau kamera tidak tersedia.";
+        camErrorBox.classList.remove("hidden");
+      }
+    }
+
+    document.getElementById("camCloseBtn").addEventListener("click", closeSelf);
+
+    document.getElementById("camSwitchBtn").addEventListener("click", async () => {
+      currentFacingMode = (currentFacingMode === "user") ? "environment" : "user";
+      await startCameraStream();
+    });
+
+    document.getElementById("camCaptureBtn").addEventListener("click", () => {
+      if (!camVideo.videoWidth) return;
+
+      const maxWidth = 900;
+      const scale = Math.min(1, maxWidth / camVideo.videoWidth);
+      camCanvas.width = Math.round(camVideo.videoWidth * scale);
+      camCanvas.height = Math.round(camVideo.videoHeight * scale);
+
+      const ctx = camCanvas.getContext("2d");
+      ctx.save();
+      if (currentFacingMode === "user") {
+        ctx.translate(camCanvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(camVideo, 0, 0, camCanvas.width, camCanvas.height);
+      ctx.restore();
+
+      tempCapturedDataUrl = camCanvas.toDataURL("image/jpeg", 0.8);
+      camPreview.src = tempCapturedDataUrl;
+      camVideo.classList.add("hidden");
+      camPreview.classList.remove("hidden");
+      camLiveControls.classList.add("hidden");
+      camPreviewControls.classList.remove("hidden");
+      stopCameraStream();
+    });
+
+    document.getElementById("camRetakeBtn").addEventListener("click", async () => {
+      tempCapturedDataUrl = null;
+      camPreview.classList.add("hidden");
+      camVideo.classList.remove("hidden");
+      camPreviewControls.classList.add("hidden");
+      camLiveControls.classList.remove("hidden");
+      await startCameraStream();
+    });
+
+    camConfirmBtn.addEventListener("click", () => {
+      if (!tempCapturedDataUrl) return;
+      camConfirmBtn.disabled = true;
+      camConfirmBtn.textContent = "Memproses...";
+
+      const resultPayload = {
+        type: "CAMERA_CAPTURED",
+        purpose,
+        dataUrl: tempCapturedDataUrl,
+        timestamp: Date.now()
+      };
+
+      // Kirim via postMessage & localStorage fallback
+      notifyParent(resultPayload);
+      try {
+        localStorage.setItem(CAMERA_RESULT_KEY, JSON.stringify(resultPayload));
+      } catch {}
+
+      stopCameraStream();
+      setTimeout(() => {
+        window.close();
+      }, 150);
+    });
+
+    window.addEventListener("beforeunload", stopCameraStream);
+    startCameraStream();
+  </script>
+</body>
+</html>
